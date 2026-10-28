@@ -2,6 +2,6 @@
 
 Sergiu Alexandru Bîsceanu
 
-We construct a compact planar set of Hausdorff length $1$ whose length measure has uniform coordinate marginals and whose $\delta$-neighborhoods have Favard length of order $\frac{1}{\log\frac{1}{\delta}}$. Hall's matching theorem gives the sharp bound $\alpha_n\asymp\frac{1}{\log n}$ for unions of permutation strips (KC2).
+For the $n$ parallelograms obtained by matching the equal subintervals of the two horizontal edges of the unit square, we prove that the minimum area of their union is of order $\frac{1}{\log n}$, as conjectured by Kaczynski.
 
 [Read the paper](permutation-strips.pdf) · [LaTeX source](permutation-strips.tex)
