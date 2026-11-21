@@ -19,7 +19,7 @@
  pdfsubject={Permutation strips, uniform coordinate marginals, and sharp Favard decay},
  pdfkeywords={Favard length, uniform marginals, permutation strips, Kaczynski conjecture}}
 \newtheorem{theorem}{Theorem}
-\newtheorem{claim}{Claim}
+\newtheorem{lemma}{Lemma}
 \renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}
 \newcommand{\Fav}{\operatorname{Fav}}
 \newcommand{\A}{\mathcal A}
@@ -36,9 +36,7 @@
 
 \begin{document}
 \begin{abstract}
-For the $n$ parallelograms obtained by matching the equal subintervals of the
-two horizontal edges of the unit square, we prove that the minimum area of
-their union is of order $\frac1{\log n}$, as conjectured by Kaczynski.
+Match the $n$ equal intervals on the bottom of the unit square to those on the top by a permutation. The least area of the union of the resulting parallelograms is of order $1/\log n$, as conjectured by Kaczynski. The same construction gives a compact $1$-Ahlfors regular set of Hausdorff length one whose length measure projects to Lebesgue measure on both coordinate axes and whose $\delta$-neighborhood has Favard length of order $1/\log(1/\delta)$.
 \end{abstract}
 \maketitle
 \pagestyle{plain}
@@ -46,334 +44,196 @@ their union is of order $\frac1{\log n}$, as conjectured by Kaczynski.
 \widowpenalty=10000
 \clubpenalty=10000
 
-Divide the top and bottom edges of the unit square into $n$ equal intervals,
-match them by a permutation, and join matched intervals by parallelograms.
-Their areas add to $1$; how small can their union be? Write $\alpha_n$ for
-the minimum. The assertion $\alpha_n\asymp\frac1{\log n}$ is
-\emph{KC2}.\footnote{KC2 abbreviates ``Kaczynski's Conjecture 2,'' following
-its numbering in Kuklinski~\cite[\S\,3]{Kuklinski}.}
+Divide the top and bottom edges of the unit square into $n$ equal intervals. Match the intervals by a permutation and join each matched pair by a parallelogram. Their areas add to one. How small can the area of their union be? Write $\alpha_n$ for the minimum. Kuklinski proved that $\alpha_n\le C(\log n)^{-p}$ for some $p>0$ and recorded the conjecture that the exponent is one \cite[Conjecture~2 and Theorem~4]{Kuklinski}.
 
-\begin{theorem}[KC2]\label{thm:kc2}
-There is an absolute constant $C$ such that, for every $n\ge2$,
+\begin{theorem}[Kaczynski's second conjecture]\label{thm:finite}
+For every $n\ge2$,
 \[
- \frac1{H_n}\le\alpha_n\le\frac C{\log n},
- \qquad H_n=\sum_{j=1}^n\frac1j.
+  \frac1{H_n}\le\alpha_n\le\frac C{\log n},\qquad
+  H_n=\sum_{j=1}^n\frac1j,
 \]
+where $C$ is absolute.
 \end{theorem}
 
-A strip from $I$ on the bottom edge to $J$ on the top edge is encoded by
-the endpoint square $I\times J$. Its section at height $t$ is
-$\pi_t(I\times J)$, where $\pi_t(x,y)=(1-t)x+ty$.
-Nesting suitable patterns of endpoint squares gives a single compact set. For compact $S\subset\R^2$, put
-$S_\delta=S+[-\delta,\delta]^2$ and
-\[
- \Fav(S)=\int_0^\pi|p_\theta(S)|\,d\theta,
- \qquad p_\theta(x,y)=x\cos\theta+y\sin\theta.
-\]
-We write $p_x,p_y$ for the coordinate projections, $|\cdot|$ for length or
-area, and $\mathcal H^1$ for Hausdorff length.
+The two endpoints of a segment give a point $(x,y)$ in a second copy of the unit square. At height $t$ the segment has horizontal coordinate $\pi_t(x,y)=(1-t)x+ty$. Thus the strip joining $I$ to $J$ is encoded by the square $I\times J$, and its section at height $t$ is the interval $\pi_t(I\times J)$. This description also gives a compact version of the problem.
 
-\begin{theorem}\label{thm:favard}
-There is a compact set $S\subset[0,1]^2$ such that
+For compact $K\subset\R^2$, put $K_\delta=K+[-\delta,\delta]^2$ and
 \[
- p_x(S)=p_y(S)=[0,1],\qquad \mathcal H^1(S)=1,
+  \Fav(K)=\int_0^\pi |p_\theta(K)|\,d\theta,
+  \qquad p_\theta(x,y)=x\cos\theta+y\sin\theta.
 \]
-and, for absolute constants $c,C>0$,
+Write $p_x,p_y$ for the coordinate projections and $\mathcal L^1$ for Lebesgue measure on $[0,1]$.
+
+\begin{theorem}\label{thm:compact}
+There is a compact set $S\subset[0,1]^2$ of Hausdorff length one such that, for $\mu=\mathcal H^1|_S$,
 \[
- \frac c{\log(1/\delta)}\le\Fav(S_\delta)
- \le\frac C{\log(1/\delta)}\qquad(0<\delta<\frac12).
+ (p_x)_\#\mu=(p_y)_\#\mu=\mathcal L^1,\qquad
+ \mu(B(z,r))\asymp r\quad(z\in S,\ 0<r\le\diam S).
 \]
-Its length measure $\mu=\mathcal H^1|_S$ has uniform coordinate marginals:
-$\mu(B\times[0,1])=\mu([0,1]\times B)=|B|$ for every Borel $B\subset[0,1]$.
+Moreover,
+\[
+  \Fav(S_\delta)\asymp\frac1{\log(1/\delta)}
+  \qquad (0<\delta<\tfrac12).
+\]
+The comparison constants are absolute.
 \end{theorem}
 
-Chang, Shmerkin and Suomala~\cite{CSS} obtain sharp Favard decay for random
-Cantor sets. Cs\"ornyei and Suomala~\cite{CS} characterize the measures which
-occur as one projection of a purely unrectifiable length measure. Here both
-coordinate marginals are uniform, and the length is as small as a unit
-projection permits. Nested permutation patterns on a fixed $L$-adic grid
-have Favard length $\gtrsim_L\frac{\log j}{j}$ at scale $L^{-j}$
-\cite[Theorem~A.1]{CSS}. We allow unequal widths during compression and
-introduce the final equal grid only by rounding. Throughout,
-logarithms are natural and $c,C$ denote positive absolute constants,
-allowed to change.
+Mattila's projection estimate gives the logarithmic lower bound for sets of positive one-dimensional Hausdorff content \cite{CSS,Mattila}. Chang, Shmerkin and Suomala constructed $1$-Ahlfors regular random Cantor sets with this sharp Favard decay \cite{CSS}. Cs\"ornyei and Suomala characterized the measures that can occur as one projection of a purely unrectifiable length measure \cite{CS}. Here both coordinate projections are prescribed, and either one already accounts for the entire length of $S$. The choice of scales matters. On a fixed $L$-adic grid, nested patterns with one square per column at every level have Favard length at least $c_L(\log j)/j$ at level $j$ \cite[Theorem~A.1]{CSS}.
 
-\section{The overlap bound}
+The construction uses two ordered families of copies of the same pattern. At a fixed height, the sections of a matched red and blue copy differ by a translation. Averaging over the scale of the copies turns the overlap into a quadratic saving in area, at bounded average cost in the logarithm of the number of squares.
 
-\begin{claim}\label{cl:lower}
-Every union of $n$ permutation strips has area at least $\frac1{H_n}$.
-\end{claim}
-\begin{proof}
-Let $Z$ count the strips covering a point, and let $A$ be their union area.
-Since $\int Z=1$, Cauchy--Schwarz gives $1\le A\int Z^2$.
-Two crossing strips whose endpoint index gaps are $p,q\ge1$ have signed
-center displacement $\frac{p-(p+q)t}{n}$. Their intersection area is therefore
+\section{Two estimates on the equal grid}
+
+For a compact set $K$ of endpoints, let $\A(K)=\int_0^1|\pi_t(K)|\,dt$. For a union of endpoint squares this is the area covered by the strips. Reflection $R(x,y)=(x,1-y)$ interchanges the two quadrants of projection directions. Indeed, setting $t=\sin\theta/(\cos\theta+\sin\theta)$ gives
+\begin{equation}\label{eq:angle}
+ \A(K)=\int_0^{\pi/2}\frac{|p_\theta(K)|}{(\cos\theta+\sin\theta)^3}\,d\theta,
+ \qquad
+ \A(K)+\A(RK)\le\Fav(K)\le 2\sqrt2\,\bigl(\A(K)+\A(RK)\bigr).
+\end{equation}
+
+Let $P_\sigma$ be the union of the $n$ closed grid squares selected by a permutation $\sigma$. Let $Z$ count its strips through a point and put $E=\int Z^2$. Since $\int Z=1$, Cauchy--Schwarz gives $\A(P_\sigma)\ge1/E$. Only inversions contribute to the pairwise overlaps. If an inverted pair has index gaps $p$ and $q$ on the two edges, its intersection area is
 \[
  \frac1n\int_0^1\bigl(1-|p-(p+q)t|\bigr)_+\,dt
- =\frac1{n(p+q)}
- \le\frac1{4n}\left(\frac1p+\frac1q\right).
+ =\frac1{n(p+q)}\le\frac1{4n}\left(\frac1p+\frac1q\right).
 \]
-Noncrossing pairs have no positive-area intersection. On either edge there
-are $n-d$ pairs of index gap $d$. Expanding $Z^2$ counts each pair twice,
-so
+The integrand is a tent of height one and base $2/(p+q)$, supported in $[0,1]$.
+
+Let $E'$ be the second moment for the reflected pattern $RP_\sigma$. Every pair $i<j$ crosses in exactly one of the two matchings, with the same unsigned gaps $p_{ij}=j-i$ and $q_{ij}=|\sigma(j)-\sigma(i)|$. On each edge precisely $n-d$ pairs have gap $d$. Counting each intersection twice gives
+\begin{equation}\label{eq:harmonic}
+ E+E'=2+\frac2n\sum_{i<j}\frac1{p_{ij}+q_{ij}}
+ \le 2+\frac1n\sum_{d=1}^{n-1}\frac{n-d}{d}=H_n+1.
+\end{equation}
+The diagonal terms alone give $E'\ge1$, so $E\le H_n$. This proves $\alpha_n\ge1/H_n$. Using both quadrants in \eqref{eq:angle} gives
+\begin{equation}\label{eq:both}
+ \Fav(P_\sigma)\ge\frac1E+\frac1{E'}\ge\frac4{E+E'}\ge\frac4{H_n+1}.
+\end{equation}
+
+\begin{lemma}[Grid matching]\label{lem:hall}
+If a compact $K\subset[0,1]^2$ carries a probability measure with uniform coordinate marginals, then for each $n\ge2$ some $P_\sigma$ lies in $K_{1/n}$. In particular,
 \[
- \int Z^2\le1+\frac1n\sum_{d=1}^{n-1}\frac{n-d}{d}=H_n.\qedhere
+ \alpha_n\le\A(K_{1/n}),\qquad \Fav(K_{1/n})\ge\frac4{H_n+1}.
 \]
+\end{lemma}
+\begin{proof}
+Use half-open grid intervals $I_i$, closing the last one at $1$. For the given measure $\nu$, the matrix $a_{ij}=n\nu(I_i\times I_j)$ has all row and column sums equal to one. Any $k$ rows therefore have positive entries in at least $k$ columns. Hall's theorem \cite{Hall} supplies a permutation of positive entries. Each selected cell meets $K$, so its closure lies in $K_{1/n}$. Apply \eqref{eq:both} and the definition of $\alpha_n$.
 \end{proof}
 
 \section{The shuffle}
 
-A \emph{pattern} is a union $P=\bigcup_{i=1}^N(I_i\times J_i)$, where each
-family of closed intervals partitions $[0,1]$ up to endpoints, and
-$|I_i|=|J_i|=w_i>0$. Write $N(P)=N$. For compact $E\subset\R^2$, define
-\[
- \A(E)=\int_0^1|\pi_t(E)|\,dt.
-\]
-For a pattern, $\sum_iw_i=1$ and $\A(P)$ is the area of its strip union.
-Each strip keeps its width $w_i$ at every height; only the overlaps change.
-
-Fix a pattern $P$, and put $E_t=\pi_t(P)$, $\ell(t)=|E_t|$ and
-$L(P)=\int_0^{1/2}\ell(t)\,dt$. Choose $0<w<1$ and partition a unit interval
-into $m=\lceil\frac1w\rceil$ pieces of width $w$, with the last possibly
-shorter. Make red and blue copies of this partition. On intervals of length
-$2$, arrange their labels as follows:
-\begin{equation}\label{eq:orders}
- \begin{array}{rl}
- \text{bottom:}&R_1,B_1,R_2,B_2,\ldots,R_m,B_m,\\
- \text{top:}&B_1,B_2,\ldots,B_m,R_1,R_2,\ldots,R_m.
- \end{array}
+A \emph{pattern} is a finite union $P=\bigcup_i(I_i\times J_i)$ in which each family of intervals partitions $[0,1]$ up to endpoints and $|I_i|=|J_i|=w_i>0$. Write $N(P)$ for the number of squares. If $P=\bigcup_i(v_i+w_i[0,1]^2)$, insert a copy of $Q$ in each square by setting $P\star Q=\bigcup_i(v_i+w_iQ)$. For any linear projection $\pi$,
+\begin{equation}\label{eq:insert}
+ |\pi(P\star Q)|\le\min\{|\pi(P)|,|\pi(Q)|\}.
 \end{equation}
-Equal labels determine endpoint squares. Put a homothetic copy of $P$
-inside each square, then divide both coordinates by $2$. Call the resulting
-pattern $P_w$. It has $MN(P)$ squares, where $M=2m$. On each edge, the
-endpoint intervals still partition $[0,1]$. Since the copy ratios sum to
-$1$, subadditivity gives $|\pi(P_w)|\le|\pi(P)|$ for every linear projection
-$\pi$.
+Containment gives the first bound. The second follows by summing the copy ratios.
 
-% Exact w=1/2 shuffle, using the three-square permutation 132 in each copy.
-% Panel (a) is in the physical strip plane; panel (b) enlarges the first pair.
+Fix a real $u\ge4$. Partition $[0,u]$ into $m=\lfloor u\rfloor$ pieces, the first $m-1$ of length one and the last of length $1+u-m$. Make a red and a blue copy of the partition. On two edges of length $2u$, arrange the pieces in the orders
+\[
+ \begin{array}{r@{\quad}l}
+ \text{bottom}&R_1,B_1,R_2,B_2,\ldots,R_m,B_m,\\
+ \text{top}&B_1,B_2,\ldots,B_m,R_1,R_2,\ldots,R_m .
+ \end{array}
+\]
+Match equal labels and rescale by $1/(2u)$ to obtain $D_u$. Its sides lie in $[1/(2u),1/u]$. Put $P'=D_u\star P$, $F_t=\pi_t(P)$ and $\ell(t)=|F_t|$. Within each color the squares occur in the same order on both axes. Their projections have disjoint interiors and total covered length $\ell(t)/2$ after insertion.
+
+Pair $R_i$ with $B_{i+1}$ for $1\le i\le m-2$. In units of their common width, blue starts three units to the right of red on the bottom and $u-1$ to its left on the top. Its displacement at height $t$ is
+\[
+ d_u(t)=3(1-t)-(u-1)t=3-(u+2)t.
+\]
+The paired red copies have total width $(m-2)/(2u)\ge1/8$. Adding their disjoint overlaps gives
+\begin{equation}\label{eq:save}
+ \ell(t)-|\pi_t(P')|\ge\tfrac18\,|F_t\cap(F_t+d_u(t))|.
+\end{equation}
+
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[x=1cm,y=1cm,>=latex,
- every node/.style={font=\small},line cap=round,line join=round]
-\begin{scope}[x=4.2cm,y=3.7cm]
- \node[anchor=west] at (-.10,1.23) {\textit{(a) The strip matching}};
- \foreach \a/\b/\col/\opacity/\width in
- {.5/.75/stripred/.30/.35,.75/.25/stripblue/.30/.35,0/.5/stripred/.90/.55,.25/0/stripblue/.90/.55}{
-   \foreach \u/\v in {0/0,1/2,2/1}{
-     \path[fill=\col,fill opacity=.055,draw=\col!85!black,
-       draw opacity=\opacity,line width=\width pt]
-       ({\a+\u/12},0)--({\a+(\u+1)/12},0)--
-       ({\b+(\v+1)/12},1)--({\b+\v/12},1)--cycle;
-   }
+\begin{tikzpicture}[line cap=round,line join=round]
+\begin{scope}[x=3.1cm,y=3.1cm]
+ \draw[step=.125,black!14,line width=.3pt] (0,0) grid (1,1);
+ \foreach \i in {0,1,2,3}{
+   \filldraw[fill=stripred!16,draw=stripred!55]
+    ({2*\i/8},{(4+\i)/8}) rectangle ({(2*\i+1)/8},{(5+\i)/8});
+   \filldraw[fill=stripblue!16,draw=stripblue!55]
+    ({(2*\i+1)/8},{\i/8}) rectangle ({(2*\i+2)/8},{(\i+1)/8});
  }
- \draw[black!28,line width=.35pt] (0,0) rectangle (1,1);
- \foreach \a/\col/\lab in {0/stripred/R_1,.25/stripblue/B_1,.5/stripred/R_2,.75/stripblue/B_2}{
-   \draw[\col,line width=1.7pt,line cap=butt] (\a,0)--({\a+.25},0);
-   \node[below,inner sep=3pt,text=\col!85!black] at ({\a+.125},0) {$\lab$};
- }
- \foreach \a/\col/\lab in {0/stripblue/B_1,.25/stripblue/B_2,.5/stripred/R_1,.75/stripred/R_2}{
-   \draw[\col,line width=1.7pt,line cap=butt] (\a,1)--({\a+.25},1);
-   \node[above,inner sep=3pt,text=\col!85!black] at ({\a+.125},1) {$\lab$};
- }
- \draw[->,black!65,line width=.5pt] (-.13,0)--(-.13,1.06) node[above] {$t$};
- \foreach \h/\lab in {.5/\frac12,.3333333333/\frac13}{
-   \draw[black!45,line width=.4pt] (-.16,\h)--(1.04,\h);
-   \node[left,inner sep=3pt] at (-.16,\h) {$\lab$};
- }
- % Actual intersections of R_1 and B_1 at these heights.
- \draw[black,line width=2.1pt,line cap=butt] (1/4,.5)--(1/3,.5);
- \draw[black,line width=2.1pt,line cap=butt] (1/6,1/3)--(1/4,1/3);
- \draw[black,line width=2.1pt,line cap=butt] (5/18,1/3)--(7/18,1/3);
+ \filldraw[fill=stripred!68,draw=stripred!95!black] (0,.5) rectangle (.125,.625);
+ \filldraw[fill=stripblue!68,draw=stripblue!95!black] (.375,.125) rectangle (.5,.25);
+ \draw[black!50] (0,0) rectangle (1,1);
+ \node[left,font=\small,text=stripred!80!black] at (0,.5625) {$R_1$};
+ \node[anchor=west,font=\small,text=stripblue!80!black,inner sep=1.4pt] at (.5,.19) {$B_2$};
+ \node[below,font=\small] at (.5,-.04) {Endpoint squares};
 \end{scope}
-\begin{scope}[xshift=6.7cm,x=11.5cm,y=1cm]
- \node[anchor=west] at (-.02,4.55) {\textit{(b) Sections of the first pair}};
- \node[anchor=west,font=\footnotesize] at (0,3.95) {$t=\frac12$: partial overlap};
- \foreach \h/\lab/\col in {3.48/R_1/stripred,3.13/B_1/stripblue,2.78/R_1\cap B_1/black}{
-   \draw[black!17,line width=.35pt] (0,\h)--(.5,\h);
-   \node[left,inner sep=4pt,text=\col!85!black,font=\footnotesize] at (0,\h) {$\lab$};
+\begin{scope}[shift={(5.0,0)},x=5.5cm,y=3.1cm]
+ \foreach \i in {0,1,2,3}{
+    \path[fill=black!4,draw=black!20,line width=.35pt]
+     ({2*\i/8},0)--({(2*\i+1)/8},0)--({(5+\i)/8},1)--({(4+\i)/8},1)--cycle;
+    \path[fill=black!4,draw=black!20,line width=.35pt]
+     ({(2*\i+1)/8},0)--({(2*\i+2)/8},0)--({(\i+1)/8},1)--({\i/8},1)--cycle;
  }
- \draw[stripred!90!black,line width=2pt,line cap=butt] (1/4,3.48)--(1/3,3.48) (3/8,3.48)--(11/24,3.48);
- \draw[stripblue!90!black,line width=2pt,line cap=butt] (1/8,3.13)--(5/24,3.13) (1/4,3.13)--(1/3,3.13);
- \draw[black,line width=2.2pt,line cap=butt] (1/4,2.78)--(1/3,2.78);
- \foreach \x/\lab in {0/0,.25/\frac14,.5/\frac12}{
-   \draw[black!45,line width=.35pt] (\x,2.67)--(\x,2.73);
-   \node[below,inner sep=2pt,font=\footnotesize] at (\x,2.67) {$\lab$};
- }
- \node[anchor=west,font=\footnotesize] at (0,1.88) {$t=\frac13$: coincidence};
- \foreach \h/\lab/\col in {1.41/R_1/stripred,1.06/B_1/stripblue,.71/R_1\cap B_1/black}{
-   \draw[black!17,line width=.35pt] (0,\h)--(.5,\h);
-   \node[left,inner sep=4pt,text=\col!85!black,font=\footnotesize] at (0,\h) {$\lab$};
-   \draw[\col!90!black,line width=2pt,line cap=butt] (1/6,\h)--(1/4,\h) (5/18,\h)--(7/18,\h);
- }
- \foreach \x/\lab in {0/0,.25/\frac14,.5/\frac12}{
-   \draw[black!45,line width=.35pt] (\x,.60)--(\x,.66);
-   \node[below,inner sep=2pt,font=\footnotesize] at (\x,.60) {$\lab$};
- }
+ \path[fill=stripred,fill opacity=.29,draw=stripred!88!black,line width=.65pt]
+ (0,0)--(.125,0)--(.625,1)--(.5,1)--cycle;
+ \path[fill=stripblue,fill opacity=.27,draw=stripblue!88!black,line width=.65pt]
+ (.375,0)--(.5,0)--(.25,1)--(.125,1)--cycle;
+ \draw[densely dashed,black!55,line width=.4pt] (0,.5)--(1,.5);
+ \draw[black,line width=1.5pt] (.25,.5)--(.375,.5);
+ \draw[black!50] (0,0) rectangle (1,1);
+ \node[left,font=\small] at (0,.5) {$t=\tfrac12$};
+ \node[above,font=\small,text=stripred!80!black] at (.5625,1) {$R_1$};
+ \node[above,font=\small,text=stripblue!80!black] at (.1875,1) {$B_2$};
+ \node[below,font=\small] at (.5,-.04) {The corresponding strips};
 \end{scope}
 \end{tikzpicture}
-\caption{The shuffle for $w=\frac12$, using the three-strip pattern $132$
-in each copy. The first red--blue pair is emphasized; the other pair is pale.
-Both enlargements use the same horizontal scale. Black marks the overlap
-of the first pair, one contribution to the saved length. At $t=\frac13$
-its sections coincide, gaps included.}
+\caption{The shuffle for $u=4$. The highlighted pair starts three widths apart at either edge, in opposite orders. At height $1/2$ its two sections coincide on the black interval. Inserting the same pattern in both squares preserves the coincidence, including every gap.}
 \label{fig:shuffle}
 \end{figure}
 
-Within either color, the enclosing squares occur in the same order on
-both axes, so their $\pi_t$-projections have disjoint interiors. Each color
-contributes exactly $\frac12\ell(t)$. Thus $\ell(t)-|\pi_t(P_w)|$ is the
-overlap of the two colors.
 
-Before scaling, a full-width blue copy starts $w$ to the right of its red
-partner at the bottom and one unit to its left at the top. Dividing the
-projected displacement $(1-t)w-t$ by the common width gives
-$d_w(t)=(1-t)-\frac tw$. The full-width pieces occupy at least half the
-unit interval, since $w\lfloor\frac1w\rfloor\ge\frac12$.
-Their red copies have total side length at least $\frac14$ after scaling.
-The red projections have disjoint interiors, so adding the paired overlaps
-gives
-\begin{equation}\label{eq:overlap}
- \ell(t)-|\pi_t(P_w)|\ge\frac14
-       |E_t\cap(E_t+d_w(t))|.
-\end{equation}
-
-For measurable $E\subset[0,1]$, Fubini's theorem gives the overlap identity
-\cite{Tao}
-\begin{equation}\label{eq:convolution}
- \int_\R|E\cap(E+s)|\,ds=|E|^2,
- \qquad \int_0^1|E\cap(E-s)|\,ds=\frac12|E|^2.
-\end{equation}
-The first integral counts pairs in $E\times E$; the second follows by
-symmetry.
-
-\Needspace{9\baselineskip}
-Choose one width $w=U^2$ for the whole pattern, with $U$ uniform on $(0,1)$.
-To see why this law works, fix $0<t\le\frac12$. A displacement $d_w(t)=-s$,
-where $0\le s\le1$, requires $w=\frac{t}{1-t+s}\asymp t$: small heights
-need small widths. The corresponding change of variables is
+Choose $u$ on $[4,\infty)$ with probability density $u^{-3/2}$. Fix $0<t\le1/2$. To obtain a displacement $-s$ with $0\le s\le1$, take $u=(3-2t+s)/t$. Pairing $R_i$ with $B_{i+1}$ ensures that even the smallest of these parameters, $3/t-2$, is at least four. In this range
 \[
- U=\sqrt{\frac{t}{1-t+s}},\qquad
- |dU|=\frac{\sqrt t}{2(1-t+s)^{3/2}}\,ds\gtrsim\sqrt t\,ds.
+ u^{-3/2}\,du=\frac{\sqrt t}{(3-2t+s)^{3/2}}\,ds\ge\frac{\sqrt t}{8}\,ds.
 \]
-These widths lie in $(0,1]$. Equations~\eqref{eq:overlap}--\eqref{eq:convolution}
-therefore give $\E_w[\ell(t)-|\pi_t(P_w)|]\gtrsim\sqrt t\,\ell(t)^2$.
-Integrating in $t$ and applying weighted Cauchy--Schwarz, with
-$\int_0^{1/2}\frac{dt}{\sqrt t}=\sqrt2$, gives
-\begin{equation}\label{eq:sector}
- \E_w[\A(P)-\A(P_w)]\gtrsim
- \int_0^{1/2}\sqrt t\,\ell(t)^2\,dt
- \gtrsim L(P)^2.
+For any measurable $F\subset[0,1]$,
+$\int_0^1 |F\cap(F-s)|\,ds=|F|^2/2$ by Fubini, counting the half of $F\times F$ above the diagonal. Consequently \eqref{eq:save} gives an expected saving of at least $c\sqrt t\,\ell(t)^2$ at height $t$. Transposing $P$ exchanges $t$ and $1-t$. We may therefore start the shuffle with the orientation for which $\int_0^{1/2}\ell(t)\,dt\ge\A(P)/2$. Since $\int_0^{1/2}t^{-1/2}\,dt=\sqrt2$, weighted Cauchy--Schwarz gives
+\begin{equation}\label{eq:gain}
+ \mathbb E\,[\A(P)-\A(P')]\ge c\int_0^{1/2}\sqrt t\,\ell(t)^2\,dt
+ \ge c'\A(P)^2 .
 \end{equation}
-Uniform width sampling would instead leave the weight $t$; its reciprocal
-is not integrable at zero, so this Cauchy--Schwarz step would fail.
+Small heights require $u$ of order $1/t$. The density supplies these scales at bounded average cost, since $\mathbb E\log(2\lfloor u\rfloor)\le\log 8+2$.
 
-\section{Small patterns and rounding}
-
-\begin{claim}\label{cl:small}
-For every integer $k\ge1$, there is a pattern $P$ such that
-\[
- \A(P)\le\frac Ck,\qquad \log N(P)\le Ck.
-\]
-\end{claim}
+\begin{lemma}\label{lem:small}
+For $0<\varepsilon<1$, a finite sequence of shuffles and transpositions produces a pattern $P$ with $\A(P)\le\varepsilon$ and $\log N(P)\le C/\varepsilon$.
+\end{lemma}
 \begin{proof}
-Transposing $P$ exchanges $t$ and $1-t$ and preserves $\A(P)$ and $N(P)$.
-Do this when necessary so that $L(P)\ge\frac12\A(P)$, then apply the shuffle.
-Writing $P'$ for its result, \eqref{eq:sector} gives
-\begin{equation}\label{eq:step}
- \E[\A(P)-\A(P')]\ge c\A(P)^2,
- \qquad
- \E\log\frac{N(P')}{N(P)}\le D,
-\end{equation}
-where $0<c<1$ is absolute and $D=\log4+2$. Indeed,
-$M=2\lceil\frac1w\rceil\le\frac4{U^2}$ and
-$\int_0^1\log\frac1u\,du=1$. We track logarithms because successive copy
-counts multiply.
-
-Start with the unit square. At each step, transpose if necessary and sample
-a fresh independent $U$. Write $A_k,N_k$ for the area and number of squares
-after $k$ steps, and $a_k=\E A_k$. The conditional form of
-\eqref{eq:step} and Jensen's inequality give
+Write $a=\A(P)$, $a'=\A(P')$ and $M=2\lfloor u\rfloor$. By \eqref{eq:gain}, $C(a-a')/a^2-(1+\log M)$ has positive expectation for a sufficiently large absolute $C$. Choose a $u$ for which it is positive. Whenever $a>\varepsilon$ this gives
 \[
- a_{k+1}\le a_k-ca_k^2,\qquad
- \E\log N_k\le Dk.
+ 1+\log M\le 4C\left(\frac1{a'+\varepsilon}-\frac1{a+\varepsilon}\right),
 \]
-Since $a_0=1$ and $0<a_k\le1$, taking reciprocals gives
-$\frac1{a_{k+1}}\ge\frac1{a_k}+c$, hence $a_k\le\frac1{1+ck}$.
-To obtain both bounds for one pattern, use a single nonnegative sum:
+since $a'\le a$ and $(a'+\varepsilon)(a+\varepsilon)\le4a^2$. Start with the unit square and continue until the area is at most $\varepsilon$. After any $k$ steps taken under this rule, the pattern $P_k$ satisfies
 \[
- \E\left[kA_k+\frac{\log N_k}{k}\right]
- \le\frac{k}{1+ck}+D\le c^{-1}+D.
+ k+\log N(P_k)\le 4C\left(\frac1{\A(P_k)+\varepsilon}-\frac1{1+\varepsilon}\right)
+ <\frac{4C}{\varepsilon}.
 \]
-Some realization has this sum at most $c^{-1}+D$, so both summands are
-bounded by the same constant. This proves the claim.
+Here the copy counts multiply and the reciprocals telescope. The bound on $k$ forces termination, and the same inequality bounds $\log N(P_k)$ at the stopping step.
 \end{proof}
 
-\begin{claim}\label{cl:rounding}
-For every pattern $P$ and every $n\ge2$,
+Every pattern carries a measure with uniform marginals. Take the pushforward of Lebesgue measure by $x\mapsto(x,f(x))$, where $f$ translates each $I_i$ onto $J_i$ up to endpoints. Thickening each of its $N$ squares adds at most $2\delta$ to its section length at any height. Lemma~\ref{lem:hall} now gives
 \[
- \alpha_n\le\A(P)+\frac{2N(P)}n.
+ \alpha_n\le \A(P_{1/n})\le\A(P)+\frac{2N(P)}n.
 \]
-\end{claim}
-\begin{proof}
-Each side of $I_i\times J_i$ contains at least $nw_i-2$ whole intervals
-of the $n$-grid: only the two boundary intervals can be partly lost.
-Pair as many as possible within each square. At least
-$\sum_i(nw_i-2)=n-2N(P)$ pairs are matched, and their strips lie in the union
-encoded by $P$. The numbers of unused intervals on the two edges agree;
-match these arbitrarily. The at most $2N(P)$ added strips have total area
-at most $\frac{2N(P)}n$.
-\end{proof}
+Take $\varepsilon=2C/\log n$ in Lemma~\ref{lem:small} for large $n$. Then $N(P)\le\sqrt n$, proving Theorem~\ref{thm:finite} after increasing the constant for small $n$.
 
-To finish Theorem~\ref{thm:kc2}, take
-$k=\lfloor\frac{\log n}{2C}\rfloor$ for sufficiently large $n$, where $C$
-is the constant in Claim~\ref{cl:small}. Then $N(P)\le\sqrt n$, so
-\[
- \alpha_n\le\frac Ck+\frac2{\sqrt n}\lesssim\frac1{\log n}.
-\]
-Increasing the constant covers smaller $n$.
-Claim~\ref{cl:lower} gives the lower bound.
-
+\newpage
 \section{A compact set of length one}
 
-The finite patterns already prove KC2. For the compact realization, use
-$t=\frac{\sin\theta}{\cos\theta+\sin\theta}$ to write
-\begin{equation}\label{eq:angular}
- \A(E)=\int_0^{\pi/2}\frac{|p_\theta(E)|}{(\cos\theta+\sin\theta)^3}\,d\theta.
-\end{equation}
-The weight lies between $\frac1{2\sqrt2}$ and $1$.
-
-For patterns $P=\bigcup_i(v_i+w_i[0,1]^2)$ and $Q$, define insertion by
-$P\star Q=\bigcup_i(v_i+w_iQ)$. It is again a pattern, with $N(P)N(Q)$
-squares. Containment and $\sum_iw_i=1$ give, for every linear projection,
-\begin{equation}\label{eq:insertion}
- |\pi(P\star Q)|\le\min\{|\pi(P)|,|\pi(Q)|\}.
-\end{equation}
-Reflection $R(x,y)=(x,1-y)$ exchanges the two angular quadrants:
-$|p_\theta(RP)|=|p_{\pi-\theta}(P)|$. For $Q=P\star R(P)$, use the first
-factor in \eqref{eq:insertion} on the first quadrant and the second factor
-on the other. Equation~\eqref{eq:angular} gives
-\[
- \Fav(Q)\le4\sqrt2\,\A(P),\qquad N(Q)=N(P)^2.
-\]
-Claim~\ref{cl:small}, with $k$ of order $2^j$, therefore supplies patterns
-$P_j$ satisfying
+By \eqref{eq:insert}, $P\star RP$ has first-quadrant projections bounded by those of $P$ and second-quadrant projections bounded by those of $RP$. Equations \eqref{eq:angle} and \eqref{eq:insert} give $\Fav(P\star RP)\le4\sqrt2\,\A(P)$. Applying Lemma~\ref{lem:small} with $\varepsilon=2^{-j}/(4\sqrt2)$ and inserting the reflected copy gives patterns $Q_j$ with
 \begin{equation}\label{eq:blocks}
- \Fav(P_j)\le2^{-j},\qquad \log N(P_j)\le C2^j.
+ \Fav(Q_j)\le 2^{-j},\qquad \log N(Q_j)\le C2^j .
 \end{equation}
 
-To obtain length $1$, the square covers must be grouped more efficiently:
-their total diameter is always $\sqrt2$. For even $m$, let $B_m$ be the
-equal-grid pattern given by the cyclic half-shift
-$i\mapsto i+\frac m2\pmod m$, with $0\le i<m$. This pattern lies in the disk
-$D_m$ centered at $(\frac12,\frac12)$ with diameter
-\begin{equation}\label{eq:diameter}
- d_m=\sqrt{1+\frac4{m^2}}\longrightarrow1.
-\end{equation}
-In the upper-left half, $0\le x\le\frac12\le y\le1$ and
-$|y-x-\frac12|\le\frac1m$. Checking the vertices of this polygon gives
-maximum squared distance $\frac14+\frac1{m^2}$ from the center, attained at
-$(0,\frac12+\frac1m)$. The other half is its central reflection.
+The squares of any pattern have total diameter $\sqrt2$. To cover their descendants with total diameter tending to one, use a cyclic half-shift. For even $m$, let $B_m$ match interval $i$ to $i+m/2\pmod m$, numbering from zero. Its squares lie in the disk $D_m$ centered at $(1/2,1/2)$ of diameter
+\[
+ d_m=\sqrt{1+4/m^2}.
+\]
+Indeed, the squares in the upper-left quarter are translates of the first along the diagonal. Squared distance to the center is convex along each such translation, so the maximum occurs in the first or last square. These are mirror images across $x+y=1$, and the farthest vertex of the first is $(0,1/2+1/m)$. Central symmetry covers the lower-right quarter.
 
 \begin{figure}[htbp]
 \centering
@@ -426,93 +286,48 @@ $(0,\frac12+\frac1m)$. The other half is its central reflection.
  \node at (1.57,-.43) {$\displaystyle\sum_i\diam(v_i+w_iD_m)
        =d_m\sum_iw_i=d_m\longrightarrow1$};
 \end{tikzpicture}
-\caption{The half-shift for $m=4$. The triangle determines the covering
-radius. On the right, the dashed parent squares have widths
-$\frac12,\frac14,\frac14$. Further insertions stay in the blue squares and
-hence in the same covering disks. The diameter identity holds for every
-even $m$.}
+\caption{The half-shift $B_4$ and its copies in three parent squares. Each disk covers every later descendant of its parent. The sum of their diameters depends only on $m$.}
 \label{fig:covers}
 \end{figure}
 
-Set $Q_j=B_{2j}\star P_j$, $T_0=[0,1]^2$, and
-$T_j=T_{j-1}\star Q_j$. These patterns are nested, and
-\begin{equation}\label{eq:nested}
+Start with $T_0=[0,1]^2$, let $T_j=(T_{j-1}\star B_{2j})\star Q_j$ and put $S=\bigcap_{j\ge1} T_j$. These patterns are nested. By \eqref{eq:insert} and \eqref{eq:blocks},
+\begin{equation}\label{eq:levels}
  \Fav(T_j)\le2^{-j},\qquad
- \log N(T_j)\le\sum_{i=1}^j\bigl(\log(2i)+C2^i\bigr)\le B2^j
+ \log N(T_j)\le\sum_{i=1}^j\bigl(\log(2i)+C2^i\bigr)\le b2^j .
 \end{equation}
-for an absolute $B>0$. The factor $B_{2j}$ makes every child square at most
-half as wide as its parent, so the largest side in $T_j$ is at most $2^{-j}$.
-Let $S=\bigcap_jT_j$.
+The largest square side in $T_j$ is at most $2^{-j}$. Inside a square of side $w$ at this level, the next half-shift places all descendants in a disk of diameter $w d_{2j+2}$. These disks cover $S$ and their diameters sum to $d_{2j+2}\to1$. Thus $\mathcal H^1(S)\le1$.
 
-For each square $v_i+w_i[0,1]^2$ of $T_j$, the disk
-$v_i+w_iD_{2(j+1)}$ covers all its descendants in $S$. These disks have
-diameters tending uniformly to zero, and their total diameter is
+Both coordinate projections of $S$ are $[0,1]$, by compactness of the nested fibers. Projection is $1$-Lipschitz, so $\mathcal H^1(S)\ge1$. In fact, for either coordinate projection $p$ and any Borel $A\subset[0,1]$, the set $S\cap p^{-1}(A)$ projects onto $A$. Thus $p_\#\mu\ge\mathcal L^1$, and the two measures have the same total mass. In either coordinate, the fiber over every point outside the countable set of subdivision endpoints is a singleton. That coordinate selects a unique nested chain of squares whose diameters tend to zero.
+
+To pass from \eqref{eq:levels} to all radii, observe that thickening a square adds $2\delta(|\cos\theta|+|\sin\theta|)$ to its projection length. Hence
 \[
- \sum_iw_i\,d_{2(j+1)}=d_{2(j+1)}\longrightarrow1.
+ \Fav(S_\delta)\le 2^{-j}+8\delta\exp(b2^j).
 \]
-Thus $\mathcal H^1(S)\le1$. Both coordinate projections of $S$ are $[0,1]$:
-for each fixed coordinate, the corresponding fibers of the compact sets
-$T_j$ are nonempty and nested. Projection cannot increase Hausdorff length,
-so $\mathcal H^1(S)\ge1$ as well.
+For sufficiently small $\delta$ choose the largest $j$ with $b2^j\le\tfrac12\log(1/\delta)$. Then $2^j\asymp\log(1/\delta)$ and the second term is at most $8\sqrt\delta$. The remaining radii below $1/2$ are covered by increasing the constant. For the lower bound apply Lemma~\ref{lem:hall} with $n=\lceil1/\delta\rceil$. In particular $\Fav(S)=0$, so the Besicovitch projection theorem gives pure unrectifiability \cite[\S1.1]{CSS}.
 
-Length $1$ now forces the marginals. Put $\mu=\mathcal H^1|_S$. For either
-coordinate projection $p$ and Borel $B\subset[0,1]$, the set
-$S\cap p^{-1}(B)$ projects onto $B$, whence $\mu(p^{-1}(B))\ge|B|$.
-The same inequality for the complement, together with total mass $1$,
-forces equality.
+\newpage
+\section{Length in a ball}
 
-To check the decay between construction scales, note that thickening a
-union of $N$ squares by $[-\delta,\delta]^2$ increases its Favard length
-by at most $8N\delta$: each projected interval gains
-$2\delta(|\cos\theta|+|\sin\theta|)$. From \eqref{eq:nested},
+The upper estimate $\mu(B(z,r))\le 2r$ follows from either marginal. A ball can be much smaller than a parent square and much larger than any of its children. To bound its mass from below, we use the order of the children within each elementary subdivision.
+
+Consider one elementary subdivision of a parent square of side $L$. For a shuffle $D_u$ put $h=L/(2u)$, and for a half-shift $B_m$ put $h=L/m$. In both cases the children split into two ordered families. The child sides lie in $[h,2h]$ and sum to $L/2$ in each family. Consecutive centers in a family are at most $5h$ apart.
+
+For $D_u$ these are the two colors. The horizontal and vertical gaps between consecutive centers are at most $4h$ and $2h$, respectively, by the two orders defining the shuffle. For $B_m$ the two families are the halves of the permutation, with consecutive centers $\sqrt2\,h$ apart. Each $Q_j$ is built from elementary shuffles and their images under symmetries of the square, since a reflection or transposition acts on both factors of an insertion. These symmetries preserve sides and center distances.
+
+A square of side $v$ at any elementary level has $\mu$-mass $v$. Indeed, its horizontal interval has length $v$, all points of $S$ above the interior belong to this square, and the two endpoints have zero marginal mass.
+
+Fix $z\in S$ and $0<r\le\diam S$. Follow a nested chain containing $z$ to the first square of side at most $r/8$. Its parent has side $L>r/8$, and $h\le r/8$. The family containing this child has at least $L/(4h)>r/(32h)$ members. Choose $1+\lfloor r/(32h)\rfloor$ consecutive members including the child. Each chosen center is within $5r/32$ of the child's center. Each square has circumradius at most $\sqrt2\,h$, so all the chosen squares lie in $B(z,r)$, since $5r/32+2\sqrt2\,h<r$. Their masses add, giving
 \[
- \Fav(S_\delta)\le2^{-j}+8e^{B2^j}\delta.
+ \mu(B(z,r))\ge h\bigl(1+\lfloor r/(32h)\rfloor\bigr)\ge r/32 .
 \]
-For sufficiently small $\delta$, choose the largest $j\ge1$ with
-$e^{B2^j}\le\delta^{-1/2}$. Then $2^j\asymp\log\frac1\delta$ and
-\[
- \Fav(S_\delta)\le\frac C{\log(1/\delta)}+8\sqrt\delta
- \le\frac C{\log(1/\delta)}.
-\]
-Increase $C$ to cover the remaining $0<\delta<\frac12$.
+This proves Theorem~\ref{thm:compact}.
 
-\section{The matching lower bound}
-
-Let a compact $K\subset[0,1]^2$ carry a probability measure $\nu$ with
-uniform coordinate marginals. Divide $[0,1]$ into $n$ equal intervals $I_i$,
-half-open except for the last. The matrix
-$a_{ij}=n\nu(I_i\times I_j)$ has every row and column sum equal to $1$.
-Any $r$ rows have mass $r$, so their positive entries meet at least $r$
-columns. Hall's theorem~\cite{Hall} gives a permutation $\sigma$ of positive
-entries. Each selected cell meets $K$; closing the cells therefore gives
-\[
- P_\sigma:=\bigcup_i\overline I_i\times\overline I_{\sigma(i)}
- \subset K_{1/n}.
-\]
-For $0<\delta<\frac12$, take $n=\lceil\frac1\delta\rceil$.
-Claim~\ref{cl:lower} and \eqref{eq:angular} imply
-\[
- \Fav(K_\delta)\ge\A(K_\delta)\ge\A(P_\sigma)
- \ge\frac1{H_n}\gtrsim\frac1{\log(1/\delta)}.
-\]
-Apply this to $K=S$ to complete Theorem~\ref{thm:favard}.
-In particular, $\Fav(S)=0$ and $\mathcal H^1(S)=1$; the Besicovitch
-projection theorem implies that $S$ is purely unrectifiable
-(see \cite[\S1.1]{CSS}).
-
-The upper estimates in the two theorems are equivalent. Matching at
-$\delta=\frac1n$ gives KC2 for $n\ge3$, and $n=2$ is absorbed into the
-constant. Conversely, KC2
-supplies equal-grid patterns with $\A(P_j)\le2^{-j}$ and
-$\log N(P_j)\le C2^j$ by taking $n_j=\lceil e^{C_*2^j}\rceil$.
-Reflection, insertion, and the disk covers above then give
-Theorem~\ref{thm:favard}.
+\smallskip
+The finite and compact upper bounds also recover one another at the level of Favard decay. Lemma~\ref{lem:hall} gives the finite bound from the compact one at $\delta=1/n$. Conversely, Theorem~\ref{thm:finite} alone supplies equal-grid patterns at $n_j=\lceil\exp(C_0 2^j)\rceil$ with $\A(P_j)\le 2^{-j}/(4\sqrt2)$ for sufficiently large $C_0$. Reflection, insertion and the half-shifts then give \eqref{eq:levels}, length one and the uniform marginals. The local lower mass bound uses the order of the children in the shuffle.
 
 \medskip
 \noindent\textit{Acknowledgment.}
-The main geometric idea originated with the author. Some of the more
-intricate computational details were worked out with assistance from
-OpenAI's Astra.
+The main geometric idea originated with the author. OpenAI's Astra assisted with computational details. The modified pairing and the proof of Ahlfors regularity were developed with further assistance from OpenAI's Codex.
 
 \begin{thebibliography}{9}
 \bibitem{CSS}
@@ -538,9 +353,9 @@ P.~Kuklinski,
 \emph{An uncountable union of line segments with null two-dimensional measure},
 \href{https://arxiv.org/abs/2311.16210}{arXiv:2311.16210 [math.CA]}, 2023.
 
-\bibitem{Tao}
-T.~Tao, \emph{Computing convolutions of measures},
-\emph{What's new}, 26 July 2013.
-\href{https://terrytao.wordpress.com/2013/07/26/computing-convolutions-of-measures/}{Online note}.
+\bibitem{Mattila}
+P.~Mattila, \emph{Orthogonal projections, Riesz capacities, and Minkowski content},
+Indiana Univ. Math. J. \textbf{39} (1990), 185--198.
+\href{https://iumj.org/article/3414/}{Journal version}.
 \end{thebibliography}
 \end{document}
