@@ -43,7 +43,7 @@ The least area covered by $n$ permutation strips in the unit square is of order 
 \widowpenalty=10000
 \clubpenalty=10000
 
-Divide the bottom of the unit square into $n$ equal intervals. Join each to an interval of the same width on the top by a parallelogram. The areas add to one. How much can the parallelograms overlap? In his letter of 8 October 1998, Kaczynski allowed the top intervals to slide independently and asked whether the least covered area $\beta_n$ is of order $1/\log n$. He reported a proof of the lower bound and recalled a possible upper bound of order $(\log\log n)^2/\log n$ \cite[pp.~27--29]{Letter}. In the permutation version the top intervals also partition their edge. Write $\alpha_n$ for its minimum. Kuklinski proved $\alpha_n\lesssim(\log n)^{-p}$ for some $p>0$ \cite[Conjecture~2 and Theorem~4]{Kuklinski}.
+Divide the bottom of the unit square into $n$ equal intervals. Join each to an interval of the same width on the top by a parallelogram. Their areas add to one. How small can their union be? In his letter of 8 October 1998, Kaczynski allowed the top intervals to slide independently and asked whether the least covered area $\beta_n$ is of order $1/\log n$. He reported a proof of the lower bound and recalled a possible upper bound of order $(\log\log n)^2/\log n$ \cite[pp.~27--29]{Letter}. In the permutation version the top intervals also partition their edge. Write $\alpha_n$ for its minimum. Kuklinski proved $\alpha_n\lesssim(\log n)^{-p}$ for some $p>0$ \cite[Conjecture~2 and Theorem~4]{Kuklinski}.
 
 \begin{theorem}[Kaczynski's second conjecture]\label{thm:area}
 For $n\ge2$, $\beta_n\asymp\alpha_n\asymp1/\log n$. More precisely,
@@ -79,7 +79,7 @@ The upper bound in \eqref{eq:gridlaw} can likewise be attained with $\Fav(P_\sig
 
 The logarithmic rate holds uniformly with weight $b$ precisely when $\int_0^{1/2}b(r)\,dr/r<\infty$. For $b(r)=1/(1+\log(1/r))$, the integral truncated at $1/n$ grows like $\log\log n$. In fact $M_b$ alone then has minimum of order $(\log\log n)/\log n$. The proof gives zero length for every oblique projection of $S$.
 
-Mattila's projection estimate gives the logarithmic Favard lower bound for sets of positive one-dimensional Hausdorff content \cite{Mattila,CSS}. Chang, Shmerkin and Suomala attained this order with Ahlfors regular random sets and proved a $(\log j)/j$ lower bound at level $j$ for nested fixed-radix patterns with one square per column at every level \cite[Theorem~A.1]{CSS}. Cs\"ornyei prescribed the directions of positive projection length \cite{Visibility}, and Cs\"ornyei and Suomala characterized single projections of purely unrectifiable length measures \cite{CS}. Here the two coordinate marginals are prescribed, and the subdivision ratios vary.
+Mattila obtained the logarithmic lower bound from positive one-dimensional Hausdorff content \cite{Mattila,CSS}. Chang, Shmerkin and Suomala attained this order with Ahlfors regular random sets and proved a $(\log j)/j$ lower bound at level $j$ for nested fixed-radix patterns with one square per column at every level \cite[Theorem~A.1]{CSS}. For prescribed projection directions and individual projected measures see \cite{Visibility,CS}. Our subdivision ratios vary.
 
 \section{What a crossing counts}\label{sec:cross}
 
@@ -146,7 +146,7 @@ If the squares of $P$ are $v_i+w_i[0,1]^2$, write $P\star Q=\bigcup_i(v_i+w_iQ)$
 \begin{equation}\label{eq:insert}
  |p(P\star Q)|\le\min(|pP|,|pQ|).
 \end{equation}
-The first bound is containment and the second follows from $\sum_i w_i=1$.
+Use containment and $\sum_i w_i=1$, respectively.
 
 Partition $[0,u]$, $u\ge4$, into $m=\lfloor u\rfloor$ pieces, the first $m-1$ of length one. Make two copies, red and blue. On two edges of length $2u$ arrange them in the orders
 \[
@@ -155,7 +155,7 @@ Partition $[0,u]$, $u\ge4$, into $m=\lfloor u\rfloor$ pieces, the first $m-1$ of
  \text{top}&B_1,\ldots,B_m,R_1,\ldots,R_m .
  \end{array}
 \]
-Match equal labels and rescale to the unit square to obtain $D_u$. Insert $P$ in each square. At height $t$, write $F=\pi_t(P)$. Within each color the two edge orders agree, so the projected copies have disjoint interiors and total length $|F|/2$. The overlap between the colors is exactly the saving in length (Figure~\ref{fig:shuffle}).
+Match equal labels and rescale to the unit square to obtain $D_u$. Insert $P$ in each square. At height $t$, write $F=\pi_t(P)$. Within each color the two edge orders agree, so the projected copies have disjoint interiors and total length $|F|/2$. Their overlap is the saving (Figure~\ref{fig:shuffle}).
 
 Pair $R_i$ with $B_{i+h}$, $1\le i\le m-h-1$. In units of their common width, blue starts $2h+1$ to the right at the bottom and $u-h$ to the left at the top. The displacement is $d_h=(2-t)h+1-(u+1)t$. The red members are disjoint in projection up to endpoints, giving
 \begin{equation}\label{eq:save}
@@ -201,7 +201,7 @@ Pair $R_i$ with $B_{i+h}$, $1\le i\le m-h-1$. In units of their common width, bl
  \node[below,font=\small] at (.5,-.04) {The corresponding strips};
 \end{scope}
 \end{tikzpicture}
-\caption{The shuffle for $u=4$. The highlighted pair starts three widths apart at either edge, in opposite orders. At height $1/2$ its two sections coincide on the black interval. Inserting the same pattern in both squares preserves the coincidence, including every gap.}
+\caption{The shuffle for $u=4$. The highlighted pair meets at $t=1/2$ on the black interval. Inserting the same pattern in both squares preserves every gap at that height.}
 \label{fig:shuffle}
 \end{figure}
 
@@ -218,7 +218,7 @@ There are at least $(Ut-1)/(2-t)-1\ge Ut/4$ such positive integers. Their $u$-in
 
 \section{From one scale to all scales}
 
-Write $N(P)$ for the number of squares of a pattern. The following lemma has absolute constants, including when the weight changes with $k$.
+Write $N(P)$ for the number of squares in $P$.
 
 \begin{lemma}\label{lem:block}
 Let $0\le v\le1$ be nondecreasing on $(0,1/2]$, with $\int_0^{1/2}v(r)\,dr/r\le1$. For every integer $k\ge2$ there is a pattern $Q$ satisfying
