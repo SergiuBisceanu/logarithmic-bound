@@ -1,7 +1,7 @@
 \documentclass[11pt,reqno]{amsart}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{amsmath,amssymb,amsthm,microtype,etoolbox,needspace}
+\usepackage{amsmath,amssymb,amsthm,microtype,etoolbox}
 \usepackage[a4paper,hmargin=22.5mm,vmargin=21mm]{geometry}
 \usepackage{tikz}
 \definecolor{stripred}{HTML}{B84655}
@@ -19,10 +19,8 @@
  pdfkeywords={Favard length, uniform marginals, permutation strips, Kaczynski conjecture}}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
-\newtheorem{corollary}{Corollary}
 \renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}
 \newcommand{\Fav}{\operatorname{Fav}}
-\newcommand{\A}{\mathcal A}
 \newcommand{\E}{\mathbb E}
 \newcommand{\R}{\mathbb R}
 \newcommand{\diam}{\operatorname{diam}}
@@ -34,9 +32,10 @@
 \author{Sergiu Alexandru B\^{\i}sceanu}
 \date{}
 
+
 \begin{document}
 \begin{abstract}
-Match the $n$ equal intervals on the bottom of the unit square to those on the top by a permutation. The least area of the union of the resulting parallelograms is of order $1/\log n$, as conjectured by Kaczynski. We prove the same order when the top intervals can slide independently, as in his original formulation. A weighted crossing identity gives lower bounds of $\pi^2/4$ and $2$, respectively, for the liminf of the minimum area times $\log n$. The same construction gives a compact $1$-Ahlfors regular set of Hausdorff length one whose length measure projects to Lebesgue measure on both coordinate axes. Its $\delta$-neighborhood has Favard length of order $1/\log(1/\delta)$, and its projection lengths are $O(1/\log(1/\delta))$ uniformly on each closed arc of directions disjoint from the axes. For nondecreasing angular weights, we give a necessary and sufficient integral condition for this rate near the axes.
+The least area covered by $n$ permutation strips in the unit square is of order $1/\log n$. The same order holds when the top intervals slide freely, as in Kaczynski's original question. We determine the optimal angular loss at each scale for every nondecreasing weight. At the critical weight $1/(1+\log(1/r))$, where $r$ measures distance to a coordinate direction, the loss is exactly of order $\log\log n$. For each weight, one compact set attains the bounds at every scale. It has Hausdorff length one, uniform coordinate marginals and Ahlfors regular length measure.
 \end{abstract}
 \maketitle
 \pagestyle{plain}
@@ -44,243 +43,125 @@ Match the $n$ equal intervals on the bottom of the unit square to those on the t
 \widowpenalty=10000
 \clubpenalty=10000
 
-Divide the bottom edge of the unit square into $n$ equal intervals. From each interval draw a parallelogram to an interval of the same width on the top edge. The areas add to one. How small can the area of their union be? In a letter of 8 October 1998, Kaczynski allowed each top interval to slide independently in $[0,1]$. He asked whether the minimum, denoted here by $\beta_n$, is of order $1/\log n$, and reported a proof of the lower bound. He also recalled a possible upper bound of order $(\log\log n)^2/\log n$ \cite[pp.~27--29]{Letter}. In Kuklinski's permutation formulation the top intervals also partition their edge. Write $\alpha_n$ for this minimum. Kuklinski proved $\alpha_n\le C(\log n)^{-p}$ for some $p>0$ \cite[Conjecture~2 and Theorem~4]{Kuklinski}. Unsubscripted logarithms are natural.
+Divide the bottom of the unit square into $n$ equal intervals. Join each to an interval of the same width on the top by a parallelogram. The areas add to one. How much can the parallelograms overlap? In his letter of 8 October 1998, Kaczynski allowed the top intervals to slide independently and asked whether the least covered area $\beta_n$ is of order $1/\log n$. He reported a proof of the lower bound and recalled a possible upper bound of order $(\log\log n)^2/\log n$ \cite[pp.~27--29]{Letter}. In the permutation version the top intervals also partition their edge. Write $\alpha_n$ for its minimum. Kuklinski proved $\alpha_n\lesssim(\log n)^{-p}$ for some $p>0$ \cite[Conjecture~2 and Theorem~4]{Kuklinski}.
 
-\begin{theorem}[Kaczynski's second conjecture]\label{thm:finite}
-For every $n\ge2$,
-\[
- \frac{c}{\log n}\le\beta_n\le\alpha_n\le\frac{C}{\log n}
-\]
-with absolute constants $c,C>0$. On the permutation grid $\alpha_n\ge1/H_n$, where $H_n=\sum_{j=1}^n1/j$. The asymptotic lower bounds in the two models satisfy
+\begin{theorem}[Kaczynski's second conjecture]\label{thm:area}
+For $n\ge2$, $\beta_n\asymp\alpha_n\asymp1/\log n$. More precisely,
 \[
  \liminf_{n\to\infty}(\log n)\beta_n\ge2,\qquad
- \liminf_{n\to\infty}(\log n)\alpha_n\ge\frac{\pi^2}{4}.
+ \liminf_{n\to\infty}(\log n)\alpha_n\ge\pi^2/4 .
 \]
 \end{theorem}
 
-The two endpoints of a segment give a point $(x,y)$ in a second copy of the unit square. At height $t$ the segment has horizontal coordinate $\pi_t(x,y)=(1-t)x+ty$. Thus the strip joining $I$ to $J$ is encoded by the square $I\times J$, and its section at height $t$ is the interval $\pi_t(I\times J)$. This description also gives a compact version of the problem.
+A segment with bottom endpoint $x$ and top endpoint $y$ passes through horizontal coordinate $\pi_t(x,y)=(1-t)x+ty$ at height $t$. Thus a strip joining $I$ to $J$ has section $\pi_t(I\times J)$. A permutation $\sigma$ selects a union $P_\sigma$ of $n$ such squares in the endpoint plane. At heights zero and one its projections fill the unit interval. Our second result quantifies how quickly they can shrink between these edges.
 
-For the lower bound we follow a pair of strips through its crossing. A weight singular at the two edges turns the total overlap, summed over a matching and its reflection, into the entropy of the interval widths. For the upper bound we put translated copies of the same pattern into two ordered families of squares. At a chosen height the translation varies with the scale of the shuffle. Averaging that translation counts pairs of points in the section and gives a saving proportional to its squared length. Inserting independent realizations in separate squares lets us average their section lengths at every height simultaneously.
-
-For compact $K\subset\R^2$, put $K_\delta=K+[-\delta,\delta]^2$ and
+Write $p_\theta(x,y)=x\cos\theta+y\sin\theta$, $s_\theta=|\cos\theta|+|\sin\theta|$, and $\rho_\theta=\min(|\cos\theta|,|\sin\theta|)/s_\theta$. For compact $K$ put $K_\delta=K+[-\delta,\delta]^2$. Given a nondecreasing $b:(0,1/2]\to[0,1]$, define
 \[
-  \Fav(K)=\int_0^\pi |p_\theta(K)|\,d\theta,
-  \qquad p_\theta(x,y)=x\cos\theta+y\sin\theta.
+ \Fav(K)=\int_0^\pi |p_\theta K|\,d\theta,\qquad
+ M_b(K)=\sup_{\rho_\theta>0} b(\rho_\theta)|p_\theta K|,\qquad
+ I_b(\delta)=\int_\delta^{1/2} b(r)\,\frac{dr}{r}.
 \]
-Here $|\cdot|$ denotes Lebesgue length and $\Fav$ is unnormalized. Write $p_x,p_y$ for the coordinate projections and $\mathcal L^1$ for Lebesgue measure on $[0,1]$. To describe directions near an axis, set
-\[
- \tau(t)=\min(t,1-t),\qquad
- \rho_\theta=\frac{\min(|\cos\theta|,|\sin\theta|)}
- {|\cos\theta|+|\sin\theta|}.
-\]
-Thus $\rho_\theta=0$ on the axes and $\rho_\theta=1/2$ on the diagonals. A positive nondecreasing function $b$ on $(0,1/2]$ will specify a directional bound with angular factor $1/b(\rho_\theta)$. We normalize $b\le1$.
+Here $|\cdot|$ is Lebesgue length, $\Fav$ is unnormalized, and logarithms are natural. Smaller weights allow longer projections near the coordinate axes.
 
-\needspace{16\baselineskip}
-\begin{theorem}\label{thm:compact}
-Suppose $b:(0,1/2]\to(0,1]$ is nondecreasing and
-\begin{equation}\label{eq:criterion}
- \int_0^{1/2} b(r)\,\frac{dr}{r}<\infty.
+\begin{theorem}\label{thm:profile}
+Among compact $K\subset[0,1]^2$ with at least one full coordinate projection, the optimal joint bound at scale $0<\delta<1/2$ is
+\begin{equation}\label{eq:law}
+ \inf_K\bigl[\Fav(K_\delta)+M_b(K_\delta)\bigr]
+ \asymp \frac{1+I_b(\delta)}{\log(1/\delta)} .
 \end{equation}
-There is a compact set $S=S_b\subset[0,1]^2$ of Hausdorff length one such that, for $\mu=\mathcal H^1|_S$,
-\[
- (p_x)_\#\mu=(p_y)_\#\mu=\mathcal L^1,\qquad
- \mu(B(z,r))\asymp r\quad(z\in S,\ 0<r\le\diam S).
-\]
-Moreover,
-\[
-  \Fav(S_\delta)\asymp\frac1{\log(1/\delta)}
-  \qquad (0<\delta<\tfrac12).
-\]
-At every oblique angle, that same set satisfies
-\begin{equation}\label{eq:directional-thm}
- b(\rho_\theta)\,|p_\theta(S_\delta)|
- \le \frac{C_b}{\log(1/\delta)}
- \qquad(\rho_\theta>0,\ 0<\delta<1/2).
+One set $S=S_b$ attains the upper bound up to an absolute constant for all $\delta$, with $\Fav(S_\delta)\asymp1/\log(1/\delta)$. It has $\mathcal H^1(S)=1$, and $\mu=\mathcal H^1|_S$ has uniform coordinate marginals and satisfies $\mu(B(z,r))\asymp r$ for $z\in S$, $0<r\le\diam S$. On the equal grid,
+\begin{equation}\label{eq:gridlaw}
+ \min_{\sigma\in S_n}\bigl[\Fav(P_\sigma)+M_b(P_\sigma)\bigr]
+ \asymp \frac{1+I_b(1/n)}{\log n}\qquad(n\ge2).
 \end{equation}
-Conversely, if a compact $K\subset[0,1]^2$ carrying a probability measure with uniform coordinate marginals satisfies \eqref{eq:directional-thm} in place of $S$, then $b$ satisfies \eqref{eq:criterion}.
+The upper bound in \eqref{eq:gridlaw} can likewise be attained with $\Fav(P_\sigma)\lesssim1/\log n$. All comparison constants are absolute.
 \end{theorem}
 
-For example, write $L(r)=1+\log(1/r)$. One may take $1/b(r)=L(r)[1+\log L(r)]^2$, whereas $1/b(r)=L(r)$ violates \eqref{eq:criterion}. Every closed arc away from the axes therefore has a uniform $O(1/\log(1/\delta))$ bound. In the limit, exactly the two coordinate projections have positive length. The constants in the projection estimates may depend on $b$.
+The logarithmic rate holds uniformly with weight $b$ precisely when $\int_0^{1/2}b(r)\,dr/r<\infty$. For $b(r)=1/(1+\log(1/r))$, the integral truncated at $1/n$ grows like $\log\log n$. In fact $M_b$ alone then has minimum of order $(\log\log n)/\log n$. The proof gives zero length for every oblique projection of $S$.
 
-Mattila's projection estimate gives the logarithmic lower bound for sets of positive one-dimensional Hausdorff content \cite{CSS,Mattila}. Chang, Shmerkin and Suomala constructed $1$-Ahlfors regular random Cantor sets with this sharp Favard decay \cite{CSS}. Cs\"ornyei and Suomala characterized the measures that can occur as one projection of a purely unrectifiable length measure \cite{CS}. Cs\"ornyei also showed that a compact set can have any prescribed closed set of positive-length projection directions \cite[Theorem~1]{Visibility}. In Theorem~\ref{thm:compact} each coordinate projection accounts for the entire length of $S$, and \eqref{eq:criterion} describes how the rate in the other directions can depend on angle. The choice of scales matters. On a fixed $L$-adic grid, nested patterns with one square per column at every level have Favard length at least $c_L(\log j)/j$ at level $j$ \cite[Theorem~A.1]{CSS}. Our construction varies the subdivision ratios, and the grid matchings are chosen separately for each $n$.
+Mattila's projection estimate gives the logarithmic Favard lower bound for sets of positive one-dimensional Hausdorff content \cite{Mattila,CSS}. Chang, Shmerkin and Suomala attained this order with Ahlfors regular random sets and proved a $(\log j)/j$ lower bound at level $j$ for nested fixed-radix patterns with one square per column at every level \cite[Theorem~A.1]{CSS}. Cs\"ornyei prescribed the directions of positive projection length \cite{Visibility}, and Cs\"ornyei and Suomala characterized single projections of purely unrectifiable length measures \cite{CS}. Here the two coordinate marginals are prescribed, and the subdivision ratios vary.
 
-\section{Crossings on the equal grid}
+\section{What a crossing counts}\label{sec:cross}
 
-For a compact set $K$ of endpoints, let $\A(K)=\int_0^1|\pi_t(K)|\,dt$. For a union of endpoint squares this is the area covered by the strips. Reflection $R(x,y)=(x,1-y)$ interchanges the two quadrants of projection directions. Indeed, setting $t=\sin\theta/(\cos\theta+\sin\theta)$ gives
-\begin{equation}\label{eq:angle}
- \A(K)=\int_0^{\pi/2}\frac{|p_\theta(K)|}{(\cos\theta+\sin\theta)^3}\,d\theta,
- \qquad
- \A(K)+\A(RK)\le\Fav(K)\le 2\sqrt2\,\bigl(\A(K)+\A(RK)\bigr).
-\end{equation}
+A \emph{pattern} $P=\bigcup_i I_i\times J_i$ matches two interval partitions of $[0,1]$ with corresponding widths $w_i=|I_i|=|J_i|$. Write $\ell_P(t)=|\pi_t(P)|$, $R(x,y)=(x,1-y)$ and $h(P)=\sum_i w_i\log(1/w_i)$. Let $Z_P(x,t)$ count the strips through $(x,t)$.
 
-The second-moment argument is related to the pairwise tube-overlap estimate in the planar Kakeya problem \cite{Cordoba}. Here the order of the endpoints identifies every crossing explicitly. Let $P_\sigma$ be the union of the $n$ closed grid squares selected by a permutation $\sigma$. Let $Z$ count its strips through a point and put $E=\int Z^2$. Since $\int Z=1$, Cauchy--Schwarz gives $\A(P_\sigma)\ge1/E$. Only inversions contribute to the pairwise overlaps. If an inverted pair has index gaps $p$ and $q$ on the two edges, its intersection area is
-\[
- \frac1n\int_0^1\bigl(1-|p-(p+q)t|\bigr)_+\,dt
- =\frac1{n(p+q)}\le\frac1{4n}\left(\frac1p+\frac1q\right).
-\]
-The integrand is a tent of height one and base $2/(p+q)$, supported in $[0,1]$.
-
-Let $E'$ be the second moment for the reflected pattern $RP_\sigma$. Every pair $i<j$ crosses in exactly one of the two matchings, with the same unsigned gaps $p_{ij}=j-i$ and $q_{ij}=|\sigma(j)-\sigma(i)|$. On each edge precisely $n-d$ pairs have gap $d$. Counting each intersection twice gives
-\begin{equation}\label{eq:harmonic}
- E+E'=2+\frac2n\sum_{i<j}\frac1{p_{ij}+q_{ij}}
- \le 2+\frac1n\sum_{d=1}^{n-1}\frac{n-d}{d}=H_n+1.
-\end{equation}
-The diagonal terms alone give $E'\ge1$, so $E\le H_n$. This proves $\alpha_n\ge1/H_n$. Using both quadrants in \eqref{eq:angle} gives
-\begin{equation}\label{eq:both}
- \Fav(P_\sigma)\ge\frac1E+\frac1{E'}\ge\frac4{E+E'}\ge\frac4{H_n+1}.
-\end{equation}
-
-For the reverse permutation $E=H_n$, since all pairs cross and $p=q$. Yet its section at height $t$ has length $n^{-1}+(1-n^{-1})|1-2t|$. Indeed the projected intervals have width $1/n$ and consecutive centers are $|1-2t|/n$ apart. Its area tends to $1/2$. The large second moment comes from crossings near $t=1/2$.
-
-\begin{lemma}[Grid matching]\label{lem:hall}
-If a compact $K\subset[0,1]^2$ carries a probability measure with uniform coordinate marginals, then for each $n\ge2$ some $P_\sigma$ lies in $K_{1/n}$. In particular,
-\[
- \alpha_n\le\A(K_{1/n}),\qquad \Fav(K_{1/n})\ge\frac4{H_n+1}.
-\]
-\end{lemma}
-\begin{proof}
-Use half-open grid intervals $I_i$, closing the last one at $1$. For the given measure $\nu$, the matrix $a_{ij}=n\nu(I_i\times I_j)$ has all row and column sums equal to one. Any $k$ rows therefore have positive entries in at least $k$ columns. Hall's theorem \cite{Hall} supplies a permutation of positive entries. Each selected cell meets $K$, so its closure lies in $K_{1/n}$. Apply \eqref{eq:both} and the definition of $\alpha_n$.
-\end{proof}
-
-\section{Weighted crossings and entropy}\label{sec:entropy}
-
-Consider a matching $P$ between two partitions of $[0,1]$ by intervals
-$I_i$ and $J_i$ of equal corresponding widths $w_i=|I_i|=|J_i|>0$.
-Its endpoint squares are $I_i\times J_i$. Write
-\[
- h(P)=\sum_i w_i\log(1/w_i),\qquad W(t)=\frac1{4t(1-t)} .
-\]
-For $Q=P,RP$, let $Z_Q(x,t)$ count the strips of $Q$ at $(x,t)$ and
-let $\ell_Q(t)=|\pi_t(Q)|$. At each height, $\int Z_Q(x,t)\,dx=1$.
-All sums indexed by $Q=P,RP$ count the two orientations with multiplicity.
-
-\begin{lemma}[Weighted crossing identity]\label{lem:entropy}
-For every such matching,
+\begin{lemma}[Crossing identity]\label{lem:entropy}
+For $W(t)=1/[4t(1-t)]$,
 \begin{equation}\label{eq:entropy}
- \sum_{Q=P,RP}\int_0^1 W(t)\int_{\R}Z_Q(x,t)(Z_Q(x,t)-1)\,dx\,dt
- =h(P).
+ \sum_{Q=P,RP}\int_0^1 W(t)\int_{\R}Z_Q(Z_Q-1)\,dx\,dt=h(P).
 \end{equation}
-In particular,
-\begin{equation}\label{eq:reciprocal}
- \sum_{Q=P,RP}\int_0^1 W(t)\bigl(\ell_Q(t)^{-1}-1\bigr)\,dt\le h(P).
-\end{equation}
+If only the bottom intervals partition $[0,1]$, the contribution of $P$ with weight $1/(2t)$ is at most $h(P)$.
 \end{lemma}
 \begin{proof}
-Order a pair by its bottom intervals. It crosses in exactly one orientation.
-Let $p,q$ be the distances between its centers on the bottom and top,
-and center intervals $U,V$ of the two widths at zero.
-With $L(s)=|U\cap(s+V)|$, the overlap at height $t$ is $L(p-(p+q)t)$.
-The support of the even function $L$ is contained in $[-q,p]$, since
-$p,q\ge(|U|+|V|)/2$. Substitution $s=p-(p+q)t$ gives
+Let $f(a)=a+v_i$ translate $I_i$ onto $J_i$. Ignore interval endpoints. Two particles starting at $a<a'$ meet at an interior height exactly when $f(a)>f(a')$. Put $p=a'-a$, $q=f(a)-f(a')$ on this inversion set $\mathcal I_f$. The meeting time is $t=p/(p+q)$. On a given pair of strips the map from a meeting $(x,t)$ back to its starting points $(x-tv_i,x-tv_j)$ has absolute Jacobian $v_i-v_j=p+q$. Thus for every nonnegative weight $\psi$,
 \[
- \int_0^1\frac{L(p-(p+q)t)}{t}\,dt
- =\int_{-q}^p\frac{L(s)}{p-s}\,ds
- =\int_{I_i\times I_j}\frac{dx\,dy}{|x-y|}.
+ \frac12\int_0^1\!\psi(t)\int_{\R} Z_P(Z_P-1)\,dx\,dt
+ =\int_{\mathcal I_f}\psi\!\left(\frac p{p+q}\right)
+                 \frac{da\,da'}{p+q}.
 \]
-The last equality follows by integrating over $s=u-v$ with $u\in U$ and $v\in V$, then
-placing their centers at distance $p$. Replacing $t$ by $1-t$ gives the
-same formula for the top intervals at distance $q$.
-
-For any partition into intervals $I_i$ of lengths $w_i$, its sum of these
-integrals over unordered pairs equals $h(P)$. Indeed, the integral of
-$1/(y-x)$ over $0\le x<y\le b$ with $y-x>\eta$ is
-$b\log(b/\eta)-b+\eta$ for $0<\eta<b$. Subtract the within-interval
-integrals from that for $b=1$ and let $\eta\downarrow0$.
-Now $4W(t)=1/t+1/(1-t)$, while $Z_Q(Z_Q-1)$ counts each crossing twice.
-The bottom and top partitions each contribute $h(P)$, proving
-\eqref{eq:entropy}. Slice Cauchy--Schwarz gives
-$\int Z_Q^2\,dx\ge1/\ell_Q(t)$ and hence \eqref{eq:reciprocal}.
+With $\psi(t)=1/t$, each crossing contributes $1/(a'-a)$. The integral of this kernel over all pairs in distinct bottom intervals is $h(P)$. Indeed its integral over $0<a<a'<L$, $a'-a>\eta$, equals $L\log(L/\eta)-L+\eta$ for $\eta<L$. Subtract the contributions with $L=w_i$ from the one with $L=1$ and let $\eta\downarrow0$. This proves the one-sided bound. For matched partitions each pair in distinct bottom intervals crosses in exactly one of $P,RP$, since reflection reverses the order of the top intervals. The two contributions therefore exhaust $h(P)$. Reversing time gives the top-edge identity with $1/(1-t)$, since reflecting the top partition preserves pair distances. Averaging the two identities proves \eqref{eq:entropy}.
 \end{proof}
 
-For Kaczynski's original problem the top intervals can overlap. The bottom half of the identity still gives a bound. Order two strips by their bottom centers, at distance $p$, and let $b$ be the signed difference of their top centers in the same order. If $b\ge p$, their overlap has zero area. Otherwise the same substitution, now $s=p-(p-b)t$, gives
+At each height $\int Z_Q\,dx=1$, so $\int Z_Q^2\,dx\ge1/\ell_Q(t)$. In particular,
+\begin{equation}\label{eq:budget}
+ \sum_{Q=P,RP}\int_0^1 W(t)(\ell_Q(t)^{-1}-1)\,dt\le h(P).
+\end{equation}
+To read off area bounds, let $V=W$ for a permutation and $V(t)=1/(2t)$ for freely placed tops. In both cases $\int V(1/\ell-1)\le\log n$. Cauchy--Schwarz on any closed interval $J\subset(0,1)$ gives
+\begin{equation}\label{eq:cs}
+ \int_J g\ell\,dt\ge
+ \frac{\bigl(\int_J\sqrt{gV}\,dt\bigr)^2}{\log n+\int_J V\,dt}
+ \qquad(g\ge0).
+\end{equation}
+Take $g=1$, multiply by $\log n$, let $n\to\infty$, and exhaust $(0,1)$ by such $J$. The two integrals of $\sqrt V$ are $\pi/2$ and $\sqrt2$, giving Theorem~\ref{thm:area}'s lower constants. Formula~\eqref{eq:cs} also gives a lower bound of order $1/\log n$ on every fixed interval of heights with nonempty interior.
+
+On the equal grid, a crossing pair with unsigned index gaps $d,e$ has overlap area $1/[n(d+e)]$ by the same Jacobian. As $1/(d+e)\le(1/d+1/e)/4$ and each edge has $n-d$ pairs of gap $d$, the two second moments sum to at most $H_n+1$, where $H_n=\sum_{d=1}^n1/d$. Each moment is at least one, giving $\alpha_n\ge1/H_n$. This is the unweighted counterpart of \eqref{eq:budget}, in the spirit of the classical tube-overlap estimate \cite{Cordoba}.
+
+For the angular lower bounds write $t=|\sin\theta|/s_\theta$ and $\tau(t)=\min(t,1-t)=\rho_\theta$. In each quadrant $p_\theta$ corresponds, up to sign and translation, to $s_\theta\pi_t$ on $P$ or $RP$. Changing variables gives
 \[
- \int_0^1 L(p-(p-b)t)\,\frac{dt}{t}
-   =\int_b^p \frac{L(s)}{p-s}\,ds
-   \le\int_{I_i\times I_j}\frac{dx\,dy}{|x-y|}.
+ \Fav(P)=\sum_{Q=P,RP}\int_0^1g(t)\ell_Q(t)\,dt,\qquad
+ g(t)=[t^2+(1-t)^2]^{-3/2}.
 \]
-A crossing may stop partway through the support of $L$. This explains why the equality becomes an inequality. Summing over the bottom partition gives $\int_0^1(1/\ell(t)-1)\,dt/(2t)\le\log n$, where $\ell$ is the length covered at height $t$. Cauchy--Schwarz on $[\varepsilon,1]$ now gives
-\begin{equation}\label{eq:free}
- \beta_n\ge
- \frac{2(1-\sqrt\varepsilon)^2}{\log n+\tfrac12\log(1/\varepsilon)}
- \qquad(0<\varepsilon<1).
-\end{equation}
-Taking $\varepsilon=(\log n)^{-2}$ for large $n$ proves the lower bound for $\liminf (\log n)\beta_n$. Since $\beta_n>0$ for each $n$ by \eqref{eq:free}, decreasing $c$ covers all $n\ge2$.
-
-To extract the permutation bound, choose one or both orientations, writing $m=1$
-or $2$ for their number. For any continuous $g>0$ on $[0,1]$, truncate to
-$J=[\varepsilon,1-\varepsilon]$, $0<\varepsilon<1/2$. Cauchy--Schwarz
-on these $m$ copies of $J$, followed by \eqref{eq:reciprocal}, gives
-\begin{equation}\label{eq:weighted-CS}
- \sum_{Q}\int_0^1g(t)\ell_Q(t)\,dt
- \ \ge\ \frac{\bigl(m\int_J\sqrt{g(t)W(t)}\,dt\bigr)^2}
- {h(P)+m\int_J W(t)\,dt}.
-\end{equation}
-Indeed, the two squared factors in Cauchy--Schwarz are $g\ell_Q$ and
-$W/\ell_Q$, and $\ell_Q\le1$. On the equal grid $h(P)=\log n$.
-For $g=1$ and $m=1$ this yields the finite estimate
-\begin{equation}\label{eq:weighted-finite}
- \alpha_n\ge
- \frac{(\pi/2-2\arcsin\sqrt\varepsilon)^2}
- {\log n+\tfrac12\log((1-\varepsilon)/\varepsilon)}.
-\end{equation}
-Taking $\varepsilon=(\log n)^{-2}$ for sufficiently large $n$ gives
-$\liminf_{n\to\infty}(\log n)\alpha_n\ge\pi^2/4$.
-
-The same argument restricted to a fixed interval $J\subset(0,1)$ of positive length gives
-\begin{equation}\label{eq:window}
- \int_J\ell_{P_\sigma}(t)\,dt\ge
- \frac{\bigl(\int_J\sqrt{W(t)}\,dt\bigr)^2}{\log n+\int_J W(t)\,dt}
- \qquad(\overline J\subset(0,1)).
-\end{equation}
-In particular the order $1/\log n$ cannot be improved uniformly on any such interval. The same identity proves the necessity of \eqref{eq:criterion}. Suppose there are permutations at arbitrarily large $n$ with $b(\tau(t))\ell_{P_{\sigma_n}}(t)\le C_b/\log n$ for every $0<t<1$. Divide \eqref{eq:reciprocal} by $\log n$ and keep one orientation. The integrand is nonnegative, so Fatou's lemma gives
+In particular $\Fav(P_\sigma)\ge4/(H_n+1)$ by the two second moments. Applying the Cauchy--Schwarz argument on both copies of $J$ with their shared budget \eqref{eq:budget} gives the stronger asymptotic bound
 \[
- \int_0^1 W(t)b(\tau(t))\,dt\le C_b .
+ \liminf_{n\to\infty}(\log n)\min_\sigma\Fav(P_\sigma)
+ \ge \left(2\int_0^1\sqrt{g(t)W(t)}\,dt\right)^2 .
 \]
-Since $4W(t)\ge1/t$, the integral in \eqref{eq:criterion} is finite. If a compact $K$ as in Theorem~\ref{thm:compact} satisfies \eqref{eq:directional-thm}, Lemma~\ref{lem:hall} selects such permutations at $\delta=1/n$. Indeed $\pi_t=p_\theta/(\cos\theta+\sin\theta)$ in the first quadrant, with $\tau(t)=\rho_\theta$.
-
-For both orientations the change of angle in \eqref{eq:angle}
-gives $\Fav(P)=\sum_{Q=P,RP}\int_0^1 g(t)\ell_Q(t)\,dt$ with
-$g(t)=(t^2+(1-t)^2)^{-3/2}$. Apply \eqref{eq:weighted-CS} with
-$m=2$ and the same cutoff. Uniformly over equal-grid permutations,
-\begin{equation}\label{eq:fav-constant}
- \liminf_{n\to\infty}(\log n)\min_{\sigma\in S_n}\Fav(P_\sigma)
- \ \ge\ c_{\rm F},\qquad
- c_{\rm F}=\left(\int_0^1
- \frac{dt}{\sqrt{t(1-t)}\,[t^2+(1-t)^2]^{3/4}}\right)^2 .
+Also $b(t)\ell_{P_\sigma}(t)\le M_b(P_\sigma)$ for $0<t\le1/2$. Since $1/(4t)\le W(t)\le1/(2t)$ there, integration of \eqref{eq:budget} from $1/n$ to $1/2$ yields
+\begin{equation}\label{eq:lower}
+ I_b(1/n)\le 6(\log n)M_b(P_\sigma).
 \end{equation}
+Together these estimates prove the lower half of \eqref{eq:gridlaw}.
 
-Lemma~\ref{lem:hall} transfers this estimate to every compact $K\subset[0,1]^2$ carrying a probability measure with uniform coordinate marginals. Indeed, taking $n=\lceil1/\delta\rceil$ gives $P_\sigma\subset K_\delta$ and $\log n\sim\log(1/\delta)$. Thus
-\begin{equation}\label{eq:fav-continuous}
- \liminf_{\delta\downarrow0}\log(1/\delta)\,\Fav(K_\delta)\ge c_{\rm F}.
-\end{equation}
+The compact lower bound needs only one visible axis. Suppose the horizontal projection of $K$ has length $m>0$ and take $n=\lceil1/\delta\rceil$. In each occupied column of width $1/n$, select a square of that side meeting $K$, with its horizontal interval equal to the column. Their union lies in $K_\delta$. The selected strips have total width $m_n\ge m$ at every height. If $d=nm_n$ columns are occupied, closing the gaps between them can only increase the bottom pair integrals. For $d$ adjacent intervals their sum is $m_n\log d$, by scaling the entropy calculation. For the covered length $\ell$ this gives
+\[
+ \int_0^1\!\left(\frac{m_n}{\ell(t)}-1\right)\frac{dt}{2t}\le\log d .
+\]
+On $[\delta,1/2]$ use $b(t)\ell(t)\le M_b(K_\delta)$ to obtain $m I_b(\delta)\lesssim M_b(K_\delta)\log n$. On $[1/4,1/2]$, Cauchy--Schwarz as in \eqref{eq:cs} gives $m\lesssim\Fav(K_\delta)\log n$. Transposition handles a visible vertical axis. This proves the lower half of \eqref{eq:law}, with a factor $m$ for partial visibility.
 
-\section{The shuffle}
+For the converse transfer, if $K$ carries a probability $\nu$ with uniform marginals, $n\nu(I_i\times I_j)$ has unit row and column sums for the half-open $n$-grid (close the last interval at $1$). Any $k$ rows meet at least $k$ positive columns, so Hall's theorem \cite{Hall} selects a permutation of positive cells. Their closures lie in $K_{1/n}$. Taking $n=\lceil1/\delta\rceil$ also transfers the asymptotic Favard lower constant from the grid to every such $K$.
 
-A \emph{pattern} is a finite union $P=\bigcup_i(I_i\times J_i)$ in which each family of intervals partitions $[0,1]$ up to endpoints and $|I_i|=|J_i|=w_i>0$. Write $N(P)$ for the number of squares. If $P=\bigcup_i(v_i+w_i[0,1]^2)$, insert a copy of $Q$ in each square by setting $P\star Q=\bigcup_i(v_i+w_iQ)$. For any linear projection $\pi$,
+\section{A shuffle that saves area}
+
+If the squares of $P$ are $v_i+w_i[0,1]^2$, write $P\star Q=\bigcup_i(v_i+w_iQ)$. For any linear projection $p$,
 \begin{equation}\label{eq:insert}
- |\pi(P\star Q)|\le\min\{|\pi(P)|,|\pi(Q)|\}.
+ |p(P\star Q)|\le\min(|pP|,|pQ|).
 \end{equation}
-Containment gives the first bound. The second follows by summing the copy ratios $w_i$. The widths of the new pattern are products of the two sets of widths, so $h(P\star Q)=h(P)+h(Q)$.
+The first bound is containment and the second follows from $\sum_i w_i=1$.
 
-Fix a real $u\ge4$. Partition $[0,u]$ into $m=\lfloor u\rfloor$ pieces, the first $m-1$ of length one and the last of length $1+u-m$. Make a red and a blue copy of the partition. On two edges of length $2u$, arrange the pieces in the orders
+Partition $[0,u]$, $u\ge4$, into $m=\lfloor u\rfloor$ pieces, the first $m-1$ of length one. Make two copies, red and blue. On two edges of length $2u$ arrange them in the orders
 \[
- \begin{array}{r@{\quad}l}
+ \begin{array}{ll}
  \text{bottom}&R_1,B_1,R_2,B_2,\ldots,R_m,B_m,\\
- \text{top}&B_1,B_2,\ldots,B_m,R_1,R_2,\ldots,R_m .
+ \text{top}&B_1,\ldots,B_m,R_1,\ldots,R_m .
  \end{array}
 \]
-Match equal labels and rescale by $1/(2u)$ to obtain $D_u$. Its sides lie in $[1/(2u),1/u]$. Put $P'=D_u\star P$, $F_t=\pi_t(P)$ and $\ell(t)=|F_t|$. Within each color the squares occur in the same order on both axes. Their projections have disjoint interiors and total covered length $\ell(t)/2$ after insertion.
+Match equal labels and rescale to the unit square to obtain $D_u$. Insert $P$ in each square. At height $t$, write $F=\pi_t(P)$. Within each color the two edge orders agree, so the projected copies have disjoint interiors and total length $|F|/2$. The overlap between the colors is exactly the saving in length (Figure~\ref{fig:shuffle}).
 
-Choose an offset $h\ge1$ and pair $R_i$ with $B_{i+h}$ for $1\le i\le m-h-1$. All these squares have the same width. In units of that width, blue starts $2h+1$ units to the right of red on the bottom edge and $u-h$ units to its left on the top edge. Its displacement at height $t$ is
-\[
- d_{u,h}(t)=(2h+1)(1-t)+(h-u)t=(2-t)h+1-(u+1)t.
-\]
-The paired intersections have disjoint interiors since their red members do. After rescaling by $1/(2u)$ their sum gives
+Pair $R_i$ with $B_{i+h}$, $1\le i\le m-h-1$. In units of their common width, blue starts $2h+1$ to the right at the bottom and $u-h$ to the left at the top. The displacement is $d_h=(2-t)h+1-(u+1)t$. The red members are disjoint in projection up to endpoints, giving
 \begin{equation}\label{eq:save}
- \ell(t)-|\pi_t(P')|\ge\frac{m-h-1}{2u}
- |F_t\cap(F_t+d_{u,h}(t))|\qquad(1\le h\le m-2).
+ |F|-|\pi_t(D_u\star P)|\ge
+ \frac{m-h-1}{2u}\,|F\cap(F+d_h)|.
 \end{equation}
-For $u=4$, $h=1$, and $t=1/2$, the displacement vanishes. Figure~\ref{fig:shuffle} shows why the same pairing works even if $F_t$ has many gaps.
 
 \begin{figure}[htbp]
 \centering
@@ -324,281 +205,77 @@ For $u=4$, $h=1$, and $t=1/2$, the displacement vanishes. Figure~\ref{fig:shuffl
 \label{fig:shuffle}
 \end{figure}
 
-
-At a small height $t$, a crossing requires a scale $u$ of order $1/t$ or larger. As $u$ varies beyond that scale, the section of a red copy sweeps across successive blue copies. The following estimate uses a different offset $h$ each time another blue copy comes into range (Figure~\ref{fig:sweeps}).
-
-\begin{lemma}[Averaging the shuffle scale]\label{lem:shell}
-If $U\ge16$, $0<t\le1/2$ and $Ut\ge 8$, then $u$ uniform on $[U,2U]$
-gives $\mathbb E_u[\ell(t)-|\pi_t(D_u\star P)|]\ge\ell(t)^2/64$.
+\begin{lemma}\label{lem:scale}
+If $0<t\le1/2$, $U\ge16$ and $Ut\ge8$, choosing $u$ uniformly in $[U,2U]$ saves at least $|F|^2/64$ in expectation.
 \end{lemma}
 \begin{proof}
-For $0\le s\le1$, the choice
+The shift is $-s$, $0\le s\le1$, when $u=((2-t)h+1+s)/t-1$. The whole sweep lies in $[U,2U]$ for the integers
 \[
- u_h(s)=\frac{(2-t)h+1+s}{t}-1
+ \frac{(U+1)t-1}{2-t}\le h\le\frac{(2U+1)t-2}{2-t}.
 \]
-gives displacement $-s$. We have $u_h([0,1])\subset[U,2U]$ whenever
-\[
- \frac{(U+1)t-1}{2-t}\le h\le \frac{(2U+1)t-2}{2-t}.
-\]
-The lower endpoint exceeds one. The number of integers in the
-interval is at least $(Ut-1)/(2-t)-1\ge Ut/4$, since $Ut\ge8$.
-Their parameter intervals $u_h([0,1])$ are disjoint, because the starts
-are $(2-t)/t$ apart and the interval length is $1/t$. For $u=u_h(s)$ we
-have $h\le u/3$, as $t\le1/2$. Thus
-$(\lfloor u\rfloor-h-1)/(2u)\ge(2u/3-2)/(2u)\ge1/8$.
-On each such interval $du=ds/t$. Finally
-$\int_0^1|F_t\cap(F_t-s)|\,ds=|F_t|^2/2$ by Fubini, counting the half of
-$F_t\times F_t$ above the diagonal. Integration with density $1/U$ and
-summation over the selected integers give the claim.
+There are at least $(Ut-1)/(2-t)-1\ge Ut/4$ such positive integers. Their $u$-intervals are disjoint and on each $h\le u/3$, so the prefactor in \eqref{eq:save} is at least $1/8$. Each sweep has $du=ds/t$. Finally $\int_0^1|F\cap(F-s)|\,ds=|F|^2/2$ counts the ordered pairs of points in $F$ above the diagonal. Summing the sweeps with density $1/U$ gives the bound.
 \end{proof}
 
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}[x=.32cm,y=.85cm,>=latex,font=\small]
- \foreach \lo/\hi/\idx in {38/42/5,45/49/6,52/56/7,59/63/8}{
-    \fill[stripblue!11] (\lo,-1) rectangle (\hi,0);
-    \draw[stripblue!90!black,line width=1pt] (\lo,0)--(\hi,-1);
-    \fill[stripblue!90!black] (\lo,0) circle[radius=1.1pt] (\hi,-1) circle[radius=1.1pt];
-    \node[above,inner sep=3pt] at ({(\lo+\hi)/2},0) {$h=\idx$};
- }
- \draw[black!45,dashed] (32,0)--(64,0) (32,-1)--(64,-1);
- \node[left] at (32,0) {$0$};
- \node[left] at (32,-1) {$-1$};
- \draw[->] (32,-1.23)--(65,-1.23) node[right] {$u$};
- \foreach \v in {32,40,48,56,64}
-    \draw (\v,-1.20)--(\v,-1.30) node[below,inner sep=2pt] {$\v$};
-\end{tikzpicture}
-\caption{At $t=1/4$, the four indicated offsets each move a blue copy through one full width as $u$ runs from $32$ to $64$. The graph shows $d_{u,h}(1/4)$ on each complete sweep from $0$ to $-1$. The disjoint parameter intervals let us add the four contributions in Lemma~\ref{lem:shell}.}
-\label{fig:sweeps}
-\end{figure}
+\section{From one scale to all scales}
 
-Fix a nondecreasing $b:(0,1/2]\to(0,1]$ satisfying \eqref{eq:criterion}. To prove Theorem~\ref{thm:finite} one may take $b(r)=r$. Constants below may depend on the fixed $b$. Put $r_0=1$ and, for $j\ge1$, set
-\[
- r_j=\max\{b(\min(1/2,2^{1-j})),(1+j)^{-2}\}.
-\]
-The sequence decreases to zero and is summable. Indeed $\int_{2^{1-j}}^{2^{2-j}} b(r)\,dr/r\ge(\log 2)b(2^{1-j})$ for $j\ge3$. Take a nonnegative integer $J$ with $\mathbb P(J\ge j)=r_j$, set $U=16\cdot2^J$, and choose $u$ uniformly in $[U,2U]$. Its expected cost satisfies
-\[
- \mathbb E\log(2\lfloor u\rfloor)\le
- B:=\log64+(\log2)\sum_{j\ge1}r_j<\infty .
-\]
-At each step independently draw $u$ and choose the outer pattern $D$ to be $D_u$ or its transpose with equal probability, independently of $u$. Put $P_0=[0,1]^2$, $P_{i+1}=D\star P_i$ and $L_i(t)=|\pi_t(P_i)|$. For $0<t<1$ write
-\[
- j(t)=\lceil\log_2(1/\tau(t))\rceil,\qquad
- w(t)=r_{j(t)}\ge b(\tau(t)),\qquad w(0)=w(1)=0 .
-\]
-On the event $J\ge j(t)$, the chosen range of scales satisfies $U\tau(t)\ge16$. For $t\le1/2$ apply Lemma~\ref{lem:shell} in the original orientation. For $t\ge1/2$ use the transposed outer pattern. Transposition exchanges the components of the displacement vector, giving $d_{u,h}(1-t)$, and both inner copies still have section $F_t=\pi_t(P_i)$. All other choices can only decrease section length by \eqref{eq:insert}. With $c=1/128$ this gives
-\[
- \mathbb E[L_{i+1}(t)\mid P_i]\le L_i(t)-c\,w(t)L_i(t)^2.
-\]
-For $x_i=\mathbb E L_i(t)$, Jensen's inequality yields
-$x_i-x_{i+1}\ge c\,w(t)x_i^2$. Since $0<x_{i+1}\le x_i$ and $x_0=1$, summing $1/x_{i+1}-1/x_i\ge c\,w(t)$ gives
-\begin{equation}\label{eq:pointwise-mean}
- \mathbb E L_k(t)\le \frac{1}{1+ckw(t)},\qquad
- \mathbb E\log N(P_k)\le Bk .
-\end{equation}
-The second estimate uses the fact that square counts multiply under insertion.
+Write $N(P)$ for the number of squares of a pattern. The following lemma has absolute constants, including when the weight changes with $k$.
 
-\begin{lemma}\label{lem:small}
-For each $0<\varepsilon<1$ there is a pattern $P$, built from shuffles
-and their transposes, with $\A(P)\le\varepsilon$ and
-$\log N(P)\le C/\varepsilon$.
+\begin{lemma}\label{lem:block}
+Let $0\le v\le1$ be nondecreasing on $(0,1/2]$, with $\int_0^{1/2}v(r)\,dr/r\le1$. For every integer $k\ge2$ there is a pattern $Q$ satisfying
+\[
+ \log N(Q)\le Ck,\qquad \Fav(Q)+M_v(Q)\le C/k,\qquad \diam Q\le1+C/k.
+\]
+In fact the construction bounds $M_{\max(v,\sqrt{\cdot})}(Q)\le C/k$.
 \end{lemma}
 \begin{proof}
-Integrating \eqref{eq:pointwise-mean} gives
-$\mathbb E\A(P_k)\le C_0/k$, since $\int_0^1dt/w(t)\le2\sum_{j\ge2}2^{-j}(1+j)^2<\infty$. This is the reason for the floor $(1+j)^{-2}$ in $r_j$.
-By Markov's inequality the events $\A(P_k)>4C_0/k$ and
-$\log N(P_k)>4Bk$ each have probability at most $1/4$.
-Some realization satisfies both bounds. Take $k=\lceil4C_0/\varepsilon\rceil$.
+Put $w(r)=\max(v(r),\sqrt r)$ for $r>0$ and $w(0)=0$. Draw $a$ uniformly from $[0,1]$ and set
+\[
+ Y=\int_0^{1/2}\mathbf1_{\{a\le w(r)\}}\,\frac{dr}{r},\qquad U=16e^Y .
+\]
+Fubini gives $\E Y=\int w(r)\,dr/r\le1+\sqrt2$. When $a\le w(\tau(t))$, monotonicity gives $Y\ge\log(1/(2\tau(t)))$, hence $U\tau(t)\ge8$. This single choice of a random scale serves all heights.
+
+Choose $u$ uniformly from $[U,2U]$. Starting with the unit square $P_0$, put $P_{i+1}=D\star P_i$ with fresh independent draws, where $D$ is $D_u$ or its transpose with equal probability. Transposing the outer pattern exchanges $t$ and $1-t$ in the displacement while the inner section remains $\pi_t(P_i)$. Lemma~\ref{lem:scale} and \eqref{eq:insert} give a conditional expected saving of at least $w(\tau(t))|\pi_t(P_i)|^2/128$. For $x_i=\E|\pi_t(P_i)|$, Jensen's inequality and $x_{i+1}\le x_i$ yield $1/x_{i+1}-1/x_i\ge w(\tau(t))/128$. The logarithmic costs of the subdivisions add, each with mean at most $\log64+\E Y$. Thus
+\[
+ w(\tau(t))\E|\pi_t(P_k)|\le128/k,\qquad \E\log N(P_k)\le C_0k .
+\]
+
+Condition on $N(P_k)\le N_0=\exp(2C_0 k)$, an event of probability at least $1/2$. Denote this random pattern by $V$ and its mean section length by $m(t)$. To realize the mean at all heights, average $M$ independent copies, writing $H(t)=M^{-1}\sum_a|\pi_t(V_a)|$. Since each summand is in $[0,1]$, some sample has $\|H-m\|_2\le M^{-1/2}$ by the variance bound integrated over $[0,1]$. Both functions are $2N_0$-Lipschitz, as each projected interval's endpoints move at speed at most one. For $f=H-m$ we have $f(0)=0$, so integration of $(f^2)'$ gives
+\[
+ \|f\|_\infty^2\le 2\|f\|_2\|f'\|_2\le 8N_0/\sqrt M .
+\]
+Take $M$ to be the smallest even integer at least $64N_0^2k^4$. Then $H(t)\le m(t)+1/k$ simultaneously for all $t$.
+
+Place the $M$ copies in equal squares of side $1/M$, matching column $i$ to row $i+M/2\pmod M$ (indices start at zero). The resulting pattern $V_*$ has $|\pi_t(V_*)|\le H(t)$ by subadditivity. Its outer squares have their main diagonals on $y-x=\pm1/2$, inside the diamond $|x-1/2|+|y-1/2|\le1/2$. Every point in a square is within $1/(\sqrt2 M)$ of its diagonal, hence $\diam V_*\le1+\sqrt2/M$. Take $Q=V_*\star RV_*$. In either quadrant \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta|\pi_t(V_*)|$. Conditioning costs at most a factor two in the mean bound, so $w(\rho_\theta)|p_\theta Q|\lesssim1/k$. Integration gives the Favard estimate since $w(r)\ge\sqrt r$ and $d\theta/dt=s_\theta^2\le2$. Finally $Q\subset V_*$ and $N(Q)\le(MN_0)^2$, as required.
 \end{proof}
 
-Every pattern carries a measure with uniform marginals. Take the pushforward of Lebesgue measure by $x\mapsto(x,f(x))$, where $f$ translates each $I_i$ onto $J_i$ up to endpoints. Thickening each of its $N$ squares adds at most $2\delta$ to its section length at any height. Lemma~\ref{lem:hall} now gives
+For a given $b$ choose a new weight at each scale. With $k=2^j$, $j\ge1$, put
 \[
- \alpha_n\le \A(P_{1/n})\le\A(P)+\frac{2N(P)}n.
+ A_k=1+I_b(e^{-k}),\qquad v_k(r)=A_k^{-1}b(r)\mathbf1_{\{r\ge e^{-k}\}}.
 \]
-Take $\varepsilon=2C/\log n$ in Lemma~\ref{lem:small} for large $n$. Then $N(P)\le\sqrt n$, giving $\alpha_n\le C/\log n$ after increasing the constant for small $n$. Fixing $b(r)=r$ makes $C$ absolute. Since $\beta_n\le\alpha_n$, this completes Theorem~\ref{thm:finite}.
-
-\section{Control in every noncoordinate direction}\label{sec:directional}
-
-To realize the mean bound in \eqref{eq:pointwise-mean} at every height
-with a single pattern, put independent realizations in different
-equal-sized squares. The section length of the resulting pattern is
-bounded by the average of their section lengths, whatever the
-translations between the copies.
-
-\begin{lemma}\label{lem:directional}
-For each integer $k\ge1$ there is a pattern $U_k$ obtained by elementary
-shuffles and their transposes, whose choice may vary from parent to parent,
-such that
+Its integral against $dr/r$ is at most one. For $r<e^{-k}$, monotonicity gives $(k-\log2)b(r)\le I_b(e^{-k})$. Lemma~\ref{lem:block} and boundedness of projections give a block $Q_j$ with
 \[
- \log N(U_k)\le C k,\qquad
- \sup_{0\le t\le1} w(t)\,|\pi_t(U_k)|\le C/k .
-\]
-\end{lemma}
-\begin{proof}
-Let $V$ have the law of $P_k$ conditioned on $N(P_k)\le e^{4Bk}$.
-By \eqref{eq:pointwise-mean} and Markov's inequality the conditioning
-event has probability at least $3/4$, so for every $t$,
-\[
- 0\le w(t)|\pi_t(V)|\le 1,\qquad
- \mathbb E\big[w(t)|\pi_t(V)|\big]\le 4/(3ck).
-\]
-Divide each half of $[0,1]$ into $\lceil k e^{4Bk}\rceil$ equal
-intervals, giving a mesh of $q=2\lceil k e^{4Bk}\rceil+1$ points.
-Take an even integer $M$ with $2qk^2\le M\le2qk^2+8$ and $M\ge8$.
-Draw $M$ independent copies $V_1,\ldots,V_M$ of $V$, and put
-$H(t)=M^{-1}\sum_{a=1}^M |\pi_t(V_a)|$. At any mesh point $s$, the
-variance of $w(s)H(s)$ is at most $1/M$. Chebyshev's inequality gives
-\[
- \mathbb P\{w(s)H(s)>(4/(3c)+1)/k\}\le k^2/M .
-\]
-The sum over the mesh is at most $1/2$. Fix a realization satisfying
-the bound at all mesh points.
-
-Each endpoint of a projected interval moves by at most $|t-s|$ between
-heights $s$ and $t$. Summing the lengths of the symmetric differences of
-one pattern's intervals shows that each $|\pi_t(V_a)|$, and hence $H(t)$,
-is $2e^{4Bk}$-Lipschitz in $t$. Choose a mesh point $s$ adjacent to $t$
-in the direction of $1/2$. Then $w(t)\le w(s)\le1$ and
-$|t-s|\le(2ke^{4Bk})^{-1}$, so $w(t)H(t)\le (4/(3c)+2)/k$.
-
-The shuffle $D_{M/2}$ has $M$ squares, each of side $1/M$. Insert
-$V_a$ into its $a$th square. The resulting pattern $U_k$ has
-$|\pi_t(U_k)|\le H(t)$ by subadditivity and scaling. Its square count is
-at most $M e^{4Bk}$, whose logarithm is $O(k)$.
-\end{proof}
-
-\section{A compact set of length one}\label{sec:compact}
-
-We use the same reflection for the area and direction estimates. For any pattern $V$, write $V^*=V\star RV$. In the first quadrant its projections are bounded by those of $V$, and in the second quadrant by those of $RV$, by \eqref{eq:insert}. Thus $\Fav(V^*)\le4\sqrt2\,\A(V)$ by \eqref{eq:angle}. More generally, put $s=|\cos\theta|+|\sin\theta|$ and $t=|\sin\theta|/s$. Up to a translation and a sign, $p_\theta$ on the appropriate factor is $s\pi_t$ on $V$. Hence
-\[
- |p_\theta(V^*)|\le s|\pi_t(V)|,\qquad
- \tau(t)=\rho_\theta.
+ \log N(Q_j)\lesssim k,\quad \diam Q_j\le1+C/k,\quad
+ \Fav(Q_j)\lesssim1/k,\quad M_b(Q_j)\lesssim A_k/k .
 \]
 
-For $j\ge1$ take $Q_j=U_{2^j}^*$ from Lemma~\ref{lem:directional}. The estimate for $w(t)|\pi_t(U_{2^j})|$ gives $\A(U_{2^j})\le C2^{-j}$ by integration. Since $1\le s\le\sqrt2$, the directional estimate and square count give
-\begin{equation}\label{eq:blocks}
- \Fav(Q_j)\le C2^{-j},\quad
- b(\rho_\theta)|p_\theta(Q_j)|\le C2^{-j},\quad
- \log N(Q_j)\le C2^j ,
-\end{equation}
-where the middle inequality concerns $\rho_\theta>0$ and uses $w(t)\ge b(\tau(t))$.
+Nest the blocks by $T_0=[0,1]^2$, $T_j=T_{j-1}\star Q_j$, and take $S=\bigcap_j T_j$. Both coordinate projections are $[0,1]$ by compactness of the nested fibers. The maximum side at level $j$ is at most $2^{-j}$. Inside each square of side $d$ at that level, the next block covers its descendants with diameter at most $d(1+C2^{-j-1})$. Since the sides sum to one, $\mathcal H^1(S)\le1$. Projection gives equality. For either coordinate $p$ and every Borel $E\subset[0,1]$, $S\cap p^{-1}(E)$ projects onto $E$. Its length is at least $|E|$, hence $p_\#(\mathcal H^1|_S)$ is Lebesgue measure by equality of total masses. Outside the countable set of subdivision endpoints the nested squares determine a unique point in each fiber.
 
-The squares of any pattern have total diameter $\sqrt2$. To cover their descendants with total diameter tending to one, use a cyclic half-shift. For even $m$, let $B_m$ match interval $i$ to $i+m/2\pmod m$, numbering from zero. Its squares lie in the disk $E_m$ centered at $(1/2,1/2)$ of diameter
+For $k=2^j$, $\log N(T_j)\le C_1k$ by summing the costs. Thickening one square by $\delta$ adds $2s_\theta\delta$ to its projected length. Using \eqref{eq:insert} and summing over the squares gives
 \[
- d_m=\sqrt{1+4/m^2}.
+ \Fav(S_\delta)\lesssim k^{-1}+\delta e^{C_1k},\qquad
+ M_b(S_\delta)\lesssim A_k/k+\delta e^{C_1k}.
 \]
-Indeed, the squares in the upper-left quarter are translates of the first along the diagonal. Squared distance to the center is convex along each such translation, so the maximum occurs in the first or last square. These are mirror images across $x+y=1$, and the farthest vertex of the first is $(0,1/2+1/m)$. Central symmetry covers the lower-right quarter.
+For small $\delta$ choose the largest dyadic $k$ with $2\max(C_1,1)k\le\log(1/\delta)$. Then $A_k\le1+I_b(\delta)$ and the error is at most $\sqrt\delta$. Boundedness covers the remaining scales. The extra $\sqrt r$ bound of Lemma~\ref{lem:block} gives $|p_\theta S|=0$ for every $\rho_\theta>0$. In particular $S$ is purely unrectifiable by the Besicovitch projection theorem \cite[\S1.1]{CSS}.
 
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}[x=3.5cm,y=3.5cm,>=latex,
- every node/.style={font=\small},line cap=round,line join=round]
- \pgfmathsetmacro{\rad}{sqrt(5)/4}
- \node[anchor=west] at (-.15,1.20) {\textit{(a) The half-shift $B_4$}};
- \draw[black!25,line width=.4pt] (0,0) rectangle (1,1);
- \foreach \i in {0,...,3}{
-   \pgfmathtruncatemacro{\j}{mod(\i+2,4)}
-   \path[fill=stripblue!16,draw=stripblue!85!black,line width=.55pt]
-     ({\i/4},{\j/4}) rectangle ({(\i+1)/4},{(\j+1)/4});
- }
- \draw[black!90,line width=.8pt] (.5,.5) circle[radius=\rad];
- % The radius is the hypotenuse with legs 1/2 and 1/m (m=4 here).
- \draw[black!55,line width=.45pt] (0,.5)--(.5,.5)--(0,.75);
- \draw[black!80,line width=.55pt] (0,.5)--(0,.75);
- \draw[black!55,line width=.35pt] (.035,.5)--(.035,.535)--(0,.535);
- \node[below,inner sep=2pt,font=\footnotesize] at (.29,.5) {$\frac12$};
- \node[right,inner sep=3pt,font=\footnotesize] at (0,.625) {$\frac1m$};
- \fill[black!85] (0,.75) circle[radius=.7pt];
- \fill[black!70] (.5,.5) circle[radius=.6pt];
- \node[above right,inner sep=3pt] at (.5,.5) {$E_m$};
- \draw[black!32,line width=.35pt] ({.5-\rad},.5)--({.5-\rad},-.22)
-       ({.5+\rad},.5)--({.5+\rad},-.22);
- \draw[<->,black!85,line width=.5pt] ({.5-\rad},-.17)--({.5+\rad},-.17)
-   node[midway,fill=white,inner sep=2.5pt] {$d_m$};
- \begin{scope}[shift={(2.15,0)}]
-   \node[anchor=west] at (-.10,1.20) {\textit{(b) Scaled covering disks}};
-   \draw[black!22,line width=.35pt] (0,0) rectangle (1,1);
-   \foreach \a/\b/\w/\lab in {0/.25/.5/1,.5/.75/.25/2,.75/0/.25/3}{
-     \draw[black!48,dash pattern=on 2pt off 2pt,line width=.45pt]
-       (\a,\b) rectangle ({\a+\w},{\b+\w});
-     \foreach \i in {0,...,3}{
-       \pgfmathtruncatemacro{\j}{mod(\i+2,4)}
-       \path[fill=stripblue!16,draw=stripblue!85!black,line width=.4pt]
-         ({\a+\w*\i/4},{\b+\w*\j/4})
-         rectangle ({\a+\w*(\i+1)/4},{\b+\w*(\j+1)/4});
-     }
-     \draw[black!90,line width=.65pt]
-       ({\a+\w/2},{\b+\w/2}) circle[radius={\w*\rad}];
-   }
-   \draw[black!32,line width=.35pt] (0,-.06)--(0,-.23) (.5,-.06)--(.5,-.23)
-       (.75,-.06)--(.75,-.23) (1,-.06)--(1,-.23);
-   \foreach \a/\b/\lab in {0/.5/w_1,.5/.75/w_2,.75/1/w_3}{
-     \draw[<->,black!85,line width=.5pt] (\a,-.17)--(\b,-.17)
-       node[midway,fill=white,inner sep=2pt] {$\lab$};
-   }
- \end{scope}
- \node at (1.57,-.43) {$\displaystyle\sum_i\diam(v_i+w_iE_m)
-       =d_m\sum_iw_i=d_m\longrightarrow1$};
-\end{tikzpicture}
-\caption{The half-shift $B_4$ and its copies in three parent squares. Each disk covers every later descendant of its parent. The sum of their diameters depends only on $m$.}
-\label{fig:covers}
-\end{figure}
+It remains to check length in a ball. Every elementary square of side $d$ has mass $d$ by its horizontal marginal. Each parent of side $L$ has two ordered families of children, each of total side $L/2$. Within a family the child sides lie in $[h,2h]$ and successive centers are at distance at most $5h$. For the shuffle take $h=L/(2u)$. The horizontal and vertical steps are at most $4h$ and $2h$. For the cyclic half-shift take $h=L/M$ and use the two diagonals. These facts persist under reflection and transposition.
 
-Start with $T_0=[0,1]^2$, let $T_j=(T_{j-1}\star B_{2j})\star Q_j$ and put $S=\bigcap_{j\ge1} T_j$. These patterns are nested. By \eqref{eq:insert} and \eqref{eq:blocks},
-\begin{equation}\label{eq:levels}
- \Fav(T_j)\le C2^{-j},\qquad
- \log N(T_j)\le\sum_{i=1}^j\bigl(\log(2i)+C2^i\bigr)\le D2^j .
-\end{equation}
-Here $D$ is a constant for the chosen $b$. The largest square side in $T_j$ is at most $2^{-j}$. Inside a square of side $w$ at this level, the next half-shift places all descendants in a disk of diameter $w d_{2j+2}$. These disks cover $S$ and their diameters sum to $d_{2j+2}\to1$. Thus $\mathcal H^1(S)\le1$.
+For $z\in S$, $0<r\le\diam S$, follow a chain through $z$ to the first square of side at most $r/8$. Its parent has $L>r/8$ and $h\le r/8$. The child's family has at least $L/(4h)>r/(32h)$ members. Choose $1+\lfloor r/(32h)\rfloor$ consecutive members including this child. All lie in $B(z,r)$ since $5r/32+2\sqrt2h<r$. Their mass is at least $r/32$, and the horizontal marginal gives the upper bound $2r$.
 
-Both coordinate projections of $S$ are $[0,1]$, by compactness of the nested fibers. Projection is $1$-Lipschitz, so $\mathcal H^1(S)\ge1$. In fact, for either coordinate projection $p$ and any Borel $A\subset[0,1]$, the set $S\cap p^{-1}(A)$ projects onto $A$. Thus $p_\#\mu\ge\mathcal L^1$, and the two measures have the same total mass. In either coordinate, the fiber over every point outside the countable set of subdivision endpoints is a singleton. That coordinate selects a unique nested chain of squares whose diameters tend to zero.
-
-To pass from \eqref{eq:levels} to all radii, observe that thickening a square adds $2\delta(|\cos\theta|+|\sin\theta|)$ to its projection length. Hence
-\[
- \Fav(S_\delta)\le C2^{-j}+8\delta\exp(D2^j).
-\]
-In a single direction the length added per square is at most $2\sqrt2\,\delta$. Since $S\subset T_j$ and $T_j$ is an insertion of $Q_j$, we likewise have
-\[
-  b(\rho_\theta)|p_\theta(S_\delta)|
- \le C2^{-j}+2\sqrt2\,\delta\exp(D2^j)
- \quad(\rho_\theta>0).
-\]
-For sufficiently small $\delta$ choose the largest $j$ with $D2^j\le\tfrac12\log(1/\delta)$. Then $2^j\asymp\log(1/\delta)$ and the second term is at most $8\sqrt\delta$. Both upper bounds follow, including \eqref{eq:directional-thm}. Boundedness of $S_\delta$ covers the remaining radii below $1/2$, and Lemma~\ref{lem:hall} gives the lower bound with $n=\lceil1/\delta\rceil$. For fixed $\rho_\theta>0$, letting $\delta\downarrow0$ gives $|p_\theta(S)|=0$. Since $\Fav(S)=0$ and $\mathcal H^1(S)=1$, the Besicovitch projection theorem also gives pure unrectifiability \cite[\S1.1]{CSS}.
-
-\subsection*{Length in a ball}
-
-The upper estimate $\mu(B(z,r))\le 2r$ follows from either marginal. A ball can be much smaller than a parent square and much larger than any of its children. To bound its mass from below, we use the order of the children within each elementary subdivision.
-
-Consider one elementary subdivision of a parent square of side $L$. For a shuffle $D_u$ put $h=L/(2u)$, and for a half-shift $B_m$ put $h=L/m$. In both cases the children split into two ordered families. The child sides lie in $[h,2h]$ and sum to $L/2$ in each family. Consecutive centers in a family are at most $5h$ apart.
-
-For $D_u$ these are the two colors. The horizontal and vertical gaps between consecutive centers are at most $4h$ and $2h$, respectively, by the two orders defining the shuffle. For $B_m$ the two families are the halves of the permutation, with consecutive centers $\sqrt2\,h$ apart. In $U_k$ different children can receive different patterns. Each parent is nevertheless subdivided by a single shuffle, possibly transposed. Reflecting a block reflects the whole subdivision inside each parent. All these symmetries preserve sides and center distances, so the bounds apply along every branch.
-
-A square of side $v$ at any elementary level has $\mu$-mass $v$. Indeed, its horizontal interval has length $v$, all points of $S$ above the interior belong to this square, and the two endpoints have zero marginal mass.
-
-Fix $z\in S$ and $0<r\le\diam S$. Follow a nested chain containing $z$ to the first square of side at most $r/8$. Its parent has side $L>r/8$, and $h\le r/8$. The family containing this child has at least $L/(4h)>r/(32h)$ members. Choose $1+\lfloor r/(32h)\rfloor$ consecutive members including the child. Each chosen center is within $5r/32$ of the child's center. Each square has circumradius at most $\sqrt2\,h$, so all the chosen squares lie in $B(z,r)$, since $5r/32+2\sqrt2\,h<r$. Their masses add, giving
-\[
- \mu(B(z,r))\ge h\bigl(1+\lfloor r/(32h)\rfloor\bigr)\ge r/32 .
-\]
-This proves Theorem~\ref{thm:compact}.
-
-\begin{corollary}[Directional bounds for permutations]\label{cor:simultaneous}
-Let $b:(0,1/2]\to(0,1]$ be nondecreasing. Condition~\eqref{eq:criterion} is necessary and sufficient for the following property. For each $n\ge2$ one can choose a single permutation $\sigma_n$ such that
-\[
- \Fav(P_{\sigma_n})\le\frac{C_b}{\log n},\qquad
- b(\tau(t))\,|\pi_t(P_{\sigma_n})|\le
- \frac{C_b}{\log n}\quad(0<t<1).
-\]
-\end{corollary}
-\begin{proof}
-For sufficiency select $P_{\sigma_n}\subset S_{1/n}$ by Lemma~\ref{lem:hall} and use Theorem~\ref{thm:compact}, increasing $C_b$ for $n=2$. Necessity follows from \eqref{eq:reciprocal}, as shown in Section~\ref{sec:entropy}.
-\end{proof}
-
-\smallskip
-The finite and compact upper bounds also recover one another at the level of Favard decay. Lemma~\ref{lem:hall} gives the finite bound from the compact one at $\delta=1/n$. Conversely, Theorem~\ref{thm:finite} alone supplies equal-grid patterns at $n_j=\lceil\exp(C_0 2^j)\rceil$ with $\A(P_j)\le 2^{-j}/(4\sqrt2)$ for sufficiently large $C_0$. Reflection, insertion and the half-shifts then give \eqref{eq:levels}, length one and the uniform marginals. The local mass estimate uses the order of the children in the shuffle, and the uniform oblique projection estimate uses Lemma~\ref{lem:directional}. The estimates leave open the optimal leading constants and the existence of $\lim_{n\to\infty}(\log n)\alpha_n$. Monotonicity in $n$ is a separate question in both formulations \cite[pp.~28--29]{Letter}, \cite[Conjecture~3]{Kuklinski}.
+Finally Hall's grid matching applied to $S$ at $\delta=1/n$ gives \eqref{eq:gridlaw} and the simultaneous Favard bound (enlarge constants for $n=2$). The strip area $\int_0^1\ell_{P_\sigma}(t)\,dt$ is at most $\Fav(P_\sigma)$, so this also completes Theorem~\ref{thm:area}. These bounds leave open the sharp leading constants and the monotonicity question in Kaczynski's letter.
 
 \medskip
 \noindent\textit{Acknowledgment.}
-The main geometric idea originated with the author. OpenAI's Astra assisted with computational details. OpenAI's Codex assisted with the modified pairing, the proof of Ahlfors regularity, the weighted crossing identity, and the estimates in individual directions.
+The main geometric idea originated with the author. OpenAI's Astra assisted with computational details. OpenAI's Codex assisted with the shuffle, the crossing identity, and the proofs of regularity and angular decay.
 
 \begin{thebibliography}{9}
 \bibitem{CSS}
