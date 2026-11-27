@@ -2,7 +2,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amsmath,amssymb,amsthm,microtype,etoolbox}
-\usepackage[a4paper,hmargin=22.5mm,vmargin=21mm]{geometry}
+\usepackage[a4paper,hmargin=22.5mm,vmargin=19mm]{geometry}
 \usepackage{tikz}
 \definecolor{stripred}{HTML}{B84655}
 \definecolor{stripblue}{HTML}{3477B9}
@@ -26,7 +26,7 @@
 \newcommand{\diam}{\operatorname{diam}}
 \setlength{\emergencystretch}{1.5em}
 \setlength{\intextsep}{8pt plus 2pt minus 2pt}
-\linespread{1.015}
+\linespread{1.0}
 \renewcommand{\bibliofont}{\normalfont\small}
 \title{Sharp Favard decay with uniform marginals}
 \author{Sergiu Alexandru B\^{\i}sceanu}
@@ -35,7 +35,7 @@
 
 \begin{document}
 \begin{abstract}
-The least area covered by $n$ permutation strips in the unit square is of order $1/\log n$. The same order holds when the top intervals slide freely, as in Kaczynski's original question. We determine the optimal angular loss at each scale for every nondecreasing weight. At the critical weight $1/(1+\log(1/r))$, where $r$ measures distance to a coordinate direction, the loss is exactly of order $\log\log n$. For each weight, one compact set attains the bounds at every scale. It has Hausdorff length one, uniform coordinate marginals and Ahlfors regular length measure.
+The least area covered by $n$ permutation strips in the unit square is of order $1/\log n$, even when the top intervals slide freely as in Kaczynski's original question. For each nondecreasing angular weight we determine the sharp projection bound at every scale. The critical weight $1/(1+\log(1/r))$ incurs a factor of order $\log\log n$. For each weight, one compact set realizes the bounds at every scale. It has Hausdorff length one, uniform coordinate marginals and Ahlfors regular length measure.
 \end{abstract}
 \maketitle
 \pagestyle{plain}
@@ -46,14 +46,16 @@ The least area covered by $n$ permutation strips in the unit square is of order 
 Divide the bottom of the unit square into $n$ equal intervals. Join each to an interval of the same width on the top by a parallelogram. Their areas add to one. How small can their union be? In his letter of 8 October 1998, Kaczynski allowed the top intervals to slide independently and asked whether the least covered area $\beta_n$ is of order $1/\log n$. He reported a proof of the lower bound and recalled a possible upper bound of order $(\log\log n)^2/\log n$ \cite[pp.~27--29]{Letter}. In the permutation version the top intervals also partition their edge. Write $\alpha_n$ for its minimum. Kuklinski proved $\alpha_n\lesssim(\log n)^{-p}$ for some $p>0$ \cite[Conjecture~2 and Theorem~4]{Kuklinski}.
 
 \begin{theorem}[Kaczynski's second conjecture]\label{thm:area}
-For $n\ge2$, $\beta_n\asymp\alpha_n\asymp1/\log n$. More precisely,
+For $n\ge2$, $\beta_n\asymp\alpha_n\asymp1/\log n$. In particular,
 \[
  \liminf_{n\to\infty}(\log n)\beta_n\ge2,\qquad
  \liminf_{n\to\infty}(\log n)\alpha_n\ge\pi^2/4 .
 \]
 \end{theorem}
 
-A segment with bottom endpoint $x$ and top endpoint $y$ passes through horizontal coordinate $\pi_t(x,y)=(1-t)x+ty$ at height $t$. Thus a strip joining $I$ to $J$ has section $\pi_t(I\times J)$. A permutation $\sigma$ selects a union $P_\sigma$ of $n$ such squares in the endpoint plane. At heights zero and one its projections fill the unit interval. Our second result quantifies how quickly they can shrink between these edges.
+Already $\beta_2=1/\sqrt2$ while $\alpha_2=3/4$. Indeed the separation of the left endpoints at height $t$ is $d(t)=1/2+vt$, and the covered length is $1/2+|d(t)|$. Put $c=1/\sqrt2$. Since $\int_0^c t\,dt=\int_c^1t\,dt$, we have $\int_0^1|d|\ge\int_0^c d-\int_c^1d=c-1/2$, with equality for $v=-c$ (top starts $1/2,1-c$). The two permutations have $v=0,-1$ and areas $1,3/4$.
+
+A strip joining $I$ to $J$ has horizontal section $\pi_t(I\times J)$ at height $t$, where $\pi_t(x,y)=(1-t)x+ty$. A permutation $\sigma$ selects $n$ such squares in the endpoint plane. Their union $P_\sigma$ has full projections at $t=0,1$. How quickly can its projections shrink between these edges?
 
 Write $p_\theta(x,y)=x\cos\theta+y\sin\theta$, $s_\theta=|\cos\theta|+|\sin\theta|$, and $\rho_\theta=\min(|\cos\theta|,|\sin\theta|)/s_\theta$. For compact $K$ put $K_\delta=K+[-\delta,\delta]^2$. Given a nondecreasing $b:(0,1/2]\to[0,1]$, define
 \[
@@ -61,7 +63,7 @@ Write $p_\theta(x,y)=x\cos\theta+y\sin\theta$, $s_\theta=|\cos\theta|+|\sin\thet
  M_b(K)=\sup_{\rho_\theta>0} b(\rho_\theta)|p_\theta K|,\qquad
  I_b(\delta)=\int_\delta^{1/2} b(r)\,\frac{dr}{r}.
 \]
-Here $|\cdot|$ is Lebesgue length, $\Fav$ is unnormalized, and logarithms are natural. Smaller weights allow longer projections near the coordinate axes.
+Here $|\cdot|$ denotes Lebesgue length. Logarithms are natural.
 
 \begin{theorem}\label{thm:profile}
 Among compact $K\subset[0,1]^2$ with at least one full coordinate projection, the optimal joint bound at scale $0<\delta<1/2$ is
@@ -77,7 +79,7 @@ One set $S=S_b$ attains the upper bound up to an absolute constant for all $\del
 The upper bound in \eqref{eq:gridlaw} can likewise be attained with $\Fav(P_\sigma)\lesssim1/\log n$. All comparison constants are absolute.
 \end{theorem}
 
-The logarithmic rate holds uniformly with weight $b$ precisely when $\int_0^{1/2}b(r)\,dr/r<\infty$. For $b(r)=1/(1+\log(1/r))$, the integral truncated at $1/n$ grows like $\log\log n$. In fact $M_b$ alone then has minimum of order $(\log\log n)/\log n$. The proof gives zero length for every oblique projection of $S$.
+The logarithmic rate holds uniformly with weight $b$ precisely when $\int_0^{1/2}b(r)\,dr/r<\infty$. For $b(r)=1/(1+\log(1/r))$, one has $I_b(1/n)=\log[(1+\log n)/(1+\log2)]$. In fact $M_b$ alone then has minimum of order $(\log\log n)/\log n$. The proof gives zero length for every oblique projection of $S$.
 
 Mattila obtained the logarithmic lower bound from positive one-dimensional Hausdorff content \cite{Mattila,CSS}. Chang, Shmerkin and Suomala attained this order with Ahlfors regular random sets and proved a $(\log j)/j$ lower bound at level $j$ for nested fixed-radix patterns with one square per column at every level \cite[Theorem~A.1]{CSS}. For prescribed projection directions and individual projected measures see \cite{Visibility,CS}. Our subdivision ratios vary.
 
@@ -99,7 +101,7 @@ Let $f(a)=a+v_i$ translate $I_i$ onto $J_i$. Ignore interval endpoints. Two part
  =\int_{\mathcal I_f}\psi\!\left(\frac p{p+q}\right)
                  \frac{da\,da'}{p+q}.
 \]
-With $\psi(t)=1/t$, each crossing contributes $1/(a'-a)$. The integral of this kernel over all pairs in distinct bottom intervals is $h(P)$. Indeed its integral over $0<a<a'<L$, $a'-a>\eta$, equals $L\log(L/\eta)-L+\eta$ for $\eta<L$. Subtract the contributions with $L=w_i$ from the one with $L=1$ and let $\eta\downarrow0$. This proves the one-sided bound. For matched partitions each pair in distinct bottom intervals crosses in exactly one of $P,RP$, since reflection reverses the order of the top intervals. The two contributions therefore exhaust $h(P)$. Reversing time gives the top-edge identity with $1/(1-t)$, since reflecting the top partition preserves pair distances. Averaging the two identities proves \eqref{eq:entropy}.
+With $\psi(t)=1/t$, each crossing contributes $1/(a'-a)$. The integral of this kernel over all pairs in distinct bottom intervals is $h(P)$. Indeed its integral over $0<a<a'<L$, $a'-a>\eta$, equals $L\log(L/\eta)-L+\eta$ for $\eta<L$. Subtract the contributions with $L=w_i$ from the one with $L=1$ and let $\eta\downarrow0$. This proves the one-sided bound. For matched partitions each pair in distinct bottom intervals crosses in exactly one of $P,RP$, since reflection reverses the order of the top intervals. The two contributions therefore exhaust $h(P)$. View the strips from the top, reflecting both edges of the second pattern to restore a common starting partition. This gives the same identity with $1/(1-t)$. Averaging the two identities proves \eqref{eq:entropy}.
 \end{proof}
 
 At each height $\int Z_Q\,dx=1$, so $\int Z_Q^2\,dx\ge1/\ell_Q(t)$. In particular,
@@ -114,7 +116,7 @@ To read off area bounds, let $V=W$ for a permutation and $V(t)=1/(2t)$ for freel
 \end{equation}
 Take $g=1$, multiply by $\log n$, let $n\to\infty$, and exhaust $(0,1)$ by such $J$. The two integrals of $\sqrt V$ are $\pi/2$ and $\sqrt2$, giving Theorem~\ref{thm:area}'s lower constants. Formula~\eqref{eq:cs} also gives a lower bound of order $1/\log n$ on every fixed interval of heights with nonempty interior.
 
-On the equal grid, a crossing pair with unsigned index gaps $d,e$ has overlap area $1/[n(d+e)]$ by the same Jacobian. As $1/(d+e)\le(1/d+1/e)/4$ and each edge has $n-d$ pairs of gap $d$, the two second moments sum to at most $H_n+1$, where $H_n=\sum_{d=1}^n1/d$. Each moment is at least one, giving $\alpha_n\ge1/H_n$. This is the unweighted counterpart of \eqref{eq:budget}, in the spirit of the classical tube-overlap estimate \cite{Cordoba}.
+On the equal grid, a crossing pair with unsigned index gaps $d,e$ has overlap area $1/[n(d+e)]$ by the same Jacobian. As $1/(d+e)\le(1/d+1/e)/4$ and each edge has $n-d$ pairs of gap $d$, the two second moments sum to at most $H_n+1$, where $H_n=\sum_{d=1}^n1/d$. Each moment is at least one, giving $\alpha_n\ge1/H_n$. For freely placed tops a pair of bottom gap $d$ has area at most $1/(nd)$: in grid units its overlap at height $t$ is $(1-|d-vt|)_+$. If $v\ge d$, change variables and use the unit integral of the tent. If $v<d$, the tent is bounded by $(1-d(1-t))_+$. Summation gives $\beta_n\ge1/(2H_n-1)$. These are finite tube-overlap estimates \cite{Cordoba}.
 
 For the angular lower bounds write $t=|\sin\theta|/s_\theta$ and $\tau(t)=\min(t,1-t)=\rho_\theta$. In each quadrant $p_\theta$ corresponds, up to sign and translation, to $s_\theta\pi_t$ on $P$ or $RP$. Changing variables gives
 \[
@@ -216,6 +218,10 @@ The shift is $-s$, $0\le s\le1$, when $u=((2-t)h+1+s)/t-1$. The whole sweep lies
 There are at least $(Ut-1)/(2-t)-1\ge Ut/4$ such positive integers. Their $u$-intervals are disjoint and on each $h\le u/3$, so the prefactor in \eqref{eq:save} is at least $1/8$. Each sweep has $du=ds/t$. Finally $\int_0^1|F\cap(F-s)|\,ds=|F|^2/2$ counts the ordered pairs of points in $F$ above the diagonal. Summing the sweeps with density $1/U$ gives the bound.
 \end{proof}
 
+Here is a direct proof of the finite upper bound. Let $A=\int_0^1\ell_P$ and transpose $P$ if necessary so that $\int_0^{1/2}\ell_P\ge A/2$. Put $r_j=4^{-j}/2$ and $J_j=[r_{j+1},r_j]$. Since $\sum_{j\ge0}(j+1)2^{-j}=4$, for some $j$ we have $\int_{J_j}\ell_P\ge A(j+1)2^{-j}/16$. Cauchy--Schwarz gives $\int_{J_j}\ell_P^2\gtrsim A^2(j+1)^2$. Use Lemma~\ref{lem:scale} with $U=8/r_{j+1}$ and integrate over $J_j$. Some shuffle reduces the area to $A'$ with $A-A'\gtrsim A^2(j+1)^2$ at logarithmic cost $O(j+1)$. Thus $1/A'-1/A\gtrsim j+1$. Also $j+1\lesssim1/A$ since $\int_{J_j}\ell_P^2\le1$.
+
+Stop the first time $A\le1/k$. Each reciprocal gain is bounded below by an absolute constant, so the process stops. The preceding gains telescope to $O(k)$, and the last step costs $O(k)$ as well. The resulting pattern has $N\le e^{Ck}$ squares. Lebesgue measure on the bottom edge, transported along the matched diagonals, gives uniform marginals. Hall's matching places an equal-grid pattern in the $1/n$-thickening, increasing the covered area by at most $2N/n$. Take $k=(\log n)/(2C)$ for large $n$. This gives $\beta_n\le\alpha_n\lesssim1/\log n$.
+
 \section{From one scale to all scales}
 
 Write $N(P)$ for the number of squares in $P$.
@@ -228,24 +234,22 @@ Let $0\le v\le1$ be nondecreasing on $(0,1/2]$, with $\int_0^{1/2}v(r)\,dr/r\le1
 In fact the construction bounds $M_{\max(v,\sqrt{\cdot})}(Q)\le C/k$.
 \end{lemma}
 \begin{proof}
-Put $w(r)=\max(v(r),\sqrt r)$ for $r>0$ and $w(0)=0$. Draw $a$ uniformly from $[0,1]$ and set
+Put $w(r)=\max(v(r),\sqrt r)$ and use the thresholds $i/k$, $1\le i\le k$. At stage $i$ set
 \[
- Y=\int_0^{1/2}\mathbf1_{\{a\le w(r)\}}\,\frac{dr}{r},\qquad U=16e^Y .
+ Y_i=\int_0^{1/2}\mathbf1_{\{i\le kw(r)\}}\,\frac{dr}{r},\qquad U_i=16e^{Y_i}.
 \]
-Fubini gives $\E Y=\int w(r)\,dr/r\le1+\sqrt2$. When $a\le w(\tau(t))$, monotonicity gives $Y\ge\log(1/(2\tau(t)))$, hence $U\tau(t)\ge8$. This single choice of a random scale serves all heights.
+Each radius $r$ is counted $\lfloor kw(r)\rfloor$ times, so $\sum_iY_i\le k\int_0^{1/2}w(r)\,dr/r\le(1+\sqrt2)k$. Whenever $i\le kw(r)$, monotonicity gives $Y_i\ge\log(1/(2r))$, hence $U_i r\ge8$.
 
-Choose $u$ uniformly from $[U,2U]$. Starting with the unit square $P_0$, put $P_{i+1}=D\star P_i$ with fresh independent draws, where $D$ is $D_u$ or its transpose with equal probability. Transposing the outer pattern exchanges $t$ and $1-t$ in the displacement while the inner section remains $\pi_t(P_i)$. Lemma~\ref{lem:scale} and \eqref{eq:insert} give a conditional expected saving of at least $w(\tau(t))|\pi_t(P_i)|^2/128$. For $x_i=\E|\pi_t(P_i)|$, Jensen's inequality and $x_{i+1}\le x_i$ yield $1/x_{i+1}-1/x_i\ge w(\tau(t))/128$. The logarithmic costs of the subdivisions add, each with mean at most $\log64+\E Y$. Thus
+Start with the unit square. At stage $i$ draw $u$ uniformly from $[U_i,2U_i]$ and replace $P$ by $D\star P$, where $D$ is $D_u$ or its transpose with equal probability, independently at each stage. Write $x_i=\E|\pi_t(P_i)|$ and $r=\tau(t)>0$. Transposition exchanges $t$ and $1-t$ in the outer displacement and leaves the inner section $\pi_t(P)$ unchanged. Thus at each of the $\lfloor kw(r)\rfloor$ active stages, Lemma~\ref{lem:scale} and Jensen give $x_{i-1}-x_i\ge x_{i-1}^2/128$. Taking reciprocals gains at least $1/128$ per active stage; at other stages \eqref{eq:insert} gives $x_i\le x_{i-1}$. Hence $w(r)x_k\le128/k$. Every realization has $N(P_k)\le N_0=e^{C_0 k}$, since the logarithmic cost per stage is at most $\log64+Y_i$.
+
+Let $H(t)$ average the section lengths of $M$ independent realizations and $m(t)=\E H(t)$. Both are $2N_0$-Lipschitz, as every projected interval endpoint moves at speed at most one. On a uniform mesh of $J=\lceil8kN_0\rceil$ intervals, Hoeffding's inequality gives
 \[
- w(\tau(t))\E|\pi_t(P_k)|\le128/k,\qquad \E\log N(P_k)\le C_0k .
+ \Pr\left\{\max_{0\le j\le J}(H-m)(j/J)>1/(2k)\right\}
+ \le (J+1)e^{-M/(2k^2)} .
 \]
+Choose the least even $M>2k^2\log(J+1)$. Some realization then satisfies $H\le m+1/k$ at every height, and $M=O(k^3)$.
 
-Condition on $N(P_k)\le N_0=\exp(2C_0 k)$, an event of probability at least $1/2$. Denote this random pattern by $V$ and its mean section length by $m(t)$. To realize the mean at all heights, average $M$ independent copies, writing $H(t)=M^{-1}\sum_a|\pi_t(V_a)|$. Since each summand is in $[0,1]$, some sample has $\|H-m\|_2\le M^{-1/2}$ by the variance bound integrated over $[0,1]$. Both functions are $2N_0$-Lipschitz, as each projected interval's endpoints move at speed at most one. For $f=H-m$ we have $f(0)=0$, so integration of $(f^2)'$ gives
-\[
- \|f\|_\infty^2\le 2\|f\|_2\|f'\|_2\le 8N_0/\sqrt M .
-\]
-Take $M$ to be the smallest even integer at least $64N_0^2k^4$. Then $H(t)\le m(t)+1/k$ simultaneously for all $t$.
-
-Place the $M$ copies in equal squares of side $1/M$, matching column $i$ to row $i+M/2\pmod M$ (indices start at zero). The resulting pattern $V_*$ has $|\pi_t(V_*)|\le H(t)$ by subadditivity. Its outer squares have their main diagonals on $y-x=\pm1/2$, inside the diamond $|x-1/2|+|y-1/2|\le1/2$. Every point in a square is within $1/(\sqrt2 M)$ of its diagonal, hence $\diam V_*\le1+\sqrt2/M$. Take $Q=V_*\star RV_*$. In either quadrant \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta|\pi_t(V_*)|$. Conditioning costs at most a factor two in the mean bound, so $w(\rho_\theta)|p_\theta Q|\lesssim1/k$. Integration gives the Favard estimate since $w(r)\ge\sqrt r$ and $d\theta/dt=s_\theta^2\le2$. Finally $Q\subset V_*$ and $N(Q)\le(MN_0)^2$, as required.
+Place the $M$ copies in equal squares of side $1/M$, matching column $i$ to row $i+M/2\pmod M$ (indices start at zero). The resulting pattern $V_*$ has $|\pi_t(V_*)|\le H(t)$ by subadditivity. Its outer squares have their main diagonals on $y-x=\pm1/2$, inside the diamond $|x-1/2|+|y-1/2|\le1/2$. Every point in a square is within $1/(\sqrt2 M)$ of its diagonal, hence $\diam V_*\le1+\sqrt2/M$. Take $Q=V_*\star RV_*$. In either quadrant \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta|\pi_t(V_*)|$. The mean bound therefore gives $w(\rho_\theta)|p_\theta Q|\lesssim1/k$. Integration gives the Favard estimate since $w(r)\ge\sqrt r$ and $d\theta/dt=s_\theta^2\le2$. Finally $Q\subset V_*$ and $N(Q)\le(MN_0)^2$, as required.
 \end{proof}
 
 For a given $b$ choose a new weight at each scale. With $k=2^j$, $j\ge1$, put
@@ -258,7 +262,7 @@ Its integral against $dr/r$ is at most one. For $r<e^{-k}$, monotonicity gives $
  \Fav(Q_j)\lesssim1/k,\quad M_b(Q_j)\lesssim A_k/k .
 \]
 
-Nest the blocks by $T_0=[0,1]^2$, $T_j=T_{j-1}\star Q_j$, and take $S=\bigcap_j T_j$. Both coordinate projections are $[0,1]$ by compactness of the nested fibers. The maximum side at level $j$ is at most $2^{-j}$. Inside each square of side $d$ at that level, the next block covers its descendants with diameter at most $d(1+C2^{-j-1})$. Since the sides sum to one, $\mathcal H^1(S)\le1$. Projection gives equality. For either coordinate $p$ and every Borel $E\subset[0,1]$, $S\cap p^{-1}(E)$ projects onto $E$. Its length is at least $|E|$, hence $p_\#(\mathcal H^1|_S)$ is Lebesgue measure by equality of total masses. Outside the countable set of subdivision endpoints the nested squares determine a unique point in each fiber.
+Nest the blocks by $T_0=[0,1]^2$, $T_j=T_{j-1}\star Q_j$, and take $S=\bigcap_j T_j$. Both coordinate projections are $[0,1]$ by compactness of the nested fibers. At level $j$ the sides sum to one and none exceeds $2^{-j}$. The descendants of each square of side $d$ lie in a set of diameter $d(1+C2^{-j-1})$, so $\mathcal H^1(S)\le1$. Projection gives equality. For either coordinate $p$, the length of $S\cap p^{-1}(E)$ is at least $|E|$ for every Borel $E\subset[0,1]$, by projection. Thus $p_\#(\mathcal H^1|_S)$ is Lebesgue measure by equality of total masses. Outside the countable set of subdivision endpoints the nested squares determine a unique point in each fiber.
 
 For $k=2^j$, $\log N(T_j)\le C_1k$ by summing the costs. Thickening one square by $\delta$ adds $2s_\theta\delta$ to its projected length. Using \eqref{eq:insert} and summing over the squares gives
 \[
@@ -271,7 +275,7 @@ It remains to check length in a ball. Every elementary square of side $d$ has ma
 
 For $z\in S$, $0<r\le\diam S$, follow a chain through $z$ to the first square of side at most $r/8$. Its parent has $L>r/8$ and $h\le r/8$. The child's family has at least $L/(4h)>r/(32h)$ members. Choose $1+\lfloor r/(32h)\rfloor$ consecutive members including this child. All lie in $B(z,r)$ since $5r/32+2\sqrt2h<r$. Their mass is at least $r/32$, and the horizontal marginal gives the upper bound $2r$.
 
-Finally Hall's grid matching applied to $S$ at $\delta=1/n$ gives \eqref{eq:gridlaw} and the simultaneous Favard bound (enlarge constants for $n=2$). The strip area $\int_0^1\ell_{P_\sigma}(t)\,dt$ is at most $\Fav(P_\sigma)$, so this also completes Theorem~\ref{thm:area}. These bounds leave open the sharp leading constants and the monotonicity question in Kaczynski's letter.
+Finally Hall's grid matching applied to $S$ at $\delta=1/n$ gives \eqref{eq:gridlaw} and the simultaneous Favard bound (enlarge constants for $n=2$). The leading constants and Kaczynski's monotonicity question remain open.
 
 \medskip
 \noindent\textit{Acknowledgment.}
