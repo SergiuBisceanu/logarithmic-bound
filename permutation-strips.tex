@@ -21,7 +21,6 @@
 \newtheorem{lemma}{Lemma}
 \renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}
 \newcommand{\Fav}{\operatorname{Fav}}
-\newcommand{\E}{\mathbb E}
 \newcommand{\R}{\mathbb R}
 \newcommand{\diam}{\operatorname{diam}}
 \setlength{\emergencystretch}{1.5em}
@@ -208,7 +207,7 @@ Pair $R_i$ with $B_{i+h}$, $1\le i\le m-h-1$. In units of their common width, bl
 \end{figure}
 
 \begin{lemma}\label{lem:scale}
-If $0<t\le1/2$, $U\ge16$ and $Ut\ge8$, choosing $u$ uniformly in $[U,2U]$ saves at least $|F|^2/64$ in expectation.
+If $0<t\le1/2$, $U\ge16$ and $Ut\ge8$, the saving averaged over $U\le u\le2U$ is at least $|F|^2/64$.
 \end{lemma}
 \begin{proof}
 The shift is $-s$, $0\le s\le1$, when $u=((2-t)h+1+s)/t-1$. The whole sweep lies in $[U,2U]$ for the integers
@@ -218,51 +217,50 @@ The shift is $-s$, $0\le s\le1$, when $u=((2-t)h+1+s)/t-1$. The whole sweep lies
 There are at least $(Ut-1)/(2-t)-1\ge Ut/4$ such positive integers. Their $u$-intervals are disjoint and on each $h\le u/3$, so the prefactor in \eqref{eq:save} is at least $1/8$. Each sweep has $du=ds/t$. Finally $\int_0^1|F\cap(F-s)|\,ds=|F|^2/2$ counts the ordered pairs of points in $F$ above the diagonal. Summing the sweeps with density $1/U$ gives the bound.
 \end{proof}
 
-Here is a direct proof of the finite upper bound. Let $A=\int_0^1\ell_P$ and transpose $P$ if necessary so that $\int_0^{1/2}\ell_P\ge A/2$. Put $r_j=4^{-j}/2$ and $J_j=[r_{j+1},r_j]$. Since $\sum_{j\ge0}(j+1)2^{-j}=4$, for some $j$ we have $\int_{J_j}\ell_P\ge A(j+1)2^{-j}/16$. Cauchy--Schwarz gives $\int_{J_j}\ell_P^2\gtrsim A^2(j+1)^2$. Use Lemma~\ref{lem:scale} with $U=8/r_{j+1}$ and integrate over $J_j$. Some shuffle reduces the area to $A'$ with $A-A'\gtrsim A^2(j+1)^2$ at logarithmic cost $O(j+1)$. Thus $1/A'-1/A\gtrsim j+1$. Also $j+1\lesssim1/A$ since $\int_{J_j}\ell_P^2\le1$.
+For a direct proof of the finite upper bound, let $A=\int_0^1\ell_P$. Transposing if necessary, assume $\int_0^{1/2}\ell_P\ge A/2$. Put $r_j=4^{-j}/2$ and $J_j=[r_{j+1},r_j]$. Since $\sum_{j\ge0}(j+1)2^{-j}=4$, some $J_j$ has $\int_{J_j}\ell_P\ge A(j+1)2^{-j}/16$, hence $\int_{J_j}\ell_P^2\gtrsim A^2(j+1)^2$ by Cauchy--Schwarz. Integrate Lemma~\ref{lem:scale} with $U=8/r_{j+1}$ over $J_j$. Some shuffle reduces the area to $A'$ with $A-A'\gtrsim A^2(j+1)^2$ at logarithmic cost $O(j+1)$. Thus $1/A'-1/A\gtrsim j+1$ and $j+1\lesssim1/A$.
 
 Stop the first time $A\le1/k$. Each reciprocal gain is bounded below by an absolute constant, so the process stops. The preceding gains telescope to $O(k)$, and the last step costs $O(k)$ as well. The resulting pattern has $N\le e^{Ck}$ squares. Lebesgue measure on the bottom edge, transported along the matched diagonals, gives uniform marginals. Hall's matching places an equal-grid pattern in the $1/n$-thickening, increasing the covered area by at most $2N/n$. Take $k=(\log n)/(2C)$ for large $n$. This gives $\beta_n\le\alpha_n\lesssim1/\log n$.
 
 \section{From one scale to all scales}
 
-Write $N(P)$ for the number of squares in $P$.
-
 \begin{lemma}\label{lem:block}
-Let $0\le v\le1$ be nondecreasing on $(0,1/2]$, with $\int_0^{1/2}v(r)\,dr/r\le1$. For every integer $k\ge2$ there is a pattern $Q$ satisfying
+Let $v:(0,1/2]\to[0,1]$ be nondecreasing with $\int_0^{1/2}v(r)\,dr/r\le1$. For each integer $k\ge2$ there is a pattern $Q$ of $N(Q)$ squares with
 \[
  \log N(Q)\le Ck,\qquad \Fav(Q)+M_v(Q)\le C/k,\qquad \diam Q\le1+C/k.
 \]
 In fact the construction bounds $M_{\max(v,\sqrt{\cdot})}(Q)\le C/k$.
 \end{lemma}
 \begin{proof}
-Put $w(r)=\max(v(r),\sqrt r)$ and use the thresholds $i/k$, $1\le i\le k$. At stage $i$ set
+Put $w(r)=\max(v(r),\sqrt r)$ and $c(r)=\lfloor kw(r)\rfloor$. Starting with the unit square, at stage $0\le i<k$ insert the current pattern in $D_u$ or its transpose, with $U_i\le u\le2U_i$, where
 \[
- Y_i=\int_0^{1/2}\mathbf1_{\{i\le kw(r)\}}\,\frac{dr}{r},\qquad U_i=16e^{Y_i}.
+ Y_i=\int_0^{1/2}\mathbf1_{\{i<c(r)\}}\,\frac{dr}{r},\qquad U_i=16e^{Y_i}.
 \]
-Each radius $r$ is counted $\lfloor kw(r)\rfloor$ times, so $\sum_iY_i\le k\int_0^{1/2}w(r)\,dr/r\le(1+\sqrt2)k$. Whenever $i\le kw(r)$, monotonicity gives $Y_i\ge\log(1/(2r))$, hence $U_i r\ge8$.
+Each $r$ is counted $c(r)$ times, so $\sum_iY_i\le k\int_0^{1/2}w(r)\,dr/r\le(1+\sqrt2)k$. When $i<c(r)$, monotonicity gives $Y_i\ge\log(1/(2r))$, hence $U_i r\ge8$. Every path of shuffles has at most $B=e^{100k}$ squares, since each stage multiplies their number by at most $4U_i$.
 
-Start with the unit square. At stage $i$ draw $u$ uniformly from $[U_i,2U_i]$ and replace $P$ by $D\star P$, where $D$ is $D_u$ or its transpose with equal probability, independently at each stage. Write $x_i=\E|\pi_t(P_i)|$ and $r=\tau(t)>0$. Transposition exchanges $t$ and $1-t$ in the outer displacement and leaves the inner section $\pi_t(P)$ unchanged. Thus at each of the $\lfloor kw(r)\rfloor$ active stages, Lemma~\ref{lem:scale} and Jensen give $x_{i-1}-x_i\ge x_{i-1}^2/128$. Taking reciprocals gains at least $1/128$ per active stage; at other stages \eqref{eq:insert} gives $x_i\le x_{i-1}$. Hence $w(r)x_k\le128/k$. Every realization has $N(P_k)\le N_0=e^{C_0 k}$, since the logarithmic cost per stage is at most $\log64+Y_i$.
+Fix finitely many heights $t_j\in(0,1)$ and write $c_j=c(\tau(t_j))$. We claim that for any $a_j\ge0$ some pattern $P$ after $i$ stages satisfies
+\begin{equation}\label{eq:test}
+ \sum_j a_j\bigl(\ell_P(t_j)-e_{ij}\bigr)\le0,\qquad
+ e_{ij}=\frac{128}{128+\min(i,c_j)} .
+\end{equation}
+At $i=0$ this is equality. Put $F_j(x)=x-\mathbf1_{\{i<c_j\}}x^2/128$. Choose $P$ by \eqref{eq:test} at stage $i$ with weights $a_jF'_j(e_{ij})\ge0$ and write $x_j=\ell_P(t_j)$. Averaging over $u$ and both orientations gives one shuffle $D$ with $\sum_j a_j\ell_{D\star P}(t_j)\le\sum_j a_jF_j(x_j)$. Indeed, transposing the outer shuffle exchanges $t_j$ and $1-t_j$ in the displacement. Lemma~\ref{lem:scale} gives a mean saving of $x_j^2/64$ in one orientation when $i<c_j$, and both savings are nonnegative. By concavity, $F_j(x_j)\le F_j(e_{ij})+F'_j(e_{ij})(x_j-e_{ij})$. Since $F_j(e_{ij})\le e_{i+1,j}$, summing proves \eqref{eq:test} at $i+1$.
 
-Let $H(t)$ average the section lengths of $M$ independent realizations and $m(t)=\E H(t)$. Both are $2N_0$-Lipschitz, as every projected interval endpoint moves at speed at most one. On a uniform mesh of $J=\lceil8kN_0\rceil$ intervals, Hoeffding's inequality gives
+List the heights $h/(2n)$ and $1-h/(2n)$, $1\le h\le n=\lceil kB\rceil$, as $t_1,\ldots,t_J$ with $J=2n$. Choose $M=k^2J$ patterns successively. If $S_j$ is the sum of the excesses $\ell_P(t_j)-e_{kj}$ so far, use \eqref{eq:test} with $a_j=(S_j)_+$. The next excess $d_j$ has $|d_j|\le1$, so
 \[
- \Pr\left\{\max_{0\le j\le J}(H-m)(j/J)>1/(2k)\right\}
- \le (J+1)e^{-M/(2k^2)} .
+ \sum_j(S_j+d_j)_+^2\le\sum_j\bigl((S_j)_+^2+2(S_j)_+d_j+1\bigr)
+ \le\sum_j(S_j)_+^2+J .
 \]
-Choose the least even $M>2k^2\log(J+1)$. Some realization then satisfies $H\le m+1/k$ at every height, and $M=O(k^3)$.
+Thus the mean section length $H$ satisfies $H(t_j)\le e_{kj}+\sqrt{J/M}=e_{kj}+1/k$. Round $0<t<1$ towards $1/2$ to a mesh height $t_j$ within $1/(2n)$. Each pattern has at most $2B$ interval endpoints moving at speed at most one, so $H(t)\le H(t_j)+B/n\le e_{kj}+2/k$. Since $w(\tau(t))\le w(\tau(t_j))<(c_j+1)/k$ and $w\le1$, we get $w(\tau(t))H(t)\le130/k$.
 
-Place the $M$ copies in equal squares of side $1/M$, matching column $i$ to row $i+M/2\pmod M$ (indices start at zero). The resulting pattern $V_*$ has $|\pi_t(V_*)|\le H(t)$ by subadditivity. Its outer squares have their main diagonals on $y-x=\pm1/2$, inside the diamond $|x-1/2|+|y-1/2|\le1/2$. Every point in a square is within $1/(\sqrt2 M)$ of its diagonal, hence $\diam V_*\le1+\sqrt2/M$. Take $Q=V_*\star RV_*$. In either quadrant \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta|\pi_t(V_*)|$. The mean bound therefore gives $w(\rho_\theta)|p_\theta Q|\lesssim1/k$. Integration gives the Favard estimate since $w(r)\ge\sqrt r$ and $d\theta/dt=s_\theta^2\le2$. Finally $Q\subset V_*$ and $N(Q)\le(MN_0)^2$, as required.
+Match column $h$ of the $2M$-grid to row $(h+M)\bmod 2M$, numbering from zero. Insert the $M$ patterns in order in each half. The result $V$ has $\ell_V\le H$ by subadditivity. The selected diagonals lie on $y-x=\pm1/2$ in the central diamond of diameter one. Each point is within $1/(2\sqrt2 M)$ of its diagonal, so $\diam V\le1+1/M$. For $Q=V\star RV$, \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta H(t)$ in either quadrant, hence $M_w(Q)\lesssim1/k$. Integrating gives $\Fav(Q)\lesssim1/k$ since $w(r)\ge\sqrt r$ and $|d\theta/dt|=s_\theta^2\le2$. Finally $Q\subset V$ and $N(Q)\le(2MB)^2=e^{O(k)}$.
 \end{proof}
 
-For a given $b$ choose a new weight at each scale. With $k=2^j$, $j\ge1$, put
-\[
- A_k=1+I_b(e^{-k}),\qquad v_k(r)=A_k^{-1}b(r)\mathbf1_{\{r\ge e^{-k}\}}.
-\]
-Its integral against $dr/r$ is at most one. For $r<e^{-k}$, monotonicity gives $(k-\log2)b(r)\le I_b(e^{-k})$. Lemma~\ref{lem:block} and boundedness of projections give a block $Q_j$ with
+For $k=2^j$, $j\ge1$, put $A_k=1+I_b(e^{-k})$. The weight $v_k=b\,\mathbf1_{[e^{-k},1/2]}/A_k$ has integral at most one against $dr/r$. For $r<e^{-k}$, monotonicity gives $(k-\log2)b(r)\le I_b(e^{-k})$. Lemma~\ref{lem:block} and boundedness of projections thus give a block $Q_j$ with
 \[
  \log N(Q_j)\lesssim k,\quad \diam Q_j\le1+C/k,\quad
  \Fav(Q_j)\lesssim1/k,\quad M_b(Q_j)\lesssim A_k/k .
 \]
 
-Nest the blocks by $T_0=[0,1]^2$, $T_j=T_{j-1}\star Q_j$, and take $S=\bigcap_j T_j$. Both coordinate projections are $[0,1]$ by compactness of the nested fibers. At level $j$ the sides sum to one and none exceeds $2^{-j}$. The descendants of each square of side $d$ lie in a set of diameter $d(1+C2^{-j-1})$, so $\mathcal H^1(S)\le1$. Projection gives equality. For either coordinate $p$, the length of $S\cap p^{-1}(E)$ is at least $|E|$ for every Borel $E\subset[0,1]$, by projection. Thus $p_\#(\mathcal H^1|_S)$ is Lebesgue measure by equality of total masses. Outside the countable set of subdivision endpoints the nested squares determine a unique point in each fiber.
+Nest $T_0=[0,1]^2$, $T_j=T_{j-1}\star Q_j$, and put $S=\bigcap_j T_j$. Both coordinate projections are full by compactness of the nested fibers. At level $j$ the sides sum to one and none exceeds $2^{-j}$. Descendants of a square of side $d$ have diameter at most $d(1+C2^{-j-1})$, so $\mathcal H^1(S)\le1$. Projection gives equality. For either coordinate $p$, projection gives $\mathcal H^1(S\cap p^{-1}(E))\ge|E|$ for every Borel $E\subset[0,1]$. Equality of total masses gives the uniform marginal. Off the countable subdivision endpoints each nested fiber is a singleton.
 
 For $k=2^j$, $\log N(T_j)\le C_1k$ by summing the costs. Thickening one square by $\delta$ adds $2s_\theta\delta$ to its projected length. Using \eqref{eq:insert} and summing over the squares gives
 \[
@@ -271,7 +269,7 @@ For $k=2^j$, $\log N(T_j)\le C_1k$ by summing the costs. Thickening one square b
 \]
 For small $\delta$ choose the largest dyadic $k$ with $2\max(C_1,1)k\le\log(1/\delta)$. Then $A_k\le1+I_b(\delta)$ and the error is at most $\sqrt\delta$. Boundedness covers the remaining scales. The extra $\sqrt r$ bound of Lemma~\ref{lem:block} gives $|p_\theta S|=0$ for every $\rho_\theta>0$. In particular $S$ is purely unrectifiable by the Besicovitch projection theorem \cite[\S1.1]{CSS}.
 
-It remains to check length in a ball. Every elementary square of side $d$ has mass $d$ by its horizontal marginal. Each parent of side $L$ has two ordered families of children, each of total side $L/2$. Within a family the child sides lie in $[h,2h]$ and successive centers are at distance at most $5h$. For the shuffle take $h=L/(2u)$. The horizontal and vertical steps are at most $4h$ and $2h$. For the cyclic half-shift take $h=L/M$ and use the two diagonals. These facts persist under reflection and transposition.
+Every elementary square of side $d$ has mass $d$ by its horizontal marginal. A parent of side $L$ has two ordered families of children, each of total side $L/2$, with sides in $[h,2h]$ and successive centers at distance at most $5h$. For a shuffle $h=L/(2u)$, with horizontal and vertical steps at most $4h$ and $2h$. For the half-shift $h=L/(2M)$ along the two diagonals. Reflection and transposition preserve these bounds.
 
 For $z\in S$, $0<r\le\diam S$, follow a chain through $z$ to the first square of side at most $r/8$. Its parent has $L>r/8$ and $h\le r/8$. The child's family has at least $L/(4h)>r/(32h)$ members. Choose $1+\lfloor r/(32h)\rfloor$ consecutive members including this child. All lie in $B(z,r)$ since $5r/32+2\sqrt2h<r$. Their mass is at least $r/32$, and the horizontal marginal gives the upper bound $2r$.
 
