@@ -4,7 +4,7 @@ Sergiu Alexandru Bîsceanu
 
 Divide the bottom edge of the unit square into $n$ equal intervals and join each to an interval of the same width on the top. How small can the area covered by the resulting parallelograms be? The minimum is of order $1/\log n$, both when the top intervals slide freely and when they permute the equal grid. Already at $n=2$ the minima differ. They are $1/\sqrt 2$ and $3/4$, respectively.
 
-[Read the five-page paper](permutation-strips.pdf) · [LaTeX source](permutation-strips.tex) · [Lean certification of Theorem 1](PermutationStrips/Conjecture.lean#L340)
+[Read the five-page paper](permutation-strips.pdf) · [LaTeX source](permutation-strips.tex) · [Lean proof of Theorem 1](PermutationStrips/Conjecture.lean#L340) · [Lean proof of Theorem 2](PermutationStrips/TheoremTwo.lean#L46)
 
 ## What Lean proves
 
@@ -15,7 +15,9 @@ $$
 $$
 The formalization uses the Lebesgue area of the union of the actual strips. Its upper proof repeatedly chooses a shuffle whose area saving pays for its number of pieces, then transfers the result to the equal grid. [Theorem statements](PermutationStrips/Conjecture.lean#L338) · [Upper construction](PermutationStrips/FiniteUpper.lean) · [Leading lower bounds](PermutationStrips/Weighted.lean)
 
-The paper also determines the sharp angular loss at each scale and constructs one compact set realizing the bounds at all scales. Theorem 2’s full proof is in the paper. Its Lean components include the [scale selection](PermutationStrips/Schedule.lean), [sampling estimate](PermutationStrips/Sampling.lean), [critical weight integral](PermutationStrips/Profile.lean), and [grid matching from uniform marginals](PermutationStrips/Matching.lean).
+For **Theorem 2**, Lean constructs one compact set for each admissible angular weight $b$. That same set works at every scale, has Euclidean Hausdorff length one and uniform coordinate marginals, and has zero projection length in every oblique direction. In every ball of radius $r$ centered on the set, for $0<r\le\operatorname{diam} S$, its length lies between $r/128$ and $2r$. [Theorem and all-scale bounds](PermutationStrips/TheoremTwo.lean) · [Euclidean measure and marginals](PermutationStrips/CompactAhlfors.lean#L114)
+
+Lean proves the matching lower and upper bounds for the compact infimum and the equal-grid minimum. At the critical weight $b(r)=1/(1+\log(1/r))$, the minimum of the weighted projection supremum alone has order $(\log\log n)/\log n$. The formal upper proof selects a finite collection of shuffles deterministically. The paper uses independent sampling for that step. [Critical rate](PermutationStrips/TheoremTwo.lean#L104) · [Finite construction](PermutationStrips/AngularBlock.lean)
 
 ## Reproduce the check
 

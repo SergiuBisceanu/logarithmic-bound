@@ -22,15 +22,15 @@ namespace PermutationStrips.Weighted
 open Crossings
 noncomputable section
 
-private def test (ε t : ℝ) : ℝ := (Real.sqrt (ε + max t 0))⁻¹
+def test (ε t : ℝ) : ℝ := (Real.sqrt (ε + max t 0))⁻¹
 
-private theorem continuous_test {ε : ℝ} (hε : 0 < ε) : Continuous (test ε) := by
+theorem continuous_test {ε : ℝ} (hε : 0 < ε) : Continuous (test ε) := by
   unfold test
   apply Continuous.inv₀ (by fun_prop)
   intro t
   exact (Real.sqrt_pos.2 (by linarith [le_max_right t 0])).ne'
 
-private theorem test_sq {ε t : ℝ} (hε : 0 < ε) (ht : 0 ≤ t) :
+theorem test_sq {ε t : ℝ} (hε : 0 < ε) (ht : 0 ≤ t) :
     test ε t ^ 2 = (ε+t)⁻¹ := by
   rw [test, max_eq_left ht, inv_pow, Real.sq_sqrt (by linarith)]
 
@@ -98,7 +98,7 @@ private theorem far_pair {ε p v : ℝ} (hε : 0 < ε) (hp : 1 < p) :
         _ = 0 := by simp
     rw [hz]; exact inv_nonneg.mpr (sub_nonneg.mpr hp.le)
 
-private def cost (ε : ℝ) (d : ℕ) : ℝ :=
+def cost (ε : ℝ) (d : ℕ) : ℝ :=
   if d ≤ 1 then ε⁻¹ else ((d-1 : ℕ):ℝ)⁻¹
 
 private theorem cost_prefix (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
@@ -115,7 +115,7 @@ private theorem cost_prefix (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
     simp [cost]
     linarith [show 0 ≤ ((n:ℝ)+1)⁻¹ by positivity]
 
-private theorem total_cost (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
+theorem total_cost (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
     (∑ i : Fin n, ∑ j : Fin n, cost ε (Nat.dist i.val j.val)) ≤
       (n:ℝ) * (2 * (harmonic n : ℝ) + 3 * ε⁻¹) := by
   have reduce (i : ℕ) : (∑ j : Fin n, cost ε (Nat.dist i j.val)) =
@@ -147,14 +147,14 @@ private theorem total_cost (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
     nlinarith [show 0 ≤ (n:ℝ) * ((n:ℝ)+1)⁻¹ by positivity,
       show 0 ≤ ((n:ℝ)+1)⁻¹ by positivity]
 
-private def overlap {n : ℕ} (b : Fin n → ℝ) (i j : Fin n) (t : ℝ) : ℝ :=
+def overlap {n : ℕ} (b : Fin n → ℝ) (i j : Fin n) (t : ℝ) : ℝ :=
   tent (path j.val (b j) t - path i.val (b i) t)
 
-private theorem continuous_overlap {n : ℕ} (b : Fin n → ℝ) (i j : Fin n) :
+theorem continuous_overlap {n : ℕ} (b : Fin n → ℝ) (i j : Fin n) :
     Continuous (overlap b i j) :=
   continuous_tent.comp (by unfold path; fun_prop)
 
-private theorem weighted_pair {ε : ℝ} (hε : 0 < ε) {n : ℕ}
+theorem weighted_pair {ε : ℝ} (hε : 0 < ε) {n : ℕ}
     (b : Fin n → ℝ) (i j : Fin n) :
     (∫ t in (0 : ℝ)..1, (test ε t)^2 * overlap b i j t) ≤
       cost ε (Nat.dist i.val j.val) := by

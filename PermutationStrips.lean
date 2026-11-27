@@ -1,15 +1,17 @@
 import PermutationStrips.Conjecture
+import PermutationStrips.TheoremTwo
 import PermutationStrips.Schedule
 import PermutationStrips.Sampling
 import Lean.Util.CollectAxioms
 
 /-!
-# Certification of Kaczynski's finite strip conjecture
+# Certification of the strip conjecture and the sharp angular profile
 
 `PermutationStrips.Conjecture.kaczynski_second_conjecture` gives the order of
 both attained minima. `PermutationStrips.Conjecture.lower_leading_constants`
-gives their liminf bounds. The sampling and schedule modules verify additional
-estimates in the angular construction.
+gives their liminf bounds. `PermutationStrips.Angular.sharp_angular_profile`
+constructs the Euclidean length-one compact witness and gives both extremal laws.
+`PermutationStrips.Angular.critical_grid_rate` gives the critical log-log loss.
 
 The default build checks the transitive dependencies of every public declaration
 in the project namespace against Lean's three standard axioms.

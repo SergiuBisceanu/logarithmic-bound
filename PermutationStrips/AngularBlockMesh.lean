@@ -1,0 +1,127 @@
+import PermutationStrips.AngularBlockPath
+import PermutationStrips.AngularBlockGame
+import PermutationStrips.GridTransfer
+
+/-! A bounded common ensemble on a one-sided mesh of heights. The mesh rounds
+towards height one half, so the weight may jump at any radius. -/
+
+open Set MeasureTheory
+open scoped BigOperators
+namespace PermutationStrips.AngularBlock
+noncomputable section
+
+theorem paths_on_mesh {J : Type*} [Fintype J] [Nonempty J] (k : ℕ) (hk : 0 < k)
+    (t : J → ℝ) (ht : ∀ j, t j ∈ Icc 0 1)
+    (cut : J → ℕ) (U : ℕ → ℝ) (hU : ∀ i, 16 ≤ U i)
+    (hc : ∀ i j, i < cut j → 8 ≤ U i * radius (t j)) :
+    ∃ s : Fin (k^2*Fintype.card J) → Path,
+      (∀ i, (Fintype.card (s i).Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i) ∧
+      ∀ j, (∑ i, len (s i).pattern (t j)) / (k^2*Fintype.card J : ℕ) ≤
+        envelope k (cut j)+1/k := by
+  let X := {p : Path // (Fintype.card p.Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i}
+  let e := fun (p : X) j => len p.val.pattern (t j) - envelope k (cut j)
+  have htest (a : J → ℝ) (ha : ∀ j, 0 ≤ a j) : ∃ p : X, ∑ j, a j*e p j ≤ 0 := by
+    obtain ⟨p,hp,hp'⟩ := exists_path t ht cut U hU hc k a ha
+    exact ⟨⟨p,hp⟩,hp'⟩
+  have herr (p : X) (j : J) : |e p j| ≤ 1 := by
+    have henv : 0 ≤ envelope k (cut j) ∧ envelope k (cut j) ≤ 1 := by
+      unfold envelope
+      exact ⟨by positivity,(div_le_iff₀ (by positivity)).mpr (by simp)⟩
+    have hlo : 0 ≤ len p.1.pattern (t j) := measureReal_nonneg
+    have hhi := p.1.pattern.section_length_le_one (ht j)
+    exact abs_le.mpr ⟨by dsimp [e]; linarith [henv.2],by dsimp [e]; linarith [henv.1]⟩
+  obtain ⟨s,hs⟩ := exists_sample e herr htest (k^2*Fintype.card J)
+  refine ⟨fun i => (s i).val,fun i => (s i).property,fun j => ?_⟩
+  let q := Fintype.card J
+  have hq : 0 < q := Fintype.card_pos
+  have hm : 0 < (k^2*q : ℕ) := by positivity
+  have h := hs j
+  dsimp only [e] at h
+  rw [Finset.sum_sub_distrib] at h
+  simp only [Finset.sum_const,Finset.card_univ,Fintype.card_fin,nsmul_eq_mul] at h
+  change _ ≤ Real.sqrt ((k^2*q:ℕ)*q) at h
+  have hroot : Real.sqrt ((k^2*q:ℕ)*q) = (k:ℝ)*q := by
+    rw [← Real.sqrt_sq (mul_nonneg (Nat.cast_nonneg k) (Nat.cast_nonneg q))]
+    congr 1; push_cast; ring
+  rw [hroot] at h
+  apply (div_le_iff₀ (by exact_mod_cast hm : (0:ℝ)<(k^2*q:ℕ))).mpr
+  have hdiv : (1/(k:ℝ))*(k^2*q:ℕ) = (k:ℝ)*q := by push_cast; field_simp
+  rw [add_mul,hdiv]
+  linarith
+
+private def meshRad (n : ℕ) (j : Fin n) : ℝ := (j.val+1 : ℝ)/(2*n)
+
+def meshHeight (n : ℕ) (j : Bool × Fin n) : ℝ :=
+  if j.1 then 1 - meshRad n j.2 else meshRad n j.2
+
+theorem meshRad_mem {n : ℕ} (hn : 0 < n) (j : Fin n) : meshRad n j ∈ Ioc (0:ℝ) (1/2) := by
+  have hj : (j.val+1:ℝ) ≤ n := by exact_mod_cast j.isLt
+  exact ⟨by unfold meshRad; positivity,(div_le_iff₀ (by positivity : (0:ℝ)<2*n)).mpr (by linarith)⟩
+
+theorem radius_meshHeight {n : ℕ} (hn : 0<n) (j : Bool × Fin n) :
+    radius (meshHeight n j) = meshRad n j.2 := by
+  obtain ⟨b,j⟩ := j
+  have h := (meshRad_mem hn j).2
+  cases b <;> simp [radius,meshHeight,min_eq_left (by linarith : meshRad n j ≤ 1-meshRad n j),
+    min_eq_right (by linarith : meshRad n j ≤ 1-meshRad n j)]
+
+theorem meshHeight_mem {n : ℕ} (hn : 0<n) (j : Bool × Fin n) : meshHeight n j ∈ Icc 0 1 := by
+  obtain ⟨b,j⟩ := j
+  obtain ⟨h₁,h₂⟩ := meshRad_mem hn j
+  cases b <;> simp only [meshHeight,Bool.false_eq_true,if_false,if_true,Set.mem_Icc] <;>
+    constructor <;> linarith
+
+/-- At every height, there is a nearby sample height whose weight is at least as large. -/
+theorem mesh_round {n : ℕ} (hn : 0<n) {t : ℝ} (ht : t ∈ Ioo 0 1) :
+    ∃ j : Bool × Fin n, radius t ≤ radius (meshHeight n j) ∧
+      |t - meshHeight n j| ≤ 1/(2*n : ℝ) := by
+  let r := radius t
+  have hr0 : 0<r := lt_min ht.1 (sub_pos.mpr ht.2)
+  have hr1 : r ≤ 1/2 := by
+    dsimp [r,radius]; rcases le_total t (1-t) with h|h
+    · rw [min_eq_left h]; linarith
+    · rw [min_eq_right h]; linarith
+  have hd : (0:ℝ)<2*n := by positivity
+  let m := ⌈r*(2*n)⌉₊
+  have hx : 0<r*(2*n:ℝ) := mul_pos hr0 hd
+  have hm : 0<m := Nat.ceil_pos.mpr hx
+  have hmn : m≤n := Nat.ceil_le.mpr (by nlinarith [mul_nonneg (sub_nonneg.mpr hr1) hd.le])
+  let j : Fin n := ⟨m-1,by omega⟩
+  have hj : j.val+1=m := by dsimp [j]; omega
+  have he : meshRad n j = (m:ℝ)/(2*n) := by unfold meshRad; exact congrArg (fun x : ℝ => x/(2*n)) (by exact_mod_cast hj)
+  have hlo : r ≤ meshRad n j := by rw [he]; exact (le_div_iff₀ hd).mpr (Nat.le_ceil _)
+  have hup : meshRad n j-r ≤ 1/(2*n:ℝ) := by
+    rw [sub_le_iff_le_add,he,div_le_iff₀ hd,add_mul,one_div_mul_cancel hd.ne']
+    exact (Nat.ceil_lt_add_one hx.le).le.trans (by ring_nf; rfl)
+  by_cases h : t ≤ 1-t
+  · have hr : r=t := min_eq_left h
+    exact ⟨(false,j),by simpa [radius_meshHeight hn] using hlo,
+      by change |t-meshRad n j| ≤ _; rw [←hr,abs_of_nonpos (sub_nonpos.mpr hlo)]; linarith⟩
+  · have hr : r=1-t := min_eq_right (le_of_not_ge h)
+    exact ⟨(true,j),by simpa [radius_meshHeight hn] using hlo,
+      by change |t-(1-meshRad n j)| ≤ _; rw [show t-(1-meshRad n j) = meshRad n j-r by linarith,abs_of_nonneg (sub_nonneg.mpr hlo)]; exact hup⟩
+
+/-- The section length changes by at most twice the number of squares times the height change. -/
+theorem length_shift {ι : Type*} [Fintype ι] (P : Pattern ι) {t s : ℝ}
+    (ht : t ∈ Icc 0 1) (hs : s ∈ Icc 0 1) :
+    len P t ≤ len P s + 2*Fintype.card ι*|t-s| := by
+  let d := |t-s|
+  let l := P.start s
+  let r := fun i => l i + P.w i
+  have he (i) : |P.start t i - l i| ≤ d := by
+    have hx := Pattern.axis_bounds P.x P.w P.wpos P.x_cover i
+    have hy := Pattern.axis_bounds P.y P.w P.wpos P.y_cover i
+    have hxy : |P.y i - P.x i| ≤ 1 := abs_le.mpr ⟨by linarith [P.wpos i],by linarith [P.wpos i]⟩
+    have heq : P.start t i - l i = (t-s)*(P.y i-P.x i) := by unfold l Pattern.start projection; ring
+    rw [heq,abs_mul]; exact mul_le_of_le_one_right (abs_nonneg _) hxy
+  have sub : P.sectionAt t ⊆ ⋃ i, Icc (l i-d) (r i+d) := by
+    rw [P.sectionAt_eq ht]; intro x hx
+    obtain ⟨i,hl,hr⟩ := mem_iUnion.mp hx
+    obtain ⟨h₁,h₂⟩ := abs_le.mp (he i)
+    exact mem_iUnion.mpr ⟨i,by linarith,by dsimp [r]; linarith⟩
+  have endsec : (⋃ i, Icc (l i) (r i)) = P.sectionAt s := (P.sectionAt_eq hs).symm
+  exact (measureReal_mono sub (isCompact_iUnion fun _ => isCompact_Icc).measure_lt_top.ne).trans
+    (by simpa only [endsec,len] using Pattern.length_inflate_intervals l r (abs_nonneg (t-s)))
+
+end
+end PermutationStrips.AngularBlock
