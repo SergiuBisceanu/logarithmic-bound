@@ -11,7 +11,7 @@ namespace PermutationStrips.AngularBlock
 noncomputable section
 
 private abbrev BudgetPath (k : ℕ) (U : ℕ → ℝ) :=
-  {p : Path // (Fintype.card p.Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i}
+  {p : Path // p.depth=k ∧ (Fintype.card p.Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i}
 
 private def excess {k : ℕ} {U : ℕ → ℝ} {J : Type*}
     (t : J → ℝ) (cut : J → ℕ) (p : BudgetPath k U) (j : J) : ℝ :=
@@ -33,8 +33,8 @@ private theorem excess_test {J : Type*} [Fintype J] (k : ℕ)
     (cut : J → ℕ) (U : ℕ → ℝ) (hU : ∀ i, 16 ≤ U i)
     (hc : ∀ i j, i < cut j → 8 ≤ U i * radius (t j)) (a : J → ℝ) (ha : ∀ j, 0 ≤ a j) :
     ∃ p : BudgetPath k U, ∑ j, a j*excess t cut p j ≤ 0 := by
-  obtain ⟨p,hp,hp'⟩ := exists_path t ht cut U hU hc k a ha
-  exact ⟨⟨p,hp⟩,hp'⟩
+  obtain ⟨p,hd,hp,hp'⟩ := exists_path_at_depth t ht cut U hU hc k a ha
+  exact ⟨⟨p,hd,hp⟩,hp'⟩
 
 private theorem mean_le {J : Type*} {k M : ℕ} {U : ℕ → ℝ} (t : J → ℝ)
     (cut : J → ℕ) (s : Fin M → BudgetPath k U) (hM : 0<M) (j : J)
@@ -61,7 +61,7 @@ theorem paths_on_mesh {J : Type*} [Fintype J] [Nonempty J] (k : ℕ) (hk : 0 < k
   have hq : 0<q := Fintype.card_pos
   have hM : 0<M := Nat.mul_pos (pow_pos hk 2) hq
   obtain ⟨s,hs⟩ := exists_sample (excess t cut) (excess_bound t ht cut) (excess_test k t ht cut U hU hc) M
-  refine ⟨fun i => (s i).val,fun i => (s i).property,fun j => mean_le t cut s hM j ((hs j).trans_eq ?_)⟩
+  refine ⟨fun i => (s i).val,fun i => (s i).property.2,fun j => mean_le t cut s hM j ((hs j).trans_eq ?_)⟩
   change Real.sqrt ((k^2*q:ℕ)*q) = (k^2*q:ℕ)/k
   have he : ((k^2*q:ℕ):ℝ)/k = (k:ℝ)*q := by push_cast; field_simp
   rw [he,← Real.sqrt_sq (mul_nonneg (Nat.cast_nonneg k) (Nat.cast_nonneg q))]
@@ -79,7 +79,42 @@ theorem paths_on_mesh_of_log {J : Type*} [Fintype J] [Nonempty J] (k M : ℕ)
       ∀ j, (∑ i, len (s i).pattern (t j))/(M:ℝ) ≤ envelope k (cut j)+1/k := by
   obtain ⟨s,hs⟩ := exists_sample_of_log (excess t cut) (excess_bound t ht cut)
     (excess_test k t ht cut U hU hc) k M hk hsize
-  exact ⟨fun i => (s i).val,fun i => (s i).property,fun j => mean_le t cut s hM j (hs j)⟩
+  exact ⟨fun i => (s i).val,fun i => (s i).property.2,fun j => mean_le t cut s hM j (hs j)⟩
+
+/-- Control the weighted lengths directly. Their common benchmark μ contributes
+multiplicatively to the growth of the exponential potential. -/
+theorem weighted_paths_on_mesh {J : Type*} [Fintype J] [Nonempty J] (k M : ℕ) (hM : 0<M)
+    (t z : J → ℝ) (ht : ∀ j, t j ∈ Icc 0 1) (hz : ∀ j, z j ∈ Icc 0 1)
+    (cut : J → ℕ) (U : ℕ → ℝ) (hU : ∀ i, 16 ≤ U i)
+    (hc : ∀ i j, i < cut j → 8 ≤ U i * radius (t j))
+    {μ η : ℝ} (hμ : 0≤μ) (hbench : ∀ j, z j*envelope k (cut j) ≤ μ)
+    (hη : 0<η) (hη1 : η≤1) :
+    ∃ s : Fin M → Path,
+      (∀ i, (s i).depth=k ∧ (Fintype.card (s i).Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i) ∧
+      ∀ j, z j*((∑ i, len (s i).pattern (t j))/(M:ℝ)) ≤
+        (1+η)*μ + Real.log (Fintype.card J)/(η*M) := by
+  let x := fun (p : BudgetPath k U) j => z j*len p.val.pattern (t j)
+  have bx (p j) : x p j ∈ Icc 0 1 := ⟨mul_nonneg (hz j).1 measureReal_nonneg,
+    (mul_le_of_le_one_left measureReal_nonneg (hz j).2).trans (p.val.pattern.section_length_le_one (ht j))⟩
+  have test (a : J → ℝ) (ha : ∀ j, 0≤a j) : ∃ p, ∑ j, a j*x p j ≤ μ*∑ j, a j := by
+    obtain ⟨p,hp⟩ := excess_test k t ht cut U hU hc (fun j => a j*z j)
+      (fun j => mul_nonneg (ha j) (hz j).1)
+    have bound := Finset.sum_le_sum (s:=Finset.univ) (fun j _ => mul_le_mul_of_nonneg_left (hbench j) (ha j))
+    simp only [excess,mul_sub,Finset.sum_sub_distrib,mul_assoc] at hp
+    refine ⟨p,?_⟩
+    change ∑ j, a j*(z j*len p.val.pattern (t j)) ≤ _
+    exact (sub_nonpos.mp hp).trans (bound.trans_eq (by rw [←Finset.sum_mul,mul_comm]))
+  obtain ⟨s,hs⟩ := exists_sample_nonneg_rate x bx hμ test M hη hη1
+  refine ⟨fun i => (s i).val,fun i => (s i).property,fun j => ?_⟩
+  have hm : (0:ℝ)<M := by exact_mod_cast hM
+  have eq : z j*(∑ i, len (s i).val.pattern (t j))/(M:ℝ) ≤
+      (Real.log (Fintype.card J)/η+(1+η)*(M:ℝ)*μ)/M := by
+    rw [Finset.mul_sum]
+    exact (div_le_div_iff_of_pos_right hm).mpr (hs j)
+  calc
+    _ = z j*(∑ i, len (s i).val.pattern (t j))/(M:ℝ) := by ring
+    _ ≤ _ := eq
+    _ = _ := by field_simp; ring
 
 private def meshRad (n : ℕ) (j : Fin n) : ℝ := (j.val+1 : ℝ)/(2*n)
 

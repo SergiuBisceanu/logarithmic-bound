@@ -68,6 +68,53 @@ private theorem exp_increment {η d : ℝ} (hη : 0 ≤ η) (hη1 : η ≤ 1) (h
   rw [sq_abs] at hs
   linarith
 
+/-- An affine upper bound for the exponential increment turns a one-round
+weighted comparison into a bound on every coordinate after `M` rounds. -/
+private theorem sample_of_affine_exp {J X : Type*} [Fintype J] [Nonempty J] (x : X → J → ℝ)
+    {η offset slope μ : ℝ} (hη : 0 < η) (h₀ : 0 ≤ offset) (h₁ : 0 ≤ slope) (hμ : 0 ≤ μ)
+    (step : ∀ p j, Real.exp (η*x p j) ≤ 1+offset+slope*x p j)
+    (choose : ∀ a : J → ℝ, (∀ j, 0 ≤ a j) → ∃ p, ∑ j, a j*x p j ≤ μ*∑ j, a j)
+    (M : ℕ) : ∃ s : Fin M → X, ∀ j, ∑ i, x (s i) j ≤
+      (Real.log (Fintype.card J)+(M:ℝ)*(offset+slope*μ))/η := by
+  classical
+  let N : ℝ := Fintype.card J
+  let growth := offset+slope*μ
+  have hN : 0 < N := by dsimp [N]; exact_mod_cast (Fintype.card_pos : 0 < Fintype.card J)
+  have hg : 0 ≤ growth := add_nonneg h₀ (mul_nonneg h₁ hμ)
+  have potential (m : ℕ) : ∃ s : Fin m → X,
+      (∑ j, Real.exp (η*∑ i, x (s i) j)) ≤ N*Real.exp ((m:ℝ)*growth) := by
+    induction m with
+    | zero => exact ⟨Fin.elim0,by simp [N]⟩
+    | succ m ih =>
+      obtain ⟨s,hs⟩ := ih
+      let a (j : J) := Real.exp (η*∑ i, x (s i) j)
+      have ha (j : J) : 0 ≤ a j := (Real.exp_pos _).le
+      obtain ⟨p,hp⟩ := choose a ha
+      refine ⟨Fin.cons p s,?_⟩
+      simp only [Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ]
+      have pt (j : J) : Real.exp (η*(x p j + ∑ i, x (s i) j)) ≤
+          a j*(1+offset) + slope*(a j*x p j) := by
+        rw [mul_add,Real.exp_add,mul_comm]
+        change a j*Real.exp (η*x p j) ≤ _
+        linarith only [mul_le_mul_of_nonneg_left (step p j) (ha j)]
+      change (∑ j, a j) ≤ _ at hs
+      calc
+        _ ≤ ∑ j, (a j*(1+offset) + slope*(a j*x p j)) := Finset.sum_le_sum fun j _ => pt j
+        _ ≤ (∑ j, a j)*(1+growth) := by
+          rw [Finset.sum_add_distrib,← Finset.sum_mul,← Finset.mul_sum]
+          dsimp [growth]; linarith only [mul_le_mul_of_nonneg_left hp h₁]
+        _ ≤ (N*Real.exp ((m:ℝ)*growth))*Real.exp growth :=
+          mul_le_mul hs (by simpa only [add_comm] using Real.add_one_le_exp growth) (by positivity) (by positivity)
+        _ = N*Real.exp ((↑(m+1):ℝ)*growth) := by
+          rw [mul_assoc,← Real.exp_add]; congr 2; push_cast; ring
+  obtain ⟨s,hs⟩ := potential M
+  refine ⟨s,fun j => ?_⟩
+  have bound := (Finset.single_le_sum (fun j _ => (Real.exp_pos (η*∑ i, x (s i) j)).le)
+    (Finset.mem_univ j)).trans hs
+  have h := Real.log_le_log (Real.exp_pos _) bound
+  rw [Real.log_exp,Real.log_mul hN.ne' (Real.exp_pos _).ne',Real.log_exp] at h
+  exact (le_div_iff₀ hη).2 (by linarith only [h])
+
 /-- Greedy selection with the exponential of each coordinate's accumulated excess as
 its next weight. The coordinate bound grows logarithmically in the number of tests. -/
 theorem exists_sample_exp {J X : Type*} [Fintype J] [Nonempty J] (e : X → J → ℝ)
@@ -75,46 +122,11 @@ theorem exists_sample_exp {J X : Type*} [Fintype J] [Nonempty J] (e : X → J �
     (hw : ∀ a : J → ℝ, (∀ j, 0 ≤ a j) → ∃ x, ∑ j, a j*e x j ≤ 0)
     (M : ℕ) {η : ℝ} (hη : 0 < η) (hη1 : η ≤ 1) :
     ∃ s : Fin M → X, ∀ j, ∑ i, e (s i) j ≤ Real.log (Fintype.card J)/η + (M:ℝ)*η := by
-  classical
-  let N : ℝ := Fintype.card J
-  have hN : 0 < N := by dsimp [N]; exact_mod_cast (Fintype.card_pos : 0 < Fintype.card J)
-  have potential (m : ℕ) : ∃ s : Fin m → X,
-      (∑ j, Real.exp (η * ∑ i, e (s i) j)) ≤ N*Real.exp ((m:ℝ)*η^2) := by
-    induction m with
-    | zero => exact ⟨Fin.elim0,by simp [N]⟩
-    | succ m ih =>
-      obtain ⟨s,hs⟩ := ih
-      let a (j : J) := Real.exp (η * ∑ i, e (s i) j)
-      have ha (j : J) : 0 ≤ a j := (Real.exp_pos _).le
-      obtain ⟨x,hx⟩ := hw a ha
-      refine ⟨Fin.cons x s,?_⟩
-      simp only [Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ]
-      have pt (j : J) : Real.exp (η * (e x j + ∑ i, e (s i) j)) ≤
-          a j*(1+η^2) + η*(a j*e x j) := by
-        rw [mul_add,Real.exp_add,mul_comm]
-        change a j * Real.exp (η*e x j) ≤ _
-        have h := mul_le_mul_of_nonneg_left (exp_increment hη.le hη1 (he x j)) (ha j)
-        linarith only [h]
-      change (∑ j, a j) ≤ _ at hs
-      calc
-        _ ≤ ∑ j, (a j*(1+η^2) + η*(a j*e x j)) := Finset.sum_le_sum fun j _ => pt j
-        _ ≤ (∑ j, a j)*(1+η^2) := by
-          rw [Finset.sum_add_distrib,← Finset.sum_mul,← Finset.mul_sum]
-          linarith only [mul_nonpos_of_nonneg_of_nonpos hη.le hx]
-        _ ≤ (N*Real.exp ((m:ℝ)*η^2))*Real.exp (η^2) :=
-          mul_le_mul hs (by simpa [add_comm] using Real.add_one_le_exp (η^2))
-            (by positivity) (by positivity)
-        _ = N*Real.exp ((↑(m+1):ℝ)*η^2) := by
-          rw [mul_assoc,← Real.exp_add]; congr 2; push_cast; ring
-  obtain ⟨s,hs⟩ := potential M
-  refine ⟨s,fun j => ?_⟩
-  have term := (Finset.single_le_sum (fun p _ => (Real.exp_pos (η * ∑ i, e (s i) p)).le)
-    (Finset.mem_univ j)).trans hs
-  have h := Real.log_le_log (Real.exp_pos _) term
-  rw [Real.log_exp,Real.log_mul hN.ne' (Real.exp_pos _).ne',Real.log_exp] at h
-  calc
-    _ ≤ (Real.log N+(M:ℝ)*η^2)/η := (le_div_iff₀ hη).2 (by linarith only [h])
-    _ = _ := by dsimp [N]; field_simp
+  obtain ⟨s,hs⟩ := sample_of_affine_exp e hη (sq_nonneg η) hη.le (le_refl 0)
+    (fun p j => by linarith only [exp_increment hη.le hη1 (he p j)])
+    (fun a ha => by simpa using hw a ha) M
+  refine ⟨s,fun j => (hs j).trans_eq ?_⟩
+  simp only [mul_zero,add_zero]; field_simp
 
 /-- At least `4 k² log |J|` rounds make the coordinatewise mean excess at most `1/k`
 when the sample is nonempty. The cumulative form also covers the empty sample. -/
@@ -134,6 +146,28 @@ theorem exists_sample_of_log {J X : Type*} [Fintype J] [Nonempty J] (e : X → J
   have pos : 0 < (k:ℝ) := by positivity
   field_simp
   linarith only [hM]
+
+/-- For costs in `[0,1]` the multiplicative slack is `1+η`. Choosing the
+positive exponential weight at each coordinate lets one comparison control
+all coordinates at once. -/
+theorem exists_sample_nonneg_rate {J X : Type*} [Fintype J] [Nonempty J] (x : X → J → ℝ)
+    (hx : ∀ p j, x p j ∈ Set.Icc 0 1) {μ : ℝ} (hμ : 0 ≤ μ)
+    (hw : ∀ a : J → ℝ, (∀ j, 0 ≤ a j) → ∃ p, ∑ j, a j*x p j ≤ μ*∑ j, a j)
+    (M : ℕ) {η : ℝ} (hη : 0<η) (hη1 : η≤1) :
+    ∃ s : Fin M → X, ∀ j, ∑ i, x (s i) j ≤
+      Real.log (Fintype.card J)/η + (1+η)*(M:ℝ)*μ := by
+  let q := η*(1+η)
+  have hq : 0 ≤ q := by dsimp [q]; positivity
+  have chord {z : ℝ} (hz : z ∈ Set.Icc 0 1) : Real.exp (η*z) ≤ 1+q*z := by
+    have hp : 0 ≤ η*z := mul_nonneg hη.le hz.1
+    have h1 : η*z ≤ 1 := (mul_le_of_le_one_right hη.le hz.2).trans hη1
+    have h := (abs_le.mp (Real.abs_exp_sub_one_sub_id_le (x:=η*z) (by simpa [abs_of_nonneg hp] using h1))).2
+    dsimp [q]
+    nlinarith only [h,mul_nonneg (sq_nonneg η) (mul_nonneg hz.1 (sub_nonneg.mpr hz.2))]
+  obtain ⟨s,hs⟩ := sample_of_affine_exp x hη (le_refl 0) hq hμ
+    (fun p j => by simpa only [add_zero] using chord (hx p j)) hw M
+  refine ⟨s,fun j => (hs j).trans_eq ?_⟩
+  dsimp [q]; field_simp; ring
 
 end
 end PermutationStrips.AngularBlock

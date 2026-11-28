@@ -224,32 +224,30 @@ Stop the first time $A\le1/k$. Each reciprocal gain is bounded below by an absol
 \section{From one scale to all scales}
 
 \begin{lemma}\label{lem:block}
-Let $v:(0,1/2]\to[0,1]$ be nondecreasing with $\int_0^{1/2}v(r)\,dr/r\le1$, and set $w(r)=\max(v(r),\sqrt r)$. For each integer $k\ge2$, at most $40k^3$ paths of $k$ shuffles suffice to form a pattern $Q$ of $N(Q)$ squares with
+Let $v:(0,1/2]\to[0,1]$ be nondecreasing with $\int_0^{1/2}v(r)\,dr/r\le1$, and set $w(r)=\max(v(r),\sqrt r)$. For each integer $k\ge2$, $k^2$ paths of $k$ shuffles suffice to form a pattern $Q$ of $N(Q)$ squares with
 \[
- \log N(Q)\le32k,\qquad \Fav(Q)+M_w(Q)\le C/k,\qquad \diam Q\le1+1/(40k^3).
+ \log N(Q)\le20k,\qquad \Fav(Q)+M_w(Q)\le C/k,\qquad \diam Q\le1+1/k^2.
 \]
 \end{lemma}
 \begin{proof}
-Start with the unit square. At stage $0\le i<k$ insert the current pattern in $D_u$ or its transpose, with $U_i\le u\le2U_i$, where $c(r)=\lfloor kw(r)\rfloor$ and
-\[
- Y_i=\int_0^{1/2}\mathbf1_{\{i<c(r)\}}\,\frac{dr}{r},\qquad U_i=16e^{Y_i}.
-\]
-Each $r$ is counted $c(r)$ times, so $\sum_iY_i\le k\int_0^{1/2}w(r)\,dr/r\le(1+\sqrt2)k$. When $i<c(r)$, monotonicity gives $Y_i\ge\log(1/(2r))$, hence $U_i r\ge8$. Each stage uses at most $4U_i$ squares, so every path has at most $B=e^{8k}$.
+Put $c(r)=\lfloor kw(r)\rfloor$ and $Y_i=\int_0^{1/2}\mathbf1_{\{i<c(r)\}}\,dr/r$. Starting from the unit square, at stage $0\le i<k$ insert the current pattern in $D_u$ or its transpose, with $U_i\le u\le2U_i$ and $U_i=16e^{Y_i}$. Counting active stages gives $\sum_iY_i\le k\int_0^{1/2} w(r)\,dr/r\le(1+\sqrt2)k$. If $i<c(r)$, monotonicity gives $Y_i\ge\log(1/(2r))$, hence $U_i r\ge8$. Each path has at most $B=e^{8k}$ squares since each stage uses at most $4U_i$.
 
-Fix finitely many $t_j\in(0,1)$ and put $c_j=c(\tau(t_j))$. For any $a_j\ge0$ we claim some $i$-stage pattern $P$ satisfies
+Fix finitely many $t_j\in(0,1)$ and put $c_j=c(\tau(t_j))$. At each stage $i$, for any $a_j\ge0$, some pattern $P$ satisfies
 \begin{equation}\label{eq:test}
  \sum_j a_j\bigl(\ell_P(t_j)-e_{ij}\bigr)\le0,\qquad
  e_{ij}=\frac{128}{128+\min(i,c_j)} .
 \end{equation}
 At $i=0$ this is equality. Put $F_j(x)=x-\mathbf1_{\{i<c_j\}}x^2/128$. Choose $P$ by \eqref{eq:test} at stage $i$ with weights $a_jF'_j(e_{ij})\ge0$ and write $x_j=\ell_P(t_j)$. Transposing the outer shuffle exchanges $t_j$ and $1-t_j$ in the displacement. When $i<c_j$, one orientation saves at least $x_j^2/64$ on average by Lemma~\ref{lem:scale}, and both savings are nonnegative. Averaging the weighted sum thus gives one $D$ with $\sum_j a_j\ell_{D\star P}(t_j)\le\sum_j a_j F_j(x_j)$. By concavity, $F_j(x_j)\le F_j(e_{ij})+F'_j(e_{ij})(x_j-e_{ij})$. Since $F_j(e_{ij})\le e_{i+1,j}$, summing proves \eqref{eq:test} at $i+1$.
 
-Take the $J=2n$ mesh entries $h/(2n),1-h/(2n)$, $1\le h\le n=\lceil kB\rceil$. Put $\eta=1/(2k)$. At each step let $S_j$ sum the previous excesses $d_j(P)=\ell_P(t_j)-e_{kj}$ and use \eqref{eq:test} with $a_j=e^{\eta S_j}$. For $\Phi=\sum_j a_j$, the new excesses satisfy $|d_j|\le1$, so $e^x\le1+x+x^2$ on $[-1,1]$ gives
-\[
- \sum_j a_j e^{\eta d_j}\le (1+\eta^2)\Phi+\eta\sum_j a_jd_j\le(1+\eta^2)\Phi .
-\]
-After $M$ paths, $e^{\eta S_j}\le\Phi\le Je^{M\eta^2}$. Take $M=40k^3\ge4k^2\log J$, since $J\le4kB\le e^{10k}$. Then $S_j/M\le\eta+(\log J)/(M\eta)\le1/k$, so the mean length $H$ satisfies $H(t_j)\le e_{kj}+1/k$. Round $0<t<1$ towards $1/2$ to a mesh height $t_j$ within $1/(2n)$. Each path has at most $2B$ interval endpoints moving at speed at most one, so $H(t)\le H(t_j)+B/n\le e_{kj}+2/k$. Since $w(\tau(t))\le w(\tau(t_j))<(c_j+1)/k$ and $w\le1$, we get $w(\tau(t))H(t)\le130/k$.
+List $h/(2n),1-h/(2n)$, $1\le h\le n=\lceil kB\rceil$, as $t_1,\ldots,t_J$ with $J=2n$. At height $t_j$ write $w_j=w(\tau(t_j))$ and $z_j(P)=w_j\ell_P(t_j)$. Since $kw_j<c_j+1$, we have $w_je_{kj}\le128/k$. Testing \eqref{eq:test} with $a_jw_j$ thus gives a path with $\sum_j a_j z_j(P)\le(128/k)\sum_j a_j$.
 
-In the $2M$-grid match column $h$ to row $(h+M)\bmod 2M$ and insert the $M$ patterns in order in each half. The result $V$ has $\ell_V\le H$ by subadditivity. The selected diagonals lie on $y-x=\pm1/2$ in the central diamond of diameter one. Each point is within $1/(2\sqrt2 M)$ of its diagonal, so $\diam V\le1+1/M$. For $Q=V\star RV$, \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta H(t)$ in either quadrant, hence $M_w(Q)\lesssim1/k$. Integrating gives $\Fav(Q)\lesssim1/k$ since $w(r)\ge\sqrt r$ and $|d\theta/dt|=s_\theta^2\le2$. Finally $Q\subset V$ and $N(Q)\le(2MB)^2=(80k^3 e^{8k})^2\le e^{32k}$.
+Let $S_j$ sum the weighted lengths already chosen and take $a_j=e^{\eta S_j}$, $0<\eta\le1$. For the next path, $0\le z_j\le1$ gives $e^{\eta z_j}\le1+\eta z_j+(\eta z_j)^2\le1+\eta(1+\eta)z_j$. Thus $\sum_j a_j$ starts at $J$ and grows by a factor at most $1+128\eta(1+\eta)/k$ per path. After $M$ paths,
+\[
+ \max_j\frac{S_j}{M}\le\frac{128(1+\eta)}{k}+\frac{\log J}{\eta M}.
+\]
+Now $J\le4kB\le e^{10k}$, so $M=k^2$ and $\eta=1/4$ give $200/k$ on the mesh. Round any $0<t<1$ towards $1/2$ to a mesh height $t_j$ within $1/(2n)$. The mean section length $H$ is $2B$-Lipschitz since each interval endpoint moves at speed at most one. Thus $w(\tau(t))H(t)\le w_j H(t_j)+B/n\le201/k$. With $M=5120k^2$ and $\eta=1/256$, this weighted mean is at most $130/k$.
+
+With $M=k^2$, match column $h$ to row $(h+M)\bmod 2M$ in the $2M$-grid. Insert the $M$ patterns in order in each half. The result $V$ has $\ell_V\le H$ by subadditivity. The selected diagonals lie on $y-x=\pm1/2$ in the central diamond of diameter one. Each point is within $1/(2\sqrt2 M)$ of its diagonal, so $\diam V\le1+1/M$. For $Q=V\star RV$, \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta H(t)$ in either quadrant, hence $M_w(Q)\le402/k$. Integrating gives $\Fav(Q)\lesssim1/k$ since $w(r)\ge\sqrt r$ and $|d\theta/dt|=s_\theta^2\le2$. Finally $Q\subset V$ and $N(Q)\le(2k^2 e^{8k})^2\le e^{20k}$.
 \end{proof}
 
 For $k=2^j$, $j\ge1$, put $A_k=1+I_b(e^{-k})$. The weight $v_k=b\,\mathbf1_{[e^{-k},1/2]}/A_k$ has integral at most one against $dr/r$. For $r<e^{-k}$, monotonicity gives $(k-\log2)b(r)\le I_b(e^{-k})$. Lemma~\ref{lem:block} and boundedness of projections thus give a block $Q_j$ with

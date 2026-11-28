@@ -12,6 +12,11 @@ inductive Path where
   | seed
   | step (u : ℝ) (hu : 4 ≤ u) (rev : Bool) (inner : Path)
 
+/-- Number of oriented shuffles from the initial square. -/
+def Path.depth : Path → ℕ
+  | .seed => 0
+  | .step _ _ _ p => p.depth+1
+
 def Path.Index : Path → Type
   | .seed => Fin 1
   | .step u _ _ p => (Bool × Fin ⌊u⌋₊) × p.Index
@@ -49,16 +54,16 @@ private theorem envelope_step (i c : ℕ) :
 
 /-- For any terminal test, a single actual subdivision path beats the scalar envelope
 in weighted sum. Its complexity is bounded uniformly, independently of the test. -/
-theorem exists_path {J : Type*} [Fintype J] (t : J → ℝ) (ht : ∀ j, t j ∈ Icc 0 1)
+theorem exists_path_at_depth {J : Type*} [Fintype J] (t : J → ℝ) (ht : ∀ j, t j ∈ Icc 0 1)
     (cut : J → ℕ) (U : ℕ → ℝ) (hU : ∀ i, 16 ≤ U i)
     (hc : ∀ i j, i < cut j → 8 ≤ U i * radius (t j)) (n : ℕ)
     (a : J → ℝ) (ha : ∀ j, 0 ≤ a j) :
-    ∃ p : Path, (Fintype.card p.Index : ℝ) ≤ ∏ i ∈ Finset.range n, 4*U i ∧
+    ∃ p : Path, p.depth=n ∧ (Fintype.card p.Index : ℝ) ≤ ∏ i ∈ Finset.range n, 4*U i ∧
       ∑ j, a j*(len p.pattern (t j) - envelope n (cut j)) ≤ 0 := by
   classical
   induction n generalizing a with
   | zero =>
-    refine ⟨.seed,by simp [Path.Index],?_⟩
+    refine ⟨.seed,rfl,by simp [Path.Index],?_⟩
     apply Finset.sum_nonpos
     intro j _
     apply mul_nonpos_of_nonneg_of_nonpos (ha j)
@@ -67,12 +72,12 @@ theorem exists_path {J : Type*} [Fintype J] (t : J → ℝ) (ht : ∀ j, t j ∈
     let b := fun j => if n<cut j then 1-2*envelope n (cut j)/128 else 1
     have hb (j) : 0 ≤ b j := by
       dsimp [b]; split_ifs <;> linarith [(envelope_bounds n (cut j)).2]
-    obtain ⟨p,hp,hs⟩ := ih (fun j => a j*b j) (fun j => mul_nonneg (ha j) (hb j))
+    obtain ⟨p,hd,hp,hs⟩ := ih (fun j => a j*b j) (fun j => mul_nonneg (ha j) (hb j))
     obtain ⟨rev,u,hu,hstep⟩ := weighted_shell p.pattern t a ht ha (fun j => n<cut j)
       (hU n) (hc n)
     have hu4 : 4 ≤ u := by linarith [hU n,hu.1]
     let p' := Path.step u hu4 rev p
-    refine ⟨p',?_,?_⟩
+    refine ⟨p',by simp [p',Path.depth,hd],?_,?_⟩
     · have hcard : Fintype.card p'.Index = 2*⌊u⌋₊ * Fintype.card p.Index := by
         change Fintype.card ((Bool × Fin ⌊u⌋₊) × p.Index) = _
         simp
@@ -104,6 +109,16 @@ theorem exists_path {J : Type*} [Fintype J] (t : J → ℝ) (ht : ∀ j, t j ∈
       simp only [mul_sub,Finset.sum_sub_distrib,mul_assoc] at hstep hs bound ⊢
       change ∑ j, a j*y j - ∑ j, a j*f' j ≤ 0
       linarith
+
+/-- The square-budget version of the terminal test. -/
+theorem exists_path {J : Type*} [Fintype J] (t : J → ℝ) (ht : ∀ j, t j ∈ Icc 0 1)
+    (cut : J → ℕ) (U : ℕ → ℝ) (hU : ∀ i, 16 ≤ U i)
+    (hc : ∀ i j, i < cut j → 8 ≤ U i * radius (t j)) (n : ℕ)
+    (a : J → ℝ) (ha : ∀ j, 0 ≤ a j) :
+    ∃ p : Path, (Fintype.card p.Index : ℝ) ≤ ∏ i ∈ Finset.range n, 4*U i ∧
+      ∑ j, a j*(len p.pattern (t j) - envelope n (cut j)) ≤ 0 := by
+  obtain ⟨p,_,hp,hs⟩ := exists_path_at_depth t ht cut U hU hc n a ha
+  exact ⟨p,hp,hs⟩
 
 end
 end PermutationStrips.AngularBlock

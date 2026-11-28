@@ -42,17 +42,17 @@ private theorem schedule_budget {k : ℕ} {w : ℝ → ℝ} (hm : Measurable w)
   nlinarith [mul_le_mul_of_nonneg_left hI (Nat.cast_nonneg k),
     mul_le_mul_of_nonneg_left hlog (Nat.cast_nonneg k)]
 
-/-- A fixed list of exactly forty times k cubed genuine paths controls every height,
-including at discontinuities of the weight. -/
-theorem exists_cubic_ensemble {w : ℝ → ℝ} (hm : Measurable w)
+/-- Weighted paths at all heights for an arbitrary sample size and exponential rate.
+Rounding a mesh height toward one half costs at most one additional unit of 1/k. -/
+theorem exists_weighted_ensemble {w : ℝ → ℝ} (hm : Measurable w)
     (hw : ∀ r ∈ Ioc (0:ℝ) (1/2), w r ∈ Icc 0 1)
     (hmono : MonotoneOn w (Ioc (0:ℝ) (1/2)))
     (hi : IntegrableOn (fun r => w r/r) (Ioc (0:ℝ) (1/2)))
     (hI : (∫ r in Ioc (0:ℝ) (1/2), w r/r) ≤ 3)
-    (k : ℕ) (hk : 0 < k) :
-    ∃ p : Fin (40*k^3) → Path,
-      (∀ i, (Fintype.card (p i).Index : ℝ) ≤ Real.exp (8*k)) ∧
-      ∀ t ∈ Ioo (0:ℝ) 1, w (radius t) * ((∑ i, len (p i).pattern t)/(40*(k:ℝ)^3)) ≤ 130/k := by
+    (k M : ℕ) (hk : 0<k) (hM : 0<M) {η : ℝ} (hη : 0<η) (hη1 : η≤1) :
+    ∃ p : Fin M → Path, (∀ i, (p i).depth=k ∧ (Fintype.card (p i).Index : ℝ) ≤ Real.exp (8*k)) ∧
+      ∀ t ∈ Ioo (0:ℝ) 1, w (radius t)*((∑ i, len (p i).pattern t)/(M:ℝ)) ≤
+        (1+128*(1+η))/k + 10*k/(η*M) := by
   classical
   have hkp : (0:ℝ)<k := by exact_mod_cast hk
   let B := Real.exp (8*k)
@@ -81,10 +81,7 @@ theorem exists_cubic_ensemble {w : ℝ → ℝ} (hm : Measurable w)
     apply Schedule.active_scale hm (fun x hx => (hw x hx).1) hmono hi (hr j)
     rw [Schedule.active_eq (hw _ (hr j))]
     exact Finset.mem_range.mpr h
-  let M := 40*k^3
-  have hM : 0<M := by dsimp [M]; positivity
   have hMp : (0:ℝ)<M := by exact_mod_cast hM
-  have hM_eq : (M:ℝ) = 40*(k:ℝ)^3 := by simp [M]
   have hkn : (k:ℝ)*B ≤ n := Nat.le_ceil _
   have hnup : (n:ℝ) ≤ (k:ℝ)*B+1 := (Nat.ceil_lt_add_one (mul_nonneg hkp.le (by linarith : 0≤B))).le
   have hk1 : 1≤(k:ℝ) := by exact_mod_cast hk
@@ -101,14 +98,12 @@ theorem exists_cubic_ensemble {w : ℝ → ℝ} (hm : Measurable w)
       _ ≤ 4*(k:ℝ)*B := by linarith
       _ ≤ Real.exp (2*k)*B := mul_le_mul_of_nonneg_right hfour (by linarith)
       _ = _ := by dsimp [B]; rw [←Real.exp_add]; congr 1; ring
-  have hsize : 4*(k:ℝ)^2*Real.log (Fintype.card J) ≤ M := by
-    rw [hM_eq]
-    exact (mul_le_mul_of_nonneg_left hlog (by positivity : 0≤4*(k:ℝ)^2)).trans_eq (by ring)
-  obtain ⟨p,hcard,hmean⟩ := paths_on_mesh_of_log k M hk hM hsize t (meshHeight_mem hn) c U hU hc
-  have hp (i) : (Fintype.card (p i).Index : ℝ) ≤ B := (hcard i).trans (schedule_budget hm hw hi hI)
-  refine ⟨p,hp,?_⟩
+  obtain ⟨p,hcard,hmean⟩ := weighted_paths_on_mesh k M hM t (fun j => w (r j))
+    (meshHeight_mem hn) (fun j => hw _ (hr j)) c U hU hc (μ:=128/k) (by positivity)
+    (fun j => envelope_weight hk (hw _ (hr j))) hη hη1
+  have hp (i) : (Fintype.card (p i).Index : ℝ) ≤ B := (hcard i).2.trans (schedule_budget hm hw hi hI)
+  refine ⟨p,fun i => ⟨(hcard i).1,hp i⟩,?_⟩
   intro x hx
-  rw [←hM_eq]
   obtain ⟨j,hjr,hjt⟩ := mesh_round hn hx
   have hx01 : x ∈ Icc 0 1 := ⟨hx.1.le,hx.2.le⟩
   have hjs := meshHeight_mem hn j
@@ -127,23 +122,87 @@ theorem exists_cubic_ensemble {w : ℝ → ℝ} (hm : Measurable w)
   have hsum := Finset.sum_le_sum (s:=Finset.univ) (fun i _ => hf i)
   rw [Finset.sum_add_distrib] at hsum
   simp only [Finset.sum_const,Finset.card_univ,Fintype.card_fin,nsmul_eq_mul] at hsum
-  have hmean' := hmean j
-  change (∑ i, len (p i).pattern (t j))/(M:ℝ) ≤ envelope k (c j)+1/k at hmean'
-  have hmeanx : (∑ i, len (p i).pattern x)/(M:ℝ) ≤ envelope k (c j)+2/k := by
-    rw [div_le_iff₀ hMp] at hmean' ⊢
-    change _ ≤ _ + (M:ℝ)*(1/k) at hsum
-    exact hsum.trans ((add_le_add_right hmean' _).trans_eq (by ring))
-  have hwbound := envelope_weight hk hwj
-  change w (r j)*envelope k (c j) ≤ 128/(k:ℝ) at hwbound
-  have hnon : 0 ≤ (∑ i, len (p i).pattern x)/(M:ℝ) := div_nonneg
-    (Finset.sum_nonneg fun _ _ => measureReal_nonneg) hMp.le
+  let H := fun s => (∑ i, len (p i).pattern s)/(M:ℝ)
+  have hshift : H x ≤ H (t j)+1/k := by
+    dsimp only [H]; rw [div_le_iff₀ hMp]
+    exact hsum.trans_eq (by field_simp)
+  have hnon : 0≤H x := div_nonneg (Finset.sum_nonneg fun _ _ => measureReal_nonneg) hMp.le
+  have htail := div_le_div_of_nonneg_right hlog (mul_nonneg hη.le hMp.le)
   calc
-    _ ≤ w (r j)*((∑ i, len (p i).pattern x)/(M:ℝ)) := mul_le_mul_of_nonneg_right hweight hnon
-    _ ≤ w (r j)*(envelope k (c j)+2/k) := mul_le_mul_of_nonneg_left hmeanx hwj.1
-    _ ≤ _ := by
+    _ ≤ w (r j)*H x := mul_le_mul_of_nonneg_right hweight hnon
+    _ ≤ w (r j)*(H (t j)+1/k) := mul_le_mul_of_nonneg_left hshift hwj.1
+    _ ≤ ((1+η)*(128/k)+Real.log (Fintype.card J)/(η*M))+1/k := by
       rw [mul_add]
-      have hlast := mul_le_of_le_one_left (by positivity : (0:ℝ)≤2/k) hwj.2
-      exact (add_le_add hwbound hlast).trans_eq (by ring)
+      exact add_le_add (hmean j) (mul_le_of_le_one_left (by positivity) hwj.2)
+    _ ≤ ((1+η)*(128/k)+10*k/(η*M))+1/k := by linarith
+    _ = _ := by ring
+
+/-- Exactly k squared paths control the weighted lengths at all heights. -/
+theorem exists_quadratic_ensemble {w : ℝ → ℝ} (hm : Measurable w)
+    (hw : ∀ r ∈ Ioc (0:ℝ) (1/2), w r ∈ Icc 0 1)
+    (hmono : MonotoneOn w (Ioc (0:ℝ) (1/2)))
+    (hi : IntegrableOn (fun r => w r/r) (Ioc (0:ℝ) (1/2)))
+    (hI : (∫ r in Ioc (0:ℝ) (1/2), w r/r) ≤ 3)
+    (k : ℕ) (hk : 0<k) :
+    ∃ p : Fin (k^2) → Path, (∀ i, (p i).depth=k ∧ (Fintype.card (p i).Index : ℝ) ≤ Real.exp (8*k)) ∧
+      ∀ t ∈ Ioo (0:ℝ) 1, w (radius t)*((∑ i, len (p i).pattern t)/(k:ℝ)^2) ≤ 201/k := by
+  have hkp : (0:ℝ)<k := by exact_mod_cast hk
+  obtain ⟨p,hp,h⟩ := exists_weighted_ensemble hm hw hmono hi hI k (k^2) hk (by positivity)
+    (η:=1/4) (by norm_num) (by norm_num)
+  refine ⟨p,hp,fun t ht => ?_⟩
+  simpa only [Nat.cast_pow] using (h t ht).trans_eq
+    (show _=201/(k:ℝ) by push_cast; field_simp; ring)
+
+/-- A larger quadratic sample recovers the 130/k all-height bound. -/
+theorem exists_quadratic_ensemble_130 {w : ℝ → ℝ} (hm : Measurable w)
+    (hw : ∀ r ∈ Ioc (0:ℝ) (1/2), w r ∈ Icc 0 1)
+    (hmono : MonotoneOn w (Ioc (0:ℝ) (1/2)))
+    (hi : IntegrableOn (fun r => w r/r) (Ioc (0:ℝ) (1/2)))
+    (hI : (∫ r in Ioc (0:ℝ) (1/2), w r/r) ≤ 3)
+    (k : ℕ) (hk : 0<k) :
+    ∃ p : Fin (5120*k^2) → Path, (∀ i, (p i).depth=k ∧ (Fintype.card (p i).Index : ℝ) ≤ Real.exp (8*k)) ∧
+      ∀ t ∈ Ioo (0:ℝ) 1, w (radius t)*((∑ i, len (p i).pattern t)/(5120*(k:ℝ)^2)) ≤ 130/k := by
+  have hkp : (0:ℝ)<k := by exact_mod_cast hk
+  obtain ⟨p,hp,h⟩ := exists_weighted_ensemble hm hw hmono hi hI k (5120*k^2) hk (by positivity)
+    (η:=1/256) (by norm_num) (by norm_num)
+  refine ⟨p,hp,fun t ht => ?_⟩
+  simpa only [Nat.cast_mul,Nat.cast_ofNat,Nat.cast_pow] using (h t ht).trans_eq
+    (show _=130/(k:ℝ) by push_cast; field_simp; ring)
+
+/-- The original cubic list and the 130/k estimate are also available. -/
+theorem exists_cubic_ensemble {w : ℝ → ℝ} (hm : Measurable w)
+    (hw : ∀ r ∈ Ioc (0:ℝ) (1/2), w r ∈ Icc 0 1)
+    (hmono : MonotoneOn w (Ioc (0:ℝ) (1/2)))
+    (hi : IntegrableOn (fun r => w r/r) (Ioc (0:ℝ) (1/2)))
+    (hI : (∫ r in Ioc (0:ℝ) (1/2), w r/r) ≤ 3)
+    (k : ℕ) (hk : 0 < k) :
+    ∃ p : Fin (40*k^3) → Path,
+      (∀ i, (Fintype.card (p i).Index : ℝ) ≤ Real.exp (8*k)) ∧
+      ∀ t ∈ Ioo (0:ℝ) 1, w (radius t) * ((∑ i, len (p i).pattern t)/(40*(k:ℝ)^3)) ≤ 130/k := by
+  have hkp : (0:ℝ)<k := by exact_mod_cast hk
+  obtain ⟨p,hp,h⟩ := exists_weighted_ensemble hm hw hmono hi hI k (40*k^3) hk (by positivity)
+    (η:=1/256) (by norm_num) (by norm_num)
+  refine ⟨p,fun i => (hp i).2,fun t ht => ?_⟩
+  by_cases hs : k≤130
+  · have hr : radius t ∈ Ioc 0 (1/2) := by
+      refine ⟨lt_min ht.1 (sub_pos.mpr ht.2),?_⟩
+      unfold radius; rcases le_total t (1-t) with h|h
+      · rw [min_eq_left h]; linarith
+      · rw [min_eq_right h]; linarith
+    have hnorm : (∑ i, len (p i).pattern t)/(40*(k:ℝ)^3) ≤ 1 := by
+      apply (div_le_one (by positivity)).mpr
+      exact (Finset.sum_le_sum (s:=Finset.univ) (fun i _ =>
+        (p i).pattern.section_length_le_one ⟨ht.1.le,ht.2.le⟩)).trans_eq (by simp)
+    apply (mul_le_of_le_one_left (by positivity : 0≤(∑ i, len (p i).pattern t)/(40*(k:ℝ)^3))
+      (hw _ hr).2).trans (hnorm.trans ?_)
+    exact (le_div_iff₀ hkp).mpr (by simpa using (show (k:ℝ)≤130 by exact_mod_cast hs))
+  · have h128 : (128:ℝ) ≤ k := by exact_mod_cast (show 128≤k by omega)
+    have hbound : 10*(k:ℝ)/((1/256)*(40*k^3)) ≤ 1/(2*k) := by
+      apply (div_le_div_iff₀ (by positivity) (by positivity)).mpr
+      nlinarith [mul_nonneg (sq_nonneg (k:ℝ)) (sub_nonneg.mpr h128)]
+    have he := h t ht
+    push_cast at he
+    exact he.trans ((add_le_add_left hbound _).trans_eq (by field_simp; ring))
 
 /-- The cubic sample count contributes at most 7k to the logarithmic budget. -/
 theorem cubic_size_le_exp (k : ℕ) (hk : 0 < k) : 40*(k:ℝ)^3 ≤ Real.exp (7*k) := by

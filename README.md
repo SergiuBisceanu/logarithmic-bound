@@ -19,7 +19,7 @@ For **Theorem 2**, Lean constructs one compact set for each admissible angular w
 
 Lean proves the matching lower and upper bounds for the compact infimum and the equal-grid minimum. At the critical weight $b(r)=1/(1+\log(1/r))$, the minimum of the weighted projection supremum alone has order $(\log\log n)/\log n$. [Critical rate](PermutationStrips/TheoremTwo.lean#L104)
 
-Lemma 3 selects $40k^3$ shuffle paths deterministically. At each mesh height it weights the next choice by the exponential of the accumulated excess. The mean section length then exceeds its target by at most $1/k$ at every mesh height, and rounding toward the center gives the angular bound at every interior height. [Exponential estimate](PermutationStrips/AngularBlockGame.lean#L73) · [Cubic path bound](PermutationStrips/AngularBlock.lean#L47) · [Geometric construction](PermutationStrips/AngularFiniteBlock.lean#L18)
+Lemma 3 uses $k^2$ deterministically selected shuffle paths. It weights each section length by its angular weight before choosing the next path. The weighted mean is at most $201/k$ at every interior height, giving $M_w(Q)\le402/k$ for the assembled block. The same proof gives the earlier $130/k$ weighted mean with $5120k^2$ paths. [Weighted selection](PermutationStrips/AngularBlockGame.lean#L153) · [Quadratic path bounds](PermutationStrips/AngularBlock.lean#L141) · [Geometric construction](PermutationStrips/AngularFiniteBlock.lean#L71)
 
 ## Reproduce the check
 
