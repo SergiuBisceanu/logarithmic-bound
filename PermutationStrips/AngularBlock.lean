@@ -24,7 +24,30 @@ private theorem envelope_weight {k : ℕ} (hk : 0<k) {z : ℝ} (hz : z ∈ Icc 0
   rw [mul_right_comm,mul_div_assoc',div_le_iff₀ (by positivity)]
   nlinarith
 
-private theorem schedule_budget {k : ℕ} {w : ℝ → ℝ} (hm : Measurable w)
+theorem radius_mem_of_interior {t : ℝ} (ht : t ∈ Ioo 0 1) : radius t ∈ Ioc 0 (1/2) := by
+  refine ⟨lt_min ht.1 (sub_pos.mpr ht.2),?_⟩
+  unfold radius
+  rcases le_total t (1-t) with h|h
+  · rw [min_eq_left h]; linarith
+  · rw [min_eq_right h]; linarith
+
+theorem scheduled_scale_ge {k i : ℕ} (w : ℝ → ℝ) : 16≤16*Real.exp (Schedule.cost k i w) := by
+  have hpos : 0≤Schedule.cost k i w := by
+    apply setIntegral_nonneg measurableSet_Ioc
+    intro x hx; unfold Schedule.density; split_ifs <;> simp [hx.1.le]
+  linarith [Real.one_le_exp hpos]
+
+theorem scheduled_scale_active {w : ℝ → ℝ} (hm : Measurable w)
+    (hw : ∀ r ∈ Ioc (0:ℝ) (1/2), w r ∈ Icc 0 1)
+    (hmono : MonotoneOn w (Ioc (0:ℝ) (1/2)))
+    (hi : IntegrableOn (fun r => w r/r) (Ioc (0:ℝ) (1/2))) {k i : ℕ} {r : ℝ}
+    (hr : r ∈ Ioc 0 (1/2)) (ha : i < ⌊(k:ℝ)*w r⌋₊) : 8≤(16*Real.exp (Schedule.cost k i w))*r := by
+  apply Schedule.active_scale hm (fun x hx => (hw x hx).1) hmono hi hr
+  rw [Schedule.active_eq (hw _ hr)]
+  exact Finset.mem_range.mpr ha
+
+/-- The complete schedule uses at most exp(8k) squares per path. -/
+theorem schedule_budget {k : ℕ} {w : ℝ → ℝ} (hm : Measurable w)
     (hw : ∀ r ∈ Ioc (0:ℝ) (1/2), w r ∈ Icc 0 1)
     (hi : IntegrableOn (fun r => w r/r) (Ioc (0:ℝ) (1/2)))
     (hI : (∫ r in Ioc (0:ℝ) (1/2), w r/r) ≤ 3) :
@@ -68,24 +91,11 @@ private theorem ensemble_from_mesh {w : ℝ → ℝ} (hm : Measurable w)
   let J := Bool × Fin n
   let t := meshHeight n
   let r := fun j : J => radius (t j)
-  let c := fun j => ⌊(k:ℝ)*w (r j)⌋₊
   have hr (j : J) : r j ∈ Ioc 0 (1/2) := by
     change radius (meshHeight n j) ∈ _
     rw [radius_meshHeight hn]
     exact meshRad_mem hn _
   let U := fun i => 16*Real.exp (Schedule.cost k i w)
-  have hU (i) : 16≤U i := by
-    have hp : 0≤Schedule.cost k i w := by
-      apply setIntegral_nonneg measurableSet_Ioc
-      intro x hx
-      unfold Schedule.density
-      split_ifs <;> simp [hx.1.le]
-    have := Real.one_le_exp hp
-    dsimp [U]; linarith
-  have hc (i j) (h : i<c j) : 8 ≤ U i*radius (t j) := by
-    apply Schedule.active_scale hm (fun x hx => (hw x hx).1) hmono hi (hr j)
-    rw [Schedule.active_eq (hw _ (hr j))]
-    exact Finset.mem_range.mpr h
   have hMp : (0:ℝ)<M := by exact_mod_cast hM
   have hkn : (k:ℝ)*B ≤ n := Nat.le_ceil _
   have hnup : (n:ℝ) ≤ (k:ℝ)*B+1 := (Nat.ceil_lt_add_one (mul_nonneg hkp.le (by linarith : 0≤B))).le
@@ -104,15 +114,15 @@ private theorem ensemble_from_mesh {w : ℝ → ℝ} (hm : Measurable w)
       _ ≤ Real.exp (2*k)*B := mul_le_mul_of_nonneg_right hfour (by linarith)
       _ = _ := by dsimp [B]; rw [←Real.exp_add]; congr 1; ring
   obtain ⟨p,hcard,hmean⟩ := solve J t (fun j => w (r j)) U (meshHeight_mem hn)
-    (fun j => hw _ (hr j)) hU hc hlog
+    (fun j => hw _ (hr j)) (fun _ => scheduled_scale_ge w)
+    (fun _ j => scheduled_scale_active hm hw hmono hi (hr j)) hlog
   have hp (i) : (Fintype.card (p i).Index : ℝ) ≤ B := (hcard i).2.trans (schedule_budget hm hw hi hI)
   refine ⟨p,fun i => ⟨(hcard i).1,hp i⟩,?_⟩
   intro x hx
   obtain ⟨j,hjr,hjt⟩ := mesh_round hn hx
   have hx01 : x ∈ Icc 0 1 := ⟨hx.1.le,hx.2.le⟩
   have hjs := meshHeight_mem hn j
-  have hxrad : radius x ∈ Ioc 0 (1/2) := ⟨lt_min hx.1 (sub_pos.mpr hx.2),hjr.trans (hr j).2⟩
-  have hweight := hmono hxrad (hr j) hjr
+  have hweight := hmono (radius_mem_of_interior hx) (hr j) hjr
   have hwj := hw _ (hr j)
   have hB1 : B/n ≤ 1/(k:ℝ) := (div_le_div_iff₀ (by exact_mod_cast hn : (0:ℝ)<n) hkp).mpr
     (by linarith)
@@ -243,11 +253,7 @@ theorem exists_cubic_ensemble {w : ℝ → ℝ} (hm : Measurable w)
     (η:=1/256) (by norm_num) (by norm_num)
   refine ⟨p,fun i => (hp i).2,fun t ht => ?_⟩
   by_cases hs : k≤130
-  · have hr : radius t ∈ Ioc 0 (1/2) := by
-      refine ⟨lt_min ht.1 (sub_pos.mpr ht.2),?_⟩
-      unfold radius; rcases le_total t (1-t) with h|h
-      · rw [min_eq_left h]; linarith
-      · rw [min_eq_right h]; linarith
+  · have hr := radius_mem_of_interior ht
     have hnorm : (∑ i, len (p i).pattern t)/(40*(k:ℝ)^3) ≤ 1 := by
       apply (div_le_one (by positivity)).mpr
       exact (Finset.sum_le_sum (s:=Finset.univ) (fun i _ =>

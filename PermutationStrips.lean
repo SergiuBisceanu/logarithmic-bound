@@ -2,6 +2,9 @@ import PermutationStrips.Conjecture
 import PermutationStrips.TheoremTwo
 import PermutationStrips.Schedule
 import PermutationStrips.Sampling
+import PermutationStrips.AngularFiniteTests
+import PermutationStrips.AngularAlmostEverywhere
+import PermutationStrips.HalfShiftBoundary
 import Lean.Util.CollectAxioms
 
 /-!
@@ -14,6 +17,10 @@ constructs the Euclidean length-one compact witness and gives both extremal laws
 `PermutationStrips.Angular.critical_grid_rate` gives the critical log-log loss.
 `PermutationStrips.AngularBlock.exists_linear_ensemble` gives 128k paths of
 exactly k shuffles and the weighted section bound 199/k at every interior height.
+`PermutationStrips.AngularBlock.profile_eventually_ae` gives the bound 195/k
+eventually at almost every height with a logarithmic number of paths.
+`PermutationStrips.AngularBlock.halfShift_slots_ge` proves the k/6 lower bound
+for the number of slots per half under the finite block's diameter constraint.
 
 The default build checks the transitive dependencies of every public declaration
 in the project namespace against Lean's three standard axioms.

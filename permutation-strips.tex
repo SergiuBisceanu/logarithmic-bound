@@ -247,6 +247,7 @@ Let $v:(0,1/2]\to[0,1]$ be nondecreasing with $\int_0^{1/2}v(r)\,dr/r\le1$, and 
 \[
  \log N(Q)\le24k,\qquad \Fav(Q)+M_w(Q)\le C/k,\qquad \diam Q\le1+1/k^2.
 \]
+In the half-shift packing below the diameter bound requires at least $k/6$ path slots per half, counting repetitions.
 \end{lemma}
 \begin{proof}
 Put $c(r)=\lfloor kw(r)\rfloor$ and $Y_i=\int_0^{1/2}\mathbf1_{\{i<c(r)\}}\,dr/r$. Starting from the unit square, at stage $0\le i<k$ insert the current pattern in $D_u$ or its transpose, with $U_i\le u\le2U_i$ and $U_i=16e^{Y_i}$. Counting active stages gives $\sum_iY_i\le k\int_0^{1/2} w(r)\,dr/r\le(1+\sqrt2)k$. If $i<c(r)$, monotonicity gives $Y_i\ge\log(1/(2r))$, hence $U_i r\ge8$. Each path has at most $B=e^{8k}$ squares since each stage uses at most $4U_i$.
@@ -269,7 +270,11 @@ List $h/(2n),1-h/(2n)$, $1\le h\le n=\lceil kB\rceil$, as $t_1,\ldots,t_J$. Put 
 \]
 Take $M=128k$. Since $J=2n\le e^{10k}$ and $kw(\tau(t_j))<1+c_j$, the weighted mean is at most $198/k$ on the mesh. Round $0<t<1$ towards $1/2$ to a mesh height $t_j$ within $1/(2n)$. The weight can only increase, and $H$ is $2B$-Lipschitz since each interval endpoint moves at speed at most one. Thus $w(\tau(t))H(t)\le198/k+B/n\le199/k$.
 
-Match column $h$ to row $(h+M)\bmod 2M$ in the $2M$-grid and insert the paths in order in each half (Figure~\ref{fig:packing}). The result $V$ has $\ell_V\le H$ by subadditivity. The outer squares lie in the diamond $|x-1/2|+|y-1/2|\le1/2+1/(2M)$. For any two points of $V$, their absolute coordinate differences $a,b\le1$ therefore satisfy $a+b\le1+1/M$. If $a+b\le1$ their distance is at most one. Otherwise $a^2+b^2\le1+(a+b-1)^2\le1+M^{-2}$, so $\diam V\le1+1/(2M^2)$. For $Q=V\star RV$, \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta H(t)$ in either quadrant, hence $M_w(Q)\le398/k$. Integration gives $\Fav(Q)\lesssim1/k$ since $w(r)\ge\sqrt r$ and $|d\theta/dt|=s_\theta^2\le2$. Finally $Q\subset V$ and $N(Q)\le(2MB)^2\le e^{24k}$.
+For $J$ prescribed heights, $\max(1,\lceil16\log J\rceil)$ paths already give $wH\le194/k$. On the full mesh, the fraction of nodes with $\sum_P L_j(P)>M(\log2+1/16)$ is at most $e^{-M/16}$ by the same total weight bound. Rounding gives $wH\le195/k$ outside a set of length at most $2e^{-M/16}$. Taking $M=1+\lceil32\log(k+1)\rceil$ makes these lengths summable, so the estimate holds eventually at almost every height.
+
+For the block take $M=128k$ and match column $h$ to row $(h+M)\bmod 2M$ in the $2M$-grid and insert the paths in order in each half (Figure~\ref{fig:packing}). The result $V$ has $\ell_V\le H$ by subadditivity. The outer squares lie in the diamond $|x-1/2|+|y-1/2|\le1/2+1/(2M)$. For any two points of $V$, their absolute coordinate differences $a,b\le1$ therefore satisfy $a+b\le1+1/M$. If $a+b\le1$ their distance is at most one. Otherwise $a^2+b^2\le1+(a+b-1)^2\le1+M^{-2}$, so $\diam V\le1+1/(2M^2)$. For $Q=V\star RV$, \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta H(t)$ in either quadrant, hence $M_w(Q)\le398/k$. Integration gives $\Fav(Q)\lesssim1/k$ since $w(r)\ge\sqrt r$ and $|d\theta/dt|=s_\theta^2\le2$. Finally $Q\subset V$ and $N(Q)\le(2MB)^2\le e^{24k}$.
+
+If the first path has outer shuffle $D_u$, it meets $x=0$ only at $y\ge1/2$, since the first bottom interval is red. The packing therefore meets $x=0$ only at $y\ge1/2+1/(4M)$ and $x=1$ only at $y\le1/2$. The subset $Q$ meets both sides by its full horizontal projection. For a transposed outer shuffle, exchange the coordinates and use the other copy of the first path. Hence $(\diam Q)^2\ge1+(4M)^{-2}$. As $(1+k^{-2})^2\le1+9/(4k^2)$ for $k\ge2$, we get $M\ge k/6$. Repeating the list preserves $H$. Whether $o(k)$ paths can control $wH$ at every height remains open.
 \end{proof}
 
 \begin{figure}[htbp]
@@ -277,31 +282,28 @@ Match column $h$ to row $(h+M)\bmod 2M$ in the $2M$-grid and insert the paths in
 \begin{tikzpicture}[line cap=round,line join=round,
   frame/.style={draw=black!60,line width=.45pt},
   cell/.style={draw=stripblue!72!black,fill=stripblue!32,line width=.45pt}]
-% In each half, the three sample patterns are the unit square, the increasing
-% two-permutation, and the decreasing two-permutation.
+% The two paths are one shuffle and its transpose. Coordinates inside a
+% half-shift slot are integer pairs on the eight-grid of D_4.
 \def\packedcells{%
-  \foreach \i/\j in {0/3,3/0}{
-    \path[cell] ({\i/6},{\j/6}) rectangle ++({1/6},{1/6});}
-  \foreach \i/\j in {1/4,4/1}{
-    \foreach \h in {0,1}{
-      \path[cell] ({\i/6+\h/12},{\j/6+\h/12}) rectangle ++({1/12},{1/12});}}
-  \foreach \i/\j in {2/5,5/2}{
-    \foreach \h in {0,1}{
-      \path[cell] ({\i/6+\h/12},{\j/6+(1-\h)/12}) rectangle ++({1/12},{1/12});}}}
+  \foreach \a/\b in {0/4,1/0,2/5,3/1,4/6,5/2,6/7,7/3}{
+    \foreach \i/\j in {0/2,2/0}{
+      \path[cell] ({\i/4+\a/32},{\j/4+\b/32}) rectangle ++({1/32},{1/32});}
+    \foreach \i/\j in {1/3,3/1}{
+      \path[cell] ({\i/4+\b/32},{\j/4+\a/32}) rectangle ++({1/32},{1/32});}}}
 \begin{scope}[x=3.05cm,y=3.05cm]
-  \node[above,font=\small] at (.5,1.05) {Half-shift, $M=3$};
+  \node[above,font=\small] at (.5,1.05) {Half-shift, $M=2$};
   \filldraw[fill=black!8,draw=black!40,line width=.4pt]
-    (0,{1/3})--(0,{2/3})--({1/3},1)--({2/3},1)--
-    (1,{2/3})--(1,{1/3})--({2/3},0)--({1/3},0)--cycle;
-  \draw[black!12,step=1/6,line width=.25pt] (0,0) grid (1,1);
-  \foreach \i/\j in {0/3,1/4,2/5,3/0,4/1,5/2}{
+    (0,.25)--(0,.75)--(.25,1)--(.75,1)--
+    (1,.75)--(1,.25)--(.75,0)--(.25,0)--cycle;
+  \draw[black!12,step=.25,line width=.25pt] (0,0) grid (1,1);
+  \foreach \i/\j in {0/2,1/3,2/0,3/1}{
     \filldraw[fill=stripblue!10,draw=stripblue!65,line width=.45pt]
-      ({\i/6},{\j/6}) rectangle ++({1/6},{1/6});}
+      ({\i/4},{\j/4}) rectangle ++(.25,.25);}
   \draw[black!65,densely dashed,line width=.45pt]
     (0,.5)--(.5,1)--(1,.5)--(.5,0)--cycle;
-  \foreach \i/\j/\lab in {0/3/1,1/4/2,2/5/3,3/0/1,4/1/2,5/2/3}{
+  \foreach \i/\j/\lab in {0/2/D_4,1/3/D_4^\top,2/0/D_4,3/1/D_4^\top}{
     \node[font=\scriptsize,inner sep=.25pt,fill=white]
-      at ({(\i+.5)/6},{(\j+.5)/6}) {$\lab$};}
+      at ({(\i+.5)/4},{(\j+.5)/4}) {$\lab$};}
   \draw[frame] (0,0) rectangle (1,1);
 \end{scope}
 \begin{scope}[shift={(4.95,0)},x=3.05cm,y=3.05cm]
@@ -309,9 +311,11 @@ Match column $h$ to row $(h+M)\bmod 2M$ in the $2M$-grid and insert the paths in
   \packedcells
   \draw[frame] (0,0) rectangle (1,1);
   \filldraw[draw=stripred!90!black,fill=stripred!32,line width=.8pt]
-    ({11/12},{1/3}) rectangle (1,{5/12});
-  \coordinate (zoomtop) at (1,{5/12});
-  \coordinate (zoombot) at (1,{1/3});
+    ({31/32},{14/32}) rectangle (1,{15/32});
+  \draw[black!68,densely dashed,line width=.48pt] (0,{5/8})--(1,{15/32});
+  \foreach \x/\y in {0/0.625,1/0.46875}{\fill (\x,\y) circle[radius=.85pt];}
+  \coordinate (zoomtop) at (1,{15/32});
+  \coordinate (zoombot) at (1,{14/32});
 \end{scope}
 \begin{scope}[shift={(9.9,0)},x=3.05cm,y=3.05cm]
   \node[above,font=\small] at (.5,1.05) {Inside the marked square};
@@ -320,11 +324,10 @@ Match column $h$ to row $(h+M)\bmod 2M$ in the $2M$-grid and insert the paths in
   \draw[stripred!90!black,line width=.75pt] (0,0) rectangle (1,1);
 \end{scope}
 \end{tikzpicture}
-\caption{The labels $1,2,3$ mark the unit square and the increasing and
-decreasing two-square patterns. The concentric diamonds have $\ell^1$-radii
-$1/2$ (dashed) and $1/2+1/(2M)$ (shaded inside the square).
-In $V\star RV$ the marked square contains a vertically reflected copy of $V$,
-shown enlarged at right.}
+\caption{Each half contains $D_4$ and its transpose. The shaded diamond has
+$\ell^1$-radius $1/2+1/(2M)$. The marked boundary points of $V$ differ by
+$1$ horizontally and $5/32$ vertically. In $V\star RV$ the marked square
+contains a reflected copy of $V$, enlarged at right.}
 \label{fig:packing}
 \end{figure}
 

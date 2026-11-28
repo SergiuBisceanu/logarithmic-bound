@@ -86,28 +86,33 @@ theorem moment_one_le_two {x : ℝ} (hx : x ≤ 1) : moment 1 x ≤ 2 := by
   rw [← Real.exp_log (by norm_num : (0:ℝ)<2), Real.exp_le_exp]
   norm_num at hl ⊢; linarith
 
+/-- The full sum of exponential costs after greedy selection. Retaining this
+potential controls the fraction of tests exceeding any prescribed threshold. -/
+theorem exists_moment_potential {J X : Type*} [Fintype J] (z : X → J → ℝ)
+    (hw : ∀ a : J → ℝ, (∀ j, 0≤a j) → ∃ p, ∑ j, a j*Real.exp (z p j) ≤ 2*∑ j, a j)
+    (m : ℕ) : ∃ s : Fin m → X, (∑ j, Real.exp (∑ i, z (s i) j)) ≤ (Fintype.card J:ℝ)*2^m := by
+  classical
+  induction m with
+  | zero => exact ⟨Fin.elim0,by simp⟩
+  | succ m ih =>
+    obtain ⟨s,hs⟩ := ih
+    let a (j : J) := Real.exp (∑ i, z (s i) j)
+    obtain ⟨p,hp⟩ := hw a (fun j => (Real.exp_pos _).le)
+    refine ⟨Fin.cons p s,?_⟩
+    simp only [Fin.sum_univ_succ,Fin.cons_zero,Fin.cons_succ,Real.exp_add,pow_succ]
+    change (∑ j, Real.exp (z p j)*a j) ≤ _
+    simp_rw [mul_comm (Real.exp (z p _)) (a _)]
+    change (∑ j, a j) ≤ _ at hs
+    linarith
+
 /-- Exponential weights extract a finite ensemble from a uniform bound on the
 weighted moments. After M rounds every coordinate costs at most log J + M log 2. -/
 theorem exists_sample_moment {J X : Type*} [Fintype J] [Nonempty J] (z : X → J → ℝ)
     (hw : ∀ a : J → ℝ, (∀ j, 0≤a j) → ∃ p, ∑ j, a j*Real.exp (z p j) ≤ 2*∑ j, a j)
     (M : ℕ) : ∃ s : Fin M → X, ∀ j, ∑ i, z (s i) j ≤ Real.log (Fintype.card J)+(M:ℝ)*Real.log 2 := by
   classical
-  let N : ℝ := Fintype.card J
-  have np : 0 < N := by dsimp [N]; exact_mod_cast (Fintype.card_pos : 0 < Fintype.card J)
-  have potential (m : ℕ) : ∃ s : Fin m → X, (∑ j, Real.exp (∑ i, z (s i) j)) ≤ N*2^m := by
-    induction m with
-    | zero => exact ⟨Fin.elim0,by simp [N]⟩
-    | succ m ih =>
-      obtain ⟨s,hs⟩ := ih
-      let a (j : J) := Real.exp (∑ i, z (s i) j)
-      obtain ⟨p,hp⟩ := hw a (fun j => (Real.exp_pos _).le)
-      refine ⟨Fin.cons p s,?_⟩
-      simp only [Fin.sum_univ_succ,Fin.cons_zero,Fin.cons_succ,Real.exp_add,pow_succ]
-      change (∑ j, Real.exp (z p j)*a j) ≤ _
-      simp_rw [mul_comm (Real.exp (z p _)) (a _)]
-      change (∑ j, a j) ≤ _ at hs
-      linarith
-  obtain ⟨s,hs⟩ := potential M
+  have np : (0:ℝ) < Fintype.card J := by exact_mod_cast (Fintype.card_pos : 0 < Fintype.card J)
+  obtain ⟨s,hs⟩ := exists_moment_potential z hw M
   refine ⟨s,fun j => ?_⟩
   have hb := (Finset.single_le_sum (fun j _ => (Real.exp_pos (∑ i, z (s i) j)).le)
     (Finset.mem_univ j)).trans hs
