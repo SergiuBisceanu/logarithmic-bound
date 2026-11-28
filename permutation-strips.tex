@@ -274,7 +274,7 @@ For $J$ prescribed heights, $\max(1,\lceil16\log J\rceil)$ paths already give $w
 
 For the block take $M=128k$ and match column $h$ to row $(h+M)\bmod 2M$ in the $2M$-grid and insert the paths in order in each half (Figure~\ref{fig:packing}). The result $V$ has $\ell_V\le H$ by subadditivity. The outer squares lie in the diamond $|x-1/2|+|y-1/2|\le1/2+1/(2M)$. For any two points of $V$, their absolute coordinate differences $a,b\le1$ therefore satisfy $a+b\le1+1/M$. If $a+b\le1$ their distance is at most one. Otherwise $a^2+b^2\le1+(a+b-1)^2\le1+M^{-2}$, so $\diam V\le1+1/(2M^2)$. For $Q=V\star RV$, \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta H(t)$ in either quadrant, hence $M_w(Q)\le398/k$. Integration gives $\Fav(Q)\lesssim1/k$ since $w(r)\ge\sqrt r$ and $|d\theta/dt|=s_\theta^2\le2$. Finally $Q\subset V$ and $N(Q)\le(2MB)^2\le e^{24k}$.
 
-If the first path has outer shuffle $D_u$, it meets $x=0$ only at $y\ge1/2$, since the first bottom interval is red. The packing therefore meets $x=0$ only at $y\ge1/2+1/(4M)$ and $x=1$ only at $y\le1/2$. The subset $Q$ meets both sides by its full horizontal projection. For a transposed outer shuffle, exchange the coordinates and use the other copy of the first path. Hence $(\diam Q)^2\ge1+(4M)^{-2}$. As $(1+k^{-2})^2\le1+9/(4k^2)$ for $k\ge2$, we get $M\ge k/6$. Repeating the list preserves $H$. Whether $o(k)$ paths can control $wH$ at every height remains open.
+If the first path has outer shuffle $D_u$, it meets $x=0$ only at $y\ge1/2$, since the first bottom interval is red. The packing therefore meets $x=0$ only at $y\ge1/2+1/(4M)$ and $x=1$ only at $y\le1/2$. The subset $Q$ meets both sides by its full horizontal projection. For a transposed outer shuffle, exchange the coordinates and use the other copy of the first path. Hence $(\diam Q)^2\ge1+(4M)^{-2}$. As $(1+k^{-2})^2\le1+9/(4k^2)$ for $k\ge2$, we get $M\ge k/6$. Theorem~\ref{thm:paths} gives a lower bound for the angular estimate itself.
 \end{proof}
 
 \begin{figure}[htbp]
@@ -351,6 +351,25 @@ Every elementary square of side $d$ has mass $d$ by its horizontal marginal. A p
 For $z\in S$, $0<r\le\diam S$, follow a chain through $z$ to the first square of side at most $r/8$. Its parent has $L>r/8$ and $h\le r/8$. The child's family has at least $L/(4h)>r/(32h)$ members. Choose $1+\lfloor r/(32h)\rfloor$ consecutive members including this child. All lie in $B(z,r)$ since $5r/32+2\sqrt2h<r$. Their mass is at least $r/32$, and the horizontal marginal gives the upper bound $2r$.
 
 Finally Hall's grid matching applied to $S$ at $\delta=1/n$ gives \eqref{eq:gridlaw} and the simultaneous Favard bound (enlarge constants for $n=2$). The leading constants and Kaczynski's monotonicity question remain open.
+
+\section{How many shuffle paths?}
+
+\begin{theorem}\label{thm:paths}
+For every $C>0$ and all sufficiently large $k$, there is a profile $v$ as in Lemma~\ref{lem:block} such that any list of $M$ depth-$k$ shuffle paths, each with at most $e^{8k}$ squares, must have $M>c_C k$ to satisfy $w(\tau(t))H(t)\le C/k$ at every height. Here $c_C>0$, and the scales and orientations are arbitrary.
+\end{theorem}
+\begin{proof}
+Choose an integer $m>2C$, put $B=e^{k/(4m)}$, $T=B^{-4}$, and take $v(r)=(m/k)\mathbf1_{[T,1/2]}(r)$. Its logarithmic integral is at most $(m/k)\log(1/T)=1$. A shuffle at scale $u$ has $2\lfloor u\rfloor\ge u$ children, so at most $32m$ scales per path are at least $B$. List all such occurrences as $u_1,\ldots,u_d$, with $d\le32mM$, and put $L=4096m$. Two of the $L^d+1$ points $jT(u_i+1)_{i=1}^d$ modulo one lie in the same box of side $1/L$. Their index difference gives $s=qT$, $1\le q\le L^d$, with $\operatorname{dist}((u_i+1)s,\mathbb Z)\le1/L$ for all $i$. If $M\le k/(128m^2\log L)$ then $L^d\le B$, so $t=2s/(1+s)$ lies in $[T,B^{-2}]$ for large $k$.
+
+Write $\Delta=\ell_P(t)-\ell_{D\star P}(t)$ for one insertion. The gaps removed from the outer intervals have total length $1-\ell_P(t)$ counted with multiplicity, so $\Delta\le1-\ell_D(t)$. Each of the $2\lfloor u\rfloor$ outer intervals moves by at most $t$ from height zero, so $1-\ell_D(t)\le4ut$. For $u\ge B$ we also have
+\[
+ \Delta\le 8(t+L^{-1}+u^{-1}).
+\]
+Indeed, in units of a regular cell width, same-color starts are at least one apart. For opposite colors their difference is $1+(2-t)(h-(u+1)s)$ for an integer $h$. Its absolute value is at least $1-t-2/L$. Shortening the regular intervals to this lower bound makes their interiors disjoint. The two end cells have total width at most $2/u$. For the transpose, at height $1-t$ the first $n=\lfloor(1-2t)u\rfloor-1$ regular cells of each color have disjoint interiors since the last blue ends at $(1+t)n\le(1-t)u$, where red begins. Their total width is $n/u\ge1-2t-2/u$.
+
+Summing the losses along each path gives at most $20k/B+256m/L<1/2$ for large $k$. At this single height every path retains length at least $1/2$, and $w(\tau(t))H(t)\ge m/(2k)>C/k$.
+\end{proof}
+
+Each prescribed $M(k)=o(k)$ also fails for one profile fixed across all depths. Take $a_j=2^{-j}$, $j\ge1$. Apply Theorem~\ref{thm:paths} with $C=j/a_j$ at increasing depths $k_j$ for which $M(k_j)\le c_Ck_j$, obtaining profiles $v_j$. Then $v=\sum_j a_jv_j$ is admissible, and $\max(v,\sqrt r)\ge a_j\max(v_j,\sqrt r)$. At depth $k_j$ every list of at most $M(k_j)$ paths therefore exceeds $j/k_j$ somewhere.
 
 \medskip
 \noindent\textit{Acknowledgment.}

@@ -158,7 +158,7 @@ theorem card_children_le {u U : ℝ} (hu : 0 ≤ u) (hupper : u ≤ 2*U) :
   linarith [Nat.floor_le hu]
 
 
-private theorem measure_affine (a w : ℝ) (hw : 0 < w) (F : Set ℝ) :
+theorem measure_affine (a w : ℝ) (hw : 0 < w) (F : Set ℝ) :
     volume.real ((fun z => a+w*z) '' F) = w * volume.real F := by
   have he : (fun z => a+w*z) '' F =
       (fun z : ℝ => z+ -a) ⁻¹' ((fun z : ℝ => w⁻¹*z) ⁻¹' F) := by
@@ -194,7 +194,8 @@ theorem color_length_le (u : ℝ) (hu : 4 ≤ u) (t : ℝ) (F : Set ℝ) (b : Bo
       exact measure_affine _ _ ((shufflePattern u hu).wpos _) _
     _ = _ := by simp_rw [div_mul_eq_mul_div]; rw [← Finset.sum_div,← Finset.sum_mul,hs']; ring
 
-private theorem regularCoords (u : ℝ) (hu : 4 ≤ u) (t : ℝ)
+/-- Starts and common width of all children preceding the final pair. -/
+theorem regularCoords (u : ℝ) (hu : 4 ≤ u) (t : ℝ)
     (i : Fin ⌊u⌋₊) (hi : i.val+1 < ⌊u⌋₊) (b : Bool) :
     (shufflePattern u hu).start t (b,i) =
       (if b then blueStart t i.val else redStart t u i.val)/(2*u) ∧
