@@ -10,6 +10,44 @@ open scoped BigOperators
 namespace PermutationStrips.AngularBlock
 noncomputable section
 
+private abbrev BudgetPath (k : ℕ) (U : ℕ → ℝ) :=
+  {p : Path // (Fintype.card p.Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i}
+
+private def excess {k : ℕ} {U : ℕ → ℝ} {J : Type*}
+    (t : J → ℝ) (cut : J → ℕ) (p : BudgetPath k U) (j : J) : ℝ :=
+  len p.val.pattern (t j) - envelope k (cut j)
+
+private theorem excess_bound {J : Type*} {k : ℕ} {U : ℕ → ℝ} (t : J → ℝ)
+    (ht : ∀ j, t j ∈ Icc 0 1) (cut : J → ℕ) (p : BudgetPath k U) (j : J) :
+    |excess t cut p j| ≤ 1 := by
+  have henv : 0 ≤ envelope k (cut j) ∧ envelope k (cut j) ≤ 1 := by
+    unfold envelope
+    exact ⟨by positivity,(div_le_iff₀ (by positivity)).mpr (by simp)⟩
+  have hlo : 0 ≤ len p.val.pattern (t j) := measureReal_nonneg
+  have hhi := p.val.pattern.section_length_le_one (ht j)
+  unfold excess
+  exact abs_le.mpr ⟨by linarith [henv.2],by linarith [henv.1]⟩
+
+private theorem excess_test {J : Type*} [Fintype J] (k : ℕ)
+    (t : J → ℝ) (ht : ∀ j, t j ∈ Icc 0 1)
+    (cut : J → ℕ) (U : ℕ → ℝ) (hU : ∀ i, 16 ≤ U i)
+    (hc : ∀ i j, i < cut j → 8 ≤ U i * radius (t j)) (a : J → ℝ) (ha : ∀ j, 0 ≤ a j) :
+    ∃ p : BudgetPath k U, ∑ j, a j*excess t cut p j ≤ 0 := by
+  obtain ⟨p,hp,hp'⟩ := exists_path t ht cut U hU hc k a ha
+  exact ⟨⟨p,hp⟩,hp'⟩
+
+private theorem mean_le {J : Type*} {k M : ℕ} {U : ℕ → ℝ} (t : J → ℝ)
+    (cut : J → ℕ) (s : Fin M → BudgetPath k U) (hM : 0<M) (j : J)
+    (h : ∑ i, excess t cut (s i) j ≤ (M:ℝ)/k) :
+    (∑ i, len (s i).val.pattern (t j))/(M:ℝ) ≤ envelope k (cut j)+1/k := by
+  simp only [excess,Finset.sum_sub_distrib,Finset.sum_const,Finset.card_univ,
+    Fintype.card_fin,nsmul_eq_mul] at h
+  apply (div_le_iff₀ (by exact_mod_cast hM : (0:ℝ)<M)).mpr
+  calc
+    _ ≤ (M:ℝ)/k + (M:ℝ)*envelope k (cut j) := by linarith
+    _ = _ := by ring
+
+/-- A common sample at arbitrary prescribed heights, from a second-moment estimate. -/
 theorem paths_on_mesh {J : Type*} [Fintype J] [Nonempty J] (k : ℕ) (hk : 0 < k)
     (t : J → ℝ) (ht : ∀ j, t j ∈ Icc 0 1)
     (cut : J → ℕ) (U : ℕ → ℝ) (hU : ∀ i, 16 ≤ U i)
@@ -18,36 +56,30 @@ theorem paths_on_mesh {J : Type*} [Fintype J] [Nonempty J] (k : ℕ) (hk : 0 < k
       (∀ i, (Fintype.card (s i).Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i) ∧
       ∀ j, (∑ i, len (s i).pattern (t j)) / (k^2*Fintype.card J : ℕ) ≤
         envelope k (cut j)+1/k := by
-  let X := {p : Path // (Fintype.card p.Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i}
-  let e := fun (p : X) j => len p.val.pattern (t j) - envelope k (cut j)
-  have htest (a : J → ℝ) (ha : ∀ j, 0 ≤ a j) : ∃ p : X, ∑ j, a j*e p j ≤ 0 := by
-    obtain ⟨p,hp,hp'⟩ := exists_path t ht cut U hU hc k a ha
-    exact ⟨⟨p,hp⟩,hp'⟩
-  have herr (p : X) (j : J) : |e p j| ≤ 1 := by
-    have henv : 0 ≤ envelope k (cut j) ∧ envelope k (cut j) ≤ 1 := by
-      unfold envelope
-      exact ⟨by positivity,(div_le_iff₀ (by positivity)).mpr (by simp)⟩
-    have hlo : 0 ≤ len p.1.pattern (t j) := measureReal_nonneg
-    have hhi := p.1.pattern.section_length_le_one (ht j)
-    exact abs_le.mpr ⟨by dsimp [e]; linarith [henv.2],by dsimp [e]; linarith [henv.1]⟩
-  obtain ⟨s,hs⟩ := exists_sample e herr htest (k^2*Fintype.card J)
-  refine ⟨fun i => (s i).val,fun i => (s i).property,fun j => ?_⟩
   let q := Fintype.card J
-  have hq : 0 < q := Fintype.card_pos
-  have hm : 0 < (k^2*q : ℕ) := by positivity
-  have h := hs j
-  dsimp only [e] at h
-  rw [Finset.sum_sub_distrib] at h
-  simp only [Finset.sum_const,Finset.card_univ,Fintype.card_fin,nsmul_eq_mul] at h
-  change _ ≤ Real.sqrt ((k^2*q:ℕ)*q) at h
-  have hroot : Real.sqrt ((k^2*q:ℕ)*q) = (k:ℝ)*q := by
-    rw [← Real.sqrt_sq (mul_nonneg (Nat.cast_nonneg k) (Nat.cast_nonneg q))]
-    congr 1; push_cast; ring
-  rw [hroot] at h
-  apply (div_le_iff₀ (by exact_mod_cast hm : (0:ℝ)<(k^2*q:ℕ))).mpr
-  have hdiv : (1/(k:ℝ))*(k^2*q:ℕ) = (k:ℝ)*q := by push_cast; field_simp
-  rw [add_mul,hdiv]
-  linarith
+  let M := k^2*q
+  have hq : 0<q := Fintype.card_pos
+  have hM : 0<M := Nat.mul_pos (pow_pos hk 2) hq
+  obtain ⟨s,hs⟩ := exists_sample (excess t cut) (excess_bound t ht cut) (excess_test k t ht cut U hU hc) M
+  refine ⟨fun i => (s i).val,fun i => (s i).property,fun j => mean_le t cut s hM j ((hs j).trans_eq ?_)⟩
+  change Real.sqrt ((k^2*q:ℕ)*q) = (k^2*q:ℕ)/k
+  have he : ((k^2*q:ℕ):ℝ)/k = (k:ℝ)*q := by push_cast; field_simp
+  rw [he,← Real.sqrt_sq (mul_nonneg (Nat.cast_nonneg k) (Nat.cast_nonneg q))]
+  congr 1; push_cast; ring
+
+/-- Exponential weights approximate the scalar envelope to within 1/k using
+only logarithmically many samples in the number of mesh heights at fixed k. -/
+theorem paths_on_mesh_of_log {J : Type*} [Fintype J] [Nonempty J] (k M : ℕ)
+    (hk : 0<k) (hM : 0<M) (hsize : 4*(k:ℝ)^2*Real.log (Fintype.card J) ≤ M)
+    (t : J → ℝ) (ht : ∀ j, t j ∈ Icc 0 1)
+    (cut : J → ℕ) (U : ℕ → ℝ) (hU : ∀ i, 16 ≤ U i)
+    (hc : ∀ i j, i < cut j → 8 ≤ U i * radius (t j)) :
+    ∃ s : Fin M → Path,
+      (∀ i, (Fintype.card (s i).Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i) ∧
+      ∀ j, (∑ i, len (s i).pattern (t j))/(M:ℝ) ≤ envelope k (cut j)+1/k := by
+  obtain ⟨s,hs⟩ := exists_sample_of_log (excess t cut) (excess_bound t ht cut)
+    (excess_test k t ht cut U hU hc) k M hk hsize
+  exact ⟨fun i => (s i).val,fun i => (s i).property,fun j => mean_le t cut s hM j (hs j)⟩
 
 private def meshRad (n : ℕ) (j : Fin n) : ℝ := (j.val+1 : ℝ)/(2*n)
 
