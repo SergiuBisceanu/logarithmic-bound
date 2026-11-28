@@ -2,32 +2,12 @@
 
 Sergiu Alexandru Bîsceanu
 
-Divide the bottom edge of the unit square into $n$ equal intervals and join each to an interval of the same width on the top. How small can the area covered by the resulting parallelograms be? The minimum is of order $1/\log n$, both when the top intervals slide freely and when they permute the equal grid. Already at $n=2$ the minima differ. They are $1/\sqrt 2$ and $3/4$, respectively.
+## Abstract
 
-[Read the five-page paper](permutation-strips.pdf) · [LaTeX source](permutation-strips.tex) · [Lean proof of Theorem 1](PermutationStrips/Conjecture.lean#L340) · [Lean proof of Theorem 2](PermutationStrips/TheoremTwo.lean#L46)
+For the $n$ parallelograms obtained by matching the equal subintervals of the two horizontal edges of the unit square, we prove that the minimum area of their union is of order $\frac{1}{\log n}$, as conjectured by Kaczynski.
 
-## What Lean proves
+[Read the paper](permutation-strips.pdf) · [LaTeX source](permutation-strips.tex)
 
-For the attained minima $\beta_n$ (sliding tops) and $\alpha_n$ (permuted tops), Lean proves the matching $1/\log n$ bounds and the two leading lower bounds
-$$
-\liminf_{n\to\infty}(\log n)\beta_n\ge 2,\qquad
-\liminf_{n\to\infty}(\log n)\alpha_n\ge \pi^2/4.
-$$
-The formalization uses the Lebesgue area of the union of the actual strips. Its upper proof repeatedly chooses a shuffle whose area saving pays for its number of pieces, then transfers the result to the equal grid. [Theorem statements](PermutationStrips/Conjecture.lean#L338) · [Upper construction](PermutationStrips/FiniteUpper.lean) · [Leading lower bounds](PermutationStrips/Weighted.lean)
+## Lean certificate
 
-For **Theorem 2**, Lean constructs one compact set for each admissible angular weight $b$. That same set works at every scale, has Euclidean Hausdorff length one and uniform coordinate marginals, and has zero projection length in every oblique direction. In every ball of radius $r$ centered on the set, for $0<r\le\operatorname{diam} S$, its length lies between $r/128$ and $2r$. [Theorem and all-scale bounds](PermutationStrips/TheoremTwo.lean) · [Euclidean measure and marginals](PermutationStrips/CompactAhlfors.lean#L114)
-
-Lean proves the matching lower and upper bounds for the compact infimum and the equal-grid minimum. At the critical weight $b(r)=1/(1+\log(1/r))$, the minimum of the weighted projection supremum alone has order $(\log\log n)/\log n$. [Critical rate](PermutationStrips/TheoremTwo.lean#L104)
-
-Lemma 3 uses $k^2$ deterministically selected shuffle paths. It weights each section length by its angular weight before choosing the next path. The weighted mean is at most $201/k$ at every interior height, giving $M_w(Q)\le402/k$ for the assembled block. The same proof gives the earlier $130/k$ weighted mean with $5120k^2$ paths. [Weighted selection](PermutationStrips/AngularBlockGame.lean#L153) · [Quadratic path bounds](PermutationStrips/AngularBlock.lean#L141) · [Geometric construction](PermutationStrips/AngularFiniteBlock.lean#L71)
-
-## Reproduce the check
-
-With [elan](https://lean-lang.org/install/) installed, run these commands from the repository root.
-
-```sh
-lake exe cache get
-lake build
-```
-
-The project pins Lean and mathlib to v4.24.0. The default build checks all public declarations in the project against the axiom allowlist of `propext`, `Classical.choice`, and `Quot.sound`. [Build entry and axiom check](PermutationStrips.lean)
+Lean verifies the strip-area bounds in Theorem 1 and the compact construction and sharp angular bounds in Theorem 2. [Read the Lean certificate](PermutationStrips.lean).
