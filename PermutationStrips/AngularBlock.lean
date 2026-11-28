@@ -42,17 +42,22 @@ private theorem schedule_budget {k : ℕ} {w : ℝ → ℝ} (hm : Measurable w)
   nlinarith [mul_le_mul_of_nonneg_left hI (Nat.cast_nonneg k),
     mul_le_mul_of_nonneg_left hlog (Nat.cast_nonneg k)]
 
-/-- Weighted paths at all heights for an arbitrary sample size and exponential rate.
-Rounding a mesh height toward one half costs at most one additional unit of 1/k. -/
-theorem exists_weighted_ensemble {w : ℝ → ℝ} (hm : Measurable w)
+/-- Use one mesh in both halves of the height interval. Nondecreasing weights
+permit rounding toward height one half, including at every jump. -/
+private theorem ensemble_from_mesh {w : ℝ → ℝ} (hm : Measurable w)
     (hw : ∀ r ∈ Ioc (0:ℝ) (1/2), w r ∈ Icc 0 1)
     (hmono : MonotoneOn w (Ioc (0:ℝ) (1/2)))
     (hi : IntegrableOn (fun r => w r/r) (Ioc (0:ℝ) (1/2)))
     (hI : (∫ r in Ioc (0:ℝ) (1/2), w r/r) ≤ 3)
-    (k M : ℕ) (hk : 0<k) (hM : 0<M) {η : ℝ} (hη : 0<η) (hη1 : η≤1) :
+    (k M : ℕ) (hk : 0<k) (hM : 0<M) (A : ℝ)
+    (solve : ∀ (J : Type) [Fintype J] [Nonempty J] (t z : J → ℝ) (U : ℕ → ℝ),
+      (∀ j, t j ∈ Icc 0 1) → (∀ j, z j ∈ Icc 0 1) → (∀ i, 16≤U i) →
+      (∀ i j, i < ⌊(k:ℝ)*z j⌋₊ → 8≤U i*radius (t j)) → Real.log (Fintype.card J) ≤ 10*k →
+      ∃ p : Fin M → Path, (∀ i, (p i).depth=k ∧
+        (Fintype.card (p i).Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i) ∧
+        ∀ j, z j*((∑ i, len (p i).pattern (t j))/M) ≤ A) :
     ∃ p : Fin M → Path, (∀ i, (p i).depth=k ∧ (Fintype.card (p i).Index : ℝ) ≤ Real.exp (8*k)) ∧
-      ∀ t ∈ Ioo (0:ℝ) 1, w (radius t)*((∑ i, len (p i).pattern t)/(M:ℝ)) ≤
-        (1+128*(1+η))/k + 10*k/(η*M) := by
+      ∀ t ∈ Ioo (0:ℝ) 1, w (radius t)*((∑ i, len (p i).pattern t)/(M:ℝ)) ≤ A+1/k := by
   classical
   have hkp : (0:ℝ)<k := by exact_mod_cast hk
   let B := Real.exp (8*k)
@@ -98,9 +103,8 @@ theorem exists_weighted_ensemble {w : ℝ → ℝ} (hm : Measurable w)
       _ ≤ 4*(k:ℝ)*B := by linarith
       _ ≤ Real.exp (2*k)*B := mul_le_mul_of_nonneg_right hfour (by linarith)
       _ = _ := by dsimp [B]; rw [←Real.exp_add]; congr 1; ring
-  obtain ⟨p,hcard,hmean⟩ := weighted_paths_on_mesh k M hM t (fun j => w (r j))
-    (meshHeight_mem hn) (fun j => hw _ (hr j)) c U hU hc (μ:=128/k) (by positivity)
-    (fun j => envelope_weight hk (hw _ (hr j))) hη hη1
+  obtain ⟨p,hcard,hmean⟩ := solve J t (fun j => w (r j)) U (meshHeight_mem hn)
+    (fun j => hw _ (hr j)) hU hc hlog
   have hp (i) : (Fintype.card (p i).Index : ℝ) ≤ B := (hcard i).2.trans (schedule_budget hm hw hi hI)
   refine ⟨p,fun i => ⟨(hcard i).1,hp i⟩,?_⟩
   intro x hx
@@ -127,15 +131,70 @@ theorem exists_weighted_ensemble {w : ℝ → ℝ} (hm : Measurable w)
     dsimp only [H]; rw [div_le_iff₀ hMp]
     exact hsum.trans_eq (by field_simp)
   have hnon : 0≤H x := div_nonneg (Finset.sum_nonneg fun _ _ => measureReal_nonneg) hMp.le
-  have htail := div_le_div_of_nonneg_right hlog (mul_nonneg hη.le hMp.le)
   calc
     _ ≤ w (r j)*H x := mul_le_mul_of_nonneg_right hweight hnon
     _ ≤ w (r j)*(H (t j)+1/k) := mul_le_mul_of_nonneg_left hshift hwj.1
-    _ ≤ ((1+η)*(128/k)+Real.log (Fintype.card J)/(η*M))+1/k := by
+    _ ≤ A+1/k := by
       rw [mul_add]
       exact add_le_add (hmean j) (mul_le_of_le_one_left (by positivity) hwj.2)
-    _ ≤ ((1+η)*(128/k)+10*k/(η*M))+1/k := by linarith
-    _ = _ := by ring
+
+/-- Weighted paths at all heights for an arbitrary sample size and exponential rate. -/
+theorem exists_weighted_ensemble {w : ℝ → ℝ} (hm : Measurable w)
+    (hw : ∀ r ∈ Ioc (0:ℝ) (1/2), w r ∈ Icc 0 1)
+    (hmono : MonotoneOn w (Ioc (0:ℝ) (1/2)))
+    (hi : IntegrableOn (fun r => w r/r) (Ioc (0:ℝ) (1/2)))
+    (hI : (∫ r in Ioc (0:ℝ) (1/2), w r/r) ≤ 3)
+    (k M : ℕ) (hk : 0<k) (hM : 0<M) {η : ℝ} (hη : 0<η) (hη1 : η≤1) :
+    ∃ p : Fin M → Path, (∀ i, (p i).depth=k ∧ (Fintype.card (p i).Index : ℝ) ≤ Real.exp (8*k)) ∧
+      ∀ t ∈ Ioo (0:ℝ) 1, w (radius t)*((∑ i, len (p i).pattern t)/(M:ℝ)) ≤
+        (1+128*(1+η))/k + 10*k/(η*M) := by
+  let A := (1+η)*(128/k)+(10*k)/(η*M)
+  obtain ⟨p,hp,h⟩ := ensemble_from_mesh hm hw hmono hi hI k M hk hM A (by
+    intro J _ _ t z U ht hz hU hc hlog
+    obtain ⟨p,hp,hh⟩ := weighted_paths_on_mesh k M hM t z ht hz (fun j => ⌊(k:ℝ)*z j⌋₊) U hU hc
+      (μ:=128/k) (by positivity) (fun j => envelope_weight hk (hz j)) hη hη1
+    exact ⟨p,hp,fun j => (hh j).trans (add_le_add_left (div_le_div_of_nonneg_right hlog (by positivity)) _)⟩)
+  exact ⟨p,hp,fun t ht => (h t ht).trans_eq (by dsimp [A]; ring)⟩
+
+/-- Accumulating exponential moments along each path gives a simultaneous estimate
+for any sample size with error proportional to 1/M. -/
+theorem exists_moment_ensemble {w : ℝ → ℝ} (hm : Measurable w)
+    (hw : ∀ r ∈ Ioc (0:ℝ) (1/2), w r ∈ Icc 0 1)
+    (hmono : MonotoneOn w (Ioc (0:ℝ) (1/2)))
+    (hi : IntegrableOn (fun r => w r/r) (Ioc (0:ℝ) (1/2)))
+    (hI : (∫ r in Ioc (0:ℝ) (1/2), w r/r) ≤ 3)
+    (k M : ℕ) (hk : 0<k) (hM : 0<M) :
+    ∃ p : Fin M → Path, (∀ i, (p i).depth=k ∧ (Fintype.card (p i).Index : ℝ) ≤ Real.exp (8*k)) ∧
+      ∀ t ∈ Ioo (0:ℝ) 1, w (radius t)*((∑ i, len (p i).pattern t)/(M:ℝ)) ≤
+        (1+256*Real.log 2)/k + 2560/M := by
+  have hk' : (0:ℝ)<k := by exact_mod_cast hk
+  have hM' : (0:ℝ)<M := by exact_mod_cast hM
+  let A := 256*(10*k/M + Real.log 2)/k
+  obtain ⟨p,hp,h⟩ := ensemble_from_mesh hm hw hmono hi hI k M hk hM A (by
+    intro J _ _ t z U ht hz hU hc hlog
+    obtain ⟨p,hp,hh⟩ := moment_paths_on_mesh k M hk hM t z ht hz U hU hc
+    refine ⟨p,hp,fun j => (hh j).trans ?_⟩
+    dsimp [A]; gcongr)
+  exact ⟨p,hp,fun t ht => (h t ht).trans_eq (by dsimp [A]; field_simp; ring)⟩
+
+/-- A linear list of actual depth-k paths controls all heights. -/
+theorem exists_linear_ensemble {w : ℝ → ℝ} (hm : Measurable w)
+    (hw : ∀ r ∈ Ioc (0:ℝ) (1/2), w r ∈ Icc 0 1)
+    (hmono : MonotoneOn w (Ioc (0:ℝ) (1/2)))
+    (hi : IntegrableOn (fun r => w r/r) (Ioc (0:ℝ) (1/2)))
+    (hI : (∫ r in Ioc (0:ℝ) (1/2), w r/r) ≤ 3)
+    (k : ℕ) (hk : 0<k) :
+    ∃ p : Fin (128*k) → Path, (∀ i, (p i).depth=k ∧ (Fintype.card (p i).Index : ℝ) ≤ Real.exp (8*k)) ∧
+      ∀ t ∈ Ioo (0:ℝ) 1, w (radius t)*((∑ i, len (p i).pattern t)/(128*(k:ℝ))) ≤ 199/k := by
+  have hk' : (0:ℝ)<k := by exact_mod_cast hk
+  obtain ⟨p,hp,h⟩ := exists_moment_ensemble hm hw hmono hi hI k (128*k) hk (by positivity)
+  refine ⟨p,hp,fun t ht => ?_⟩
+  have hbound := h t ht
+  push_cast at hbound
+  apply hbound.trans
+  calc
+    _ = (21+256*Real.log 2)/k := by field_simp; ring
+    _ ≤ _ := (div_le_div_iff_of_pos_right hk').mpr (by linarith [Real.log_two_lt_d9])
 
 /-- Exactly k squared paths control the weighted lengths at all heights. -/
 theorem exists_quadratic_ensemble {w : ℝ → ℝ} (hm : Measurable w)

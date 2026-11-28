@@ -1,4 +1,4 @@
-import PermutationStrips.AngularBlockPath
+import PermutationStrips.AngularBlockMomentPath
 import PermutationStrips.AngularBlockGame
 import PermutationStrips.GridTransfer
 
@@ -115,6 +115,43 @@ theorem weighted_paths_on_mesh {J : Type*} [Fintype J] [Nonempty J] (k M : ℕ) 
     _ = z j*(∑ i, len (s i).val.pattern (t j))/(M:ℝ) := by ring
     _ ≤ _ := eq
     _ = _ := by field_simp; ring
+
+/-- The exponential moment along one path changes the sample cost to logarithmic
+in the number of mesh heights, uniformly in the depth. -/
+theorem moment_paths_on_mesh {J : Type*} [Fintype J] [Nonempty J] (k M : ℕ) (hk : 0<k) (hM : 0<M)
+    (t z : J → ℝ) (ht : ∀ j, t j ∈ Icc 0 1) (hz : ∀ j, z j ∈ Icc 0 1)
+    (U : ℕ → ℝ) (hU : ∀ i, 16 ≤ U i)
+    (hc : ∀ i j, i < ⌊(k:ℝ)*z j⌋₊ → 8 ≤ U i*radius (t j)) :
+    ∃ s : Fin M → Path,
+      (∀ i, (s i).depth=k ∧ (Fintype.card (s i).Index : ℝ) ≤ ∏ i ∈ Finset.range k, 4*U i) ∧
+      ∀ j, z j*((∑ i, len (s i).pattern (t j))/(M:ℝ)) ≤
+        256*(Real.log (Fintype.card J)/(M:ℝ)+Real.log 2)/k := by
+  let cut := fun j => ⌊(k:ℝ)*z j⌋₊
+  have hcut (j) : cut j≤k := by
+    exact_mod_cast (Nat.floor_le (mul_nonneg (Nat.cast_nonneg k) (hz j).1)).trans
+      (mul_le_of_le_one_right (Nat.cast_nonneg _) (hz j).2)
+  let v := fun (p : BudgetPath k U) j => (1+(cut j:ℝ))*len p.val.pattern (t j)/256
+  have test (a : J → ℝ) (ha : ∀ j, 0≤a j) : ∃ p, ∑ j, a j*Real.exp (v p j) ≤ 2*∑ j, a j := by
+    obtain ⟨p,hd,hp,he⟩ := exists_moment_path t ht cut U hU hc k a ha
+    refine ⟨⟨p,hd,hp⟩,?_⟩
+    simp only [min_eq_right (hcut _),moment,Nat.cast_add,Nat.cast_one,mul_sub,
+      Finset.sum_sub_distrib,←Finset.sum_mul] at he
+    exact (sub_nonpos.mp he).trans_eq (mul_comm _ 2)
+  obtain ⟨s,hs⟩ := exists_sample_moment v test M
+  refine ⟨fun i => (s i).val, fun i => (s i).property, fun j => ?_⟩
+  have hk' : (0:ℝ)<k := by exact_mod_cast hk
+  have hm' : (0:ℝ)<M := by exact_mod_cast hM
+  let L := ∑ i, len (s i).val.pattern (t j)
+  have hsum : (1+(cut j:ℝ))*L/256 ≤ Real.log (Fintype.card J)+(M:ℝ)*Real.log 2 := by
+    have h := hs j
+    simpa only [v,L,Finset.sum_div,Finset.mul_sum] using h
+  have hL : 0≤L := Finset.sum_nonneg fun _ _ => measureReal_nonneg
+  have hpre : (k:ℝ)*z j ≤ 1+(cut j:ℝ) := by linarith [Nat.lt_floor_add_one ((k:ℝ)*z j)]
+  have hl : ((k:ℝ)*z j)*L ≤ 256*(Real.log (Fintype.card J)+(M:ℝ)*Real.log 2) :=
+    (mul_le_mul_of_nonneg_right hpre hL).trans (by linarith only [hsum])
+  change z j*(L/(M:ℝ)) ≤ _
+  rw [le_div_iff₀ hk',show z j*(L/(M:ℝ))*(k:ℝ) = ((k:ℝ)*z j*L)/(M:ℝ) by ring,div_le_iff₀ hm']
+  exact hl.trans_eq (by field_simp)
 
 private def meshRad (n : ℕ) (j : Fin n) : ℝ := (j.val+1 : ℝ)/(2*n)
 

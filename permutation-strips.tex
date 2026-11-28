@@ -168,43 +168,60 @@ Pair $R_i$ with $B_{i+h}$, $1\le i\le m-h-1$. In units of their common width, bl
 
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[line cap=round,line join=round]
-\begin{scope}[x=3.1cm,y=3.1cm]
- \draw[step=.125,black!14,line width=.3pt] (0,0) grid (1,1);
- \foreach \i in {0,1,2,3}{
-   \filldraw[fill=stripred!16,draw=stripred!55]
-    ({2*\i/8},{(4+\i)/8}) rectangle ({(2*\i+1)/8},{(5+\i)/8});
-   \filldraw[fill=stripblue!16,draw=stripblue!55]
-    ({(2*\i+1)/8},{\i/8}) rectangle ({(2*\i+2)/8},{(\i+1)/8});
- }
- \filldraw[fill=stripred!68,draw=stripred!95!black] (0,.5) rectangle (.125,.625);
- \filldraw[fill=stripblue!68,draw=stripblue!95!black] (.375,.125) rectangle (.5,.25);
- \draw[black!50] (0,0) rectangle (1,1);
- \node[left,font=\small,text=stripred!80!black] at (0,.5625) {$R_1$};
- \node[anchor=west,font=\small,text=stripblue!80!black,inner sep=1.4pt] at (.5,.19) {$B_2$};
- \node[below,font=\small] at (.5,-.04) {Endpoint squares};
+\begin{tikzpicture}[line join=round,line cap=round,
+  frame/.style={draw=black!60,line width=.45pt},guide/.style={draw=black!30,line width=.35pt}]
+\begin{scope}[x=2.95cm,y=2.95cm]
+  \node[above,font=\small] at (.5,1.05) {Endpoint squares};
+  \draw[step=.125,black!12,line width=.25pt] (0,0) grid (1,1);
+  \foreach \i in {0,...,3}{
+    \filldraw[fill=stripred!10,draw=stripred!48] ({2*\i/8},{(4+\i)/8})
+      rectangle ++(.125,.125);
+    \filldraw[fill=stripblue!10,draw=stripblue!48] ({(2*\i+1)/8},{\i/8})
+      rectangle ++(.125,.125);
+  }
+  \foreach \X/\Y/\ink in {0/.5/stripred,.375/.125/stripblue}{
+    \foreach \i/\j in {0/0,1/2,2/1}{
+      \fill[\ink!92!black] ({\X+\i/24},{\Y+\j/24}) rectangle ++({1/24},{1/24});
+    }
+    \draw[\ink!85!black,line width=.65pt] (\X,\Y) rectangle ++(.125,.125);
+  }
+  \draw[frame] (0,0) rectangle (1,1);
+  \node[left,font=\small,text=stripred!80!black] at (0,.565) {$R_1$};
+  \node[right,font=\small,text=stripblue!80!black] at (.50,.19) {$B_2$};
 \end{scope}
-\begin{scope}[shift={(5.0,0)},x=5.5cm,y=3.1cm]
- \foreach \i in {0,1,2,3}{
-    \path[fill=black!4,draw=black!20,line width=.35pt]
-     ({2*\i/8},0)--({(2*\i+1)/8},0)--({(5+\i)/8},1)--({(4+\i)/8},1)--cycle;
-    \path[fill=black!4,draw=black!20,line width=.35pt]
-     ({(2*\i+1)/8},0)--({(2*\i+2)/8},0)--({(\i+1)/8},1)--({\i/8},1)--cycle;
- }
- \path[fill=stripred,fill opacity=.29,draw=stripred!88!black,line width=.65pt]
- (0,0)--(.125,0)--(.625,1)--(.5,1)--cycle;
- \path[fill=stripblue,fill opacity=.27,draw=stripblue!88!black,line width=.65pt]
- (.375,0)--(.5,0)--(.25,1)--(.125,1)--cycle;
- \draw[densely dashed,black!55,line width=.4pt] (0,.5)--(1,.5);
- \draw[black,line width=1.5pt] (.25,.5)--(.375,.5);
- \draw[black!50] (0,0) rectangle (1,1);
- \node[left,font=\small] at (0,.5) {$t=\tfrac12$};
- \node[above,font=\small,text=stripred!80!black] at (.5625,1) {$R_1$};
- \node[above,font=\small,text=stripblue!80!black] at (.1875,1) {$B_2$};
- \node[below,font=\small] at (.5,-.04) {The corresponding strips};
+\begin{scope}[shift={(4.58,0)},x=5.45cm,y=2.95cm]
+  \node[above,font=\small] at (.33,1.05) {Selected strips};
+  \foreach \X/\Y/\ink in {0/.5/stripred,.375/.125/stripblue}{
+    \path[fill=\ink!11,draw=\ink!65,line width=.5pt]
+      (\X,0)--({\X+.125},0)--({\Y+.125},1)--(\Y,1)--cycle;
+    \foreach \i/\j in {0/0,1/2,2/1}{
+      \path[fill=\ink,fill opacity=.32,draw=\ink!85!black,line width=.32pt]
+        ({\X+\i/24},0)--({\X+(\i+1)/24},0)--
+        ({\Y+(\j+1)/24},1)--({\Y+\j/24},1)--cycle;
+    }
+  }
+  \draw[guide,dashed] (0,.5)--(.66,.5);
+  \draw[black,line width=1.5pt] (.25,.5)--({7/24},.5) ({5/16},.5)--({17/48},.5);
+  \draw[frame] (0,0) rectangle (.66,1);
+  \node[left,font=\small,inner sep=2pt] at (0,.5) {$t=\frac12$};
+\end{scope}
+\begin{scope}[shift={(10.0,0)},x=3.45cm,y=2.95cm]
+  \node[above,font=\small] at (.5,1.05) {Section at $t=\frac12$};
+  \foreach \xx in {0,1/3,1/2,5/6,1}{\draw[guide,densely dotted] (\xx,.27)--(\xx,.81);}
+  \foreach \yy/\ink/\lab in {.78/stripred/R_1,.55/stripblue/B_2,.32/black/\cap}{
+    \draw[guide] (0,\yy)--(1,\yy);
+    \draw[\ink!90!black,line width=2.8pt,line cap=butt]
+      (0,\yy)--({1/3},\yy) (.5,\yy)--({5/6},\yy);
+    \node[left,font=\small,text=\ink!90!black] at (-.03,\yy) {$\lab$};
+  }
+  \foreach \xx/\lab in {0/0,.333333/{\frac13},.5/{\frac12},.833333/{\frac56},1/1}{
+    \node[below,font=\small,inner sep=1pt] at (\xx,.23) {$\lab$};}
 \end{scope}
 \end{tikzpicture}
-\caption{The shuffle for $u=4$. The highlighted pair meets at $t=1/2$ on the black interval. Inserting the same pattern in both squares preserves every gap at that height.}
+\caption{In $D_4$ insert the three-square pattern with top order $1,3,2$.
+At $t=1/2$ the copies in $R_1$ and $B_2$ have the same section.
+The right panel rescales their common outer interval $[1/4,3/8]$ to $[0,1]$.
+The overlap retains both gaps.}
 \label{fig:shuffle}
 \end{figure}
 
@@ -226,31 +243,90 @@ Stop the first time $A\le1/k$. Each reciprocal gain is bounded below by an absol
 \section{From one scale to all scales}
 
 \begin{lemma}\label{lem:block}
-Let $v:(0,1/2]\to[0,1]$ be nondecreasing with $\int_0^{1/2}v(r)\,dr/r\le1$, and set $w(r)=\max(v(r),\sqrt r)$. For each integer $k\ge2$, $k^2$ paths of $k$ shuffles suffice to form a pattern $Q$ of $N(Q)$ squares with
+Let $v:(0,1/2]\to[0,1]$ be nondecreasing with $\int_0^{1/2}v(r)\,dr/r\le1$, and set $w(r)=\max(v(r),\sqrt r)$. For each integer $k\ge2$, $128k$ paths of $k$ shuffles suffice to form a pattern $Q$ of $N(Q)$ squares with
 \[
- \log N(Q)\le20k,\qquad \Fav(Q)+M_w(Q)\le C/k,\qquad \diam Q\le1+1/k^2.
+ \log N(Q)\le24k,\qquad \Fav(Q)+M_w(Q)\le C/k,\qquad \diam Q\le1+1/k^2.
 \]
 \end{lemma}
 \begin{proof}
 Put $c(r)=\lfloor kw(r)\rfloor$ and $Y_i=\int_0^{1/2}\mathbf1_{\{i<c(r)\}}\,dr/r$. Starting from the unit square, at stage $0\le i<k$ insert the current pattern in $D_u$ or its transpose, with $U_i\le u\le2U_i$ and $U_i=16e^{Y_i}$. Counting active stages gives $\sum_iY_i\le k\int_0^{1/2} w(r)\,dr/r\le(1+\sqrt2)k$. If $i<c(r)$, monotonicity gives $Y_i\ge\log(1/(2r))$, hence $U_i r\ge8$. Each path has at most $B=e^{8k}$ squares since each stage uses at most $4U_i$.
 
-Fix finitely many $t_j\in(0,1)$ and put $c_j=c(\tau(t_j))$. At each stage $i$, for any $a_j\ge0$, some pattern $P$ satisfies
+Fix finitely many heights $t_j$ in $(0,1)$ and set $c_j=c(\tau(t_j))$. Write $T_m(x)=e^{mx/256}$. We claim that for any $a_j\ge0$ there is a path $P$ of $i$ shuffles with
 \begin{equation}\label{eq:test}
- \sum_j a_j\bigl(\ell_P(t_j)-e_{ij}\bigr)\le0,\qquad
- e_{ij}=\frac{128}{128+\min(i,c_j)} .
+ \sum_j a_j\bigl(T_{1+\min(i,c_j)}(\ell_P(t_j))-2\bigr)\le0 .
 \end{equation}
-At $i=0$ this is equality. Put $F_j(x)=x-\mathbf1_{\{i<c_j\}}x^2/128$. Choose $P$ by \eqref{eq:test} at stage $i$ with weights $a_jF'_j(e_{ij})\ge0$ and write $x_j=\ell_P(t_j)$. Transposing the outer shuffle exchanges $t_j$ and $1-t_j$ in the displacement. When $i<c_j$, one orientation saves at least $x_j^2/64$ on average by Lemma~\ref{lem:scale}, and both savings are nonnegative. Averaging the weighted sum thus gives one $D$ with $\sum_j a_j\ell_{D\star P}(t_j)\le\sum_j a_j F_j(x_j)$. By concavity, $F_j(x_j)\le F_j(e_{ij})+F'_j(e_{ij})(x_j-e_{ij})$. Since $F_j(e_{ij})\le e_{i+1,j}$, summing proves \eqref{eq:test} at $i+1$.
-
-List $h/(2n),1-h/(2n)$, $1\le h\le n=\lceil kB\rceil$, as $t_1,\ldots,t_J$ with $J=2n$. At height $t_j$ write $w_j=w(\tau(t_j))$ and $z_j(P)=w_j\ell_P(t_j)$. Since $kw_j<c_j+1$, we have $w_je_{kj}\le128/k$. Testing \eqref{eq:test} with $a_jw_j$ thus gives a path with $\sum_j a_j z_j(P)\le(128/k)\sum_j a_j$.
-
-Let $S_j$ sum the weighted lengths already chosen and take $a_j=e^{\eta S_j}$, $0<\eta\le1$. For the next path, $0\le z_j\le1$ gives $e^{\eta z_j}\le1+\eta z_j+(\eta z_j)^2\le1+\eta(1+\eta)z_j$. Thus $\sum_j a_j$ starts at $J$ and grows by a factor at most $1+128\eta(1+\eta)/k$ per path. After $M$ paths,
+At $i=0$ use $T_1(1)<2$. Let $x,y$ be the old and new lengths at $t_j$, so $y\le x$ by \eqref{eq:insert}. When $i<c_j$, one orientation presents $\tau(t_j)$ to Lemma~\ref{lem:scale}. Hence $x-y$ averages at least $x^2/128$ over the shell and both orientations. Put $m=i+1$. The chord of $T_{m+1}$ on $[0,x]$ bounds $T_{m+1}(y)$ above, so its mean is at most
 \[
- \max_j\frac{S_j}{M}\le\frac{128(1+\eta)}{k}+\frac{\log J}{\eta M}.
+ (1-x/128)T_{m+1}(x)+x/128
+ \le 2+(1-x/256)(T_m(x)-2)
+ \le 2+(1-\tfrac{\log2}{m})(T_m(x)-2).
 \]
-Now $J\le4kB\le e^{10k}$, so $M=k^2$ and $\eta=1/4$ give $200/k$ on the mesh. Round any $0<t<1$ towards $1/2$ to a mesh height $t_j$ within $1/(2n)$. The mean section length $H$ is $2B$-Lipschitz since each interval endpoint moves at speed at most one. Thus $w(\tau(t))H(t)\le w_j H(t_j)+B/n\le201/k$. With $M=5120k^2$ and $\eta=1/256$, this weighted mean is at most $130/k$.
+The first inequality uses $(1-2u)e^u\le1-u$ at $u=x/256$. The second follows since $x/256-(\log2)/m$ has the sign of $T_m(x)-2$. At an inactive height the exponent stays fixed and $y\le x$. Apply \eqref{eq:test} at stage $i$ with the weights at active heights multiplied by $1-(\log2)/m\ge0$. The weighted mean of the next sum is then nonpositive, so one common shuffle proves the induction step.
 
-With $M=k^2$, match column $h$ to row $(h+M)\bmod 2M$ in the $2M$-grid. Insert the $M$ patterns in order in each half. The result $V$ has $\ell_V\le H$ by subadditivity. The selected diagonals lie on $y-x=\pm1/2$ in the central diamond of diameter one. Each point is within $1/(2\sqrt2 M)$ of its diagonal, so $\diam V\le1+1/M$. For $Q=V\star RV$, \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta H(t)$ in either quadrant, hence $M_w(Q)\le402/k$. Integrating gives $\Fav(Q)\lesssim1/k$ since $w(r)\ge\sqrt r$ and $|d\theta/dt|=s_\theta^2\le2$. Finally $Q\subset V$ and $N(Q)\le(2k^2 e^{8k})^2\le e^{20k}$.
+List $h/(2n),1-h/(2n)$, $1\le h\le n=\lceil kB\rceil$, as $t_1,\ldots,t_J$. Put $L_j(P)=(1+c_j)\ell_P(t_j)/256$. At each choice, test \eqref{eq:test} at $i=k$ with $a_j=\exp(\sum_P L_j(P))$, summing over paths already chosen. The sum of the weights starts at $J$ and at most doubles per path. For the mean section length $H$ after $M$ paths this gives
+\[
+ (1+c_j)H(t_j)\le256\bigl(\log2+(\log J)/M\bigr).
+\]
+Take $M=128k$. Since $J=2n\le e^{10k}$ and $kw(\tau(t_j))<1+c_j$, the weighted mean is at most $198/k$ on the mesh. Round $0<t<1$ towards $1/2$ to a mesh height $t_j$ within $1/(2n)$. The weight can only increase, and $H$ is $2B$-Lipschitz since each interval endpoint moves at speed at most one. Thus $w(\tau(t))H(t)\le198/k+B/n\le199/k$.
+
+Match column $h$ to row $(h+M)\bmod 2M$ in the $2M$-grid and insert the paths in order in each half (Figure~\ref{fig:packing}). The result $V$ has $\ell_V\le H$ by subadditivity. The outer squares lie in the diamond $|x-1/2|+|y-1/2|\le1/2+1/(2M)$. For any two points of $V$, their absolute coordinate differences $a,b\le1$ therefore satisfy $a+b\le1+1/M$. If $a+b\le1$ their distance is at most one. Otherwise $a^2+b^2\le1+(a+b-1)^2\le1+M^{-2}$, so $\diam V\le1+1/(2M^2)$. For $Q=V\star RV$, \eqref{eq:insert} gives $|p_\theta Q|\le s_\theta H(t)$ in either quadrant, hence $M_w(Q)\le398/k$. Integration gives $\Fav(Q)\lesssim1/k$ since $w(r)\ge\sqrt r$ and $|d\theta/dt|=s_\theta^2\le2$. Finally $Q\subset V$ and $N(Q)\le(2MB)^2\le e^{24k}$.
 \end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[line cap=round,line join=round,
+  frame/.style={draw=black!60,line width=.45pt},
+  cell/.style={draw=stripblue!72!black,fill=stripblue!32,line width=.45pt}]
+% In each half, the three sample patterns are the unit square, the increasing
+% two-permutation, and the decreasing two-permutation.
+\def\packedcells{%
+  \foreach \i/\j in {0/3,3/0}{
+    \path[cell] ({\i/6},{\j/6}) rectangle ++({1/6},{1/6});}
+  \foreach \i/\j in {1/4,4/1}{
+    \foreach \h in {0,1}{
+      \path[cell] ({\i/6+\h/12},{\j/6+\h/12}) rectangle ++({1/12},{1/12});}}
+  \foreach \i/\j in {2/5,5/2}{
+    \foreach \h in {0,1}{
+      \path[cell] ({\i/6+\h/12},{\j/6+(1-\h)/12}) rectangle ++({1/12},{1/12});}}}
+\begin{scope}[x=3.05cm,y=3.05cm]
+  \node[above,font=\small] at (.5,1.05) {Half-shift, $M=3$};
+  \filldraw[fill=black!8,draw=black!40,line width=.4pt]
+    (0,{1/3})--(0,{2/3})--({1/3},1)--({2/3},1)--
+    (1,{2/3})--(1,{1/3})--({2/3},0)--({1/3},0)--cycle;
+  \draw[black!12,step=1/6,line width=.25pt] (0,0) grid (1,1);
+  \foreach \i/\j in {0/3,1/4,2/5,3/0,4/1,5/2}{
+    \filldraw[fill=stripblue!10,draw=stripblue!65,line width=.45pt]
+      ({\i/6},{\j/6}) rectangle ++({1/6},{1/6});}
+  \draw[black!65,densely dashed,line width=.45pt]
+    (0,.5)--(.5,1)--(1,.5)--(.5,0)--cycle;
+  \foreach \i/\j/\lab in {0/3/1,1/4/2,2/5/3,3/0/1,4/1/2,5/2/3}{
+    \node[font=\scriptsize,inner sep=.25pt,fill=white]
+      at ({(\i+.5)/6},{(\j+.5)/6}) {$\lab$};}
+  \draw[frame] (0,0) rectangle (1,1);
+\end{scope}
+\begin{scope}[shift={(4.95,0)},x=3.05cm,y=3.05cm]
+  \node[above,font=\small] at (.5,1.05) {Packed pattern $V$};
+  \packedcells
+  \draw[frame] (0,0) rectangle (1,1);
+  \filldraw[draw=stripred!90!black,fill=stripred!32,line width=.8pt]
+    ({11/12},{1/3}) rectangle (1,{5/12});
+  \coordinate (zoomtop) at (1,{5/12});
+  \coordinate (zoombot) at (1,{1/3});
+\end{scope}
+\begin{scope}[shift={(9.9,0)},x=3.05cm,y=3.05cm]
+  \node[above,font=\small] at (.5,1.05) {Inside the marked square};
+  \draw[stripred!48,line width=.45pt] (zoomtop)--(0,1) (zoombot)--(0,0);
+  \begin{scope}[shift={(0,1)},yscale=-1]\packedcells\end{scope}
+  \draw[stripred!90!black,line width=.75pt] (0,0) rectangle (1,1);
+\end{scope}
+\end{tikzpicture}
+\caption{The labels $1,2,3$ mark the unit square and the increasing and
+decreasing two-square patterns. The concentric diamonds have $\ell^1$-radii
+$1/2$ (dashed) and $1/2+1/(2M)$ (shaded inside the square).
+In $V\star RV$ the marked square contains a vertically reflected copy of $V$,
+shown enlarged at right.}
+\label{fig:packing}
+\end{figure}
 
 For $k=2^j$, $j\ge1$, put $A_k=1+I_b(e^{-k})$. The weight $v_k=b\,\mathbf1_{[e^{-k},1/2]}/A_k$ has integral at most one against $dr/r$. For $r<e^{-k}$, monotonicity gives $(k-\log2)b(r)\le I_b(e^{-k})$. Lemma~\ref{lem:block} and boundedness of projections thus give a block $Q_j$ with
 \[
@@ -275,7 +351,7 @@ Finally Hall's grid matching applied to $S$ at $\delta=1/n$ gives \eqref{eq:grid
 
 \medskip
 \noindent\textit{Acknowledgment.}
-The main geometric idea originated with the author. OpenAI's Astra assisted with computational details. OpenAI's Codex assisted with the shuffle, the crossing identity, and the proofs of regularity and angular decay.
+The main geometric idea originated with the author. OpenAI's Astra assisted with computational details.
 
 \begin{thebibliography}{9}
 \bibitem{CSS}

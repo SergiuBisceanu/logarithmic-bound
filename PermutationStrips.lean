@@ -12,6 +12,8 @@ both attained minima. `PermutationStrips.Conjecture.lower_leading_constants`
 gives their liminf bounds. `PermutationStrips.Angular.sharp_angular_profile`
 constructs the Euclidean length-one compact witness and gives both extremal laws.
 `PermutationStrips.Angular.critical_grid_rate` gives the critical log-log loss.
+`PermutationStrips.AngularBlock.exists_linear_ensemble` gives 128k paths of
+exactly k shuffles and the weighted section bound 199/k at every interior height.
 
 The default build checks the transitive dependencies of every public declaration
 in the project namespace against Lean's three standard axioms.

@@ -74,18 +74,50 @@ private theorem halfShift_diamond {M : ℕ} (hM : 0<M) (p : ℝ × ℝ) (hp : p 
            | rw [abs_of_nonneg (by linarith [qx.1]),abs_of_nonpos (by linarith [qy.2])]) <;>
     linarith [hx.1,hx.2,hy.1,hy.2]
 
+private theorem halfShift_coord_sum {M : ℕ} (hM : 0<M) {p q : ℝ × ℝ}
+    (hp : p ∈ (halfShift hM).carrier) (hq : q ∈ (halfShift hM).carrier) :
+    |p.1-q.1| + |p.2-q.2| ≤ 1+1/(M:ℝ) := by
+  have u := halfShift_diamond hM p hp
+  have v := halfShift_diamond hM q hq
+  have tri (x y : ℝ) : |x-y| ≤ |x-1/2|+|y-1/2| := by
+    rw [← Real.dist_eq, ← Real.dist_eq, ← Real.dist_eq, dist_comm y (1/2:ℝ)]
+    exact dist_triangle ..
+  have he : 1/(2*(M:ℝ)) = (1/(M:ℝ))/2 := by ring
+  linarith [tri p.1 q.1,tri p.2 q.2]
+
 theorem ensemble_diameter {M : ℕ} (hM : 0<M) {κ : Fin M → Type*} (Q : ∀ j, Pattern (κ j)) :
     Metric.diam (toEuclidean '' (ensemble hM Q).carrier) ≤ 1+1/(M:ℝ) := by
   apply Metric.diam_le_of_forall_dist_le (by positivity)
   rintro _ ⟨p,hp,rfl⟩ _ ⟨q,hq,rfl⟩
-  have u := halfShift_diamond hM p (family_subset (halfShift hM) _ hp)
-  have v := halfShift_diamond hM q (family_subset (halfShift hM) _ hq)
-  have tri (x y : ℝ) : |x-y| ≤ |x-1/2|+|y-1/2| := by
-    rw [← Real.dist_eq, ← Real.dist_eq, ← Real.dist_eq, dist_comm y (1/2:ℝ)]
-    exact dist_triangle ..
-  apply (euclidean_dist_le_sum p q).trans
-  have he : 1/(2*(M:ℝ)) = (1/(M:ℝ))/2 := by ring
-  linarith [tri p.1 q.1,tri p.2 q.2]
+  exact (euclidean_dist_le_sum p q).trans (halfShift_coord_sum hM
+    (family_subset (halfShift hM) _ hp) (family_subset (halfShift hM) _ hq))
+
+/-- The unit square caps each coordinate difference at one. Intersecting this
+constraint with the half-shift diamond makes the Euclidean diameter excess quadratic. -/
+theorem ensemble_diameter_sq {M : ℕ} (hM : 0<M) {κ : Fin M → Type*} (Q : ∀ j, Pattern (κ j)) :
+    Metric.diam (toEuclidean '' (ensemble hM Q).carrier) ≤ 1+1/(2*(M:ℝ)^2) := by
+  apply Metric.diam_le_of_forall_dist_le (by positivity)
+  rintro _ ⟨p,hp,rfl⟩ _ ⟨q,hq,rfl⟩
+  let a := |p.1-q.1|
+  let b := |p.2-q.2|
+  let d := 1/(M:ℝ)
+  have hsum : a+b ≤ 1+d := halfShift_coord_sum hM
+    (family_subset (halfShift hM) _ hp) (family_subset (halfShift hM) _ hq)
+  have up := carrier_subset_unit _ hp
+  have uq := carrier_subset_unit _ hq
+  have ha : a ≤ 1 := abs_le.mpr ⟨by linarith [up.1.1,uq.1.2],by linarith [up.1.2,uq.1.1]⟩
+  have hb : b ≤ 1 := abs_le.mpr ⟨by linarith [up.2.1,uq.2.2],by linarith [up.2.2,uq.2.1]⟩
+  have hs : a^2+b^2 ≤ 1+d^2 := by
+    rcases le_total (a+b) 1 with h|h
+    · nlinarith [mul_self_le_mul_self (add_nonneg (abs_nonneg _) (abs_nonneg _)) h,
+        mul_nonneg (abs_nonneg (p.1-q.1)) (abs_nonneg (p.2-q.2)),sq_nonneg d]
+    · have ht := mul_self_le_mul_self (sub_nonneg.mpr h) (show a+b-1 ≤ d by linarith)
+      nlinarith only [ht,mul_nonneg (sub_nonneg.mpr ha) (sub_nonneg.mpr hb)]
+  rw [WithLp.prod_dist_eq_of_L2]
+  change Real.sqrt (a^2+b^2) ≤ _
+  have he : 1/(2*(M:ℝ)^2) = d^2/2 := by dsimp [d]; ring
+  rw [he]
+  exact Real.sqrt_le_iff.mpr ⟨by positivity,by nlinarith only [hs,sq_nonneg (d^2/2)]⟩
 
 /-- The section of the packed sample is bounded by its arithmetic mean. -/
 theorem length_ensemble_le {M : ℕ} (hM : 0<M) {κ : Fin M → Type*} (Q : ∀ j, Pattern (κ j))
